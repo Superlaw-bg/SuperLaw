@@ -1,0 +1,12 @@
+@import '../../style-constants.scss';
+
+.site-footer{
+    text-align: center;
+    color: $primary-color;
+    padding: 0.5rem;
+}
+
+.site-footer p{
+    margin: 0;
+    font-size: 1.3rem;
+}
