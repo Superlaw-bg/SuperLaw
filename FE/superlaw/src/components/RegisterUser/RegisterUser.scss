@@ -1,63 +1,98 @@
-@import '../../style-constants.scss';
+@import "../../style-constants.scss";
 
 .wrap {
-    padding-bottom: 5%;
-  
-    .row {
-      margin-right: 0px;
-  
-      .form-wrapper {
-        margin: 0 auto;
+  padding-bottom: 5%;
+
+  .row {
+    margin: 0px;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .form-wrapper-reg {
+    flex: 0 0 40%;
+  }
+
+  .register-form {
+    margin-top: 10vh;
+    padding: 15% 15%;
+    padding-top: 7%;
+    border-radius: 13px;
+    border: 2px solid $primary-color;
+    color: $primary-color;
+
+    .register-heading {
+      text-align: center;
+      margin-bottom: 10%;
+    }
+
+    .link {
+      margin-top: 30px;
+      cursor: pointer;
+    }
+
+   
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .phone {
+      display: flex;
+
+      .code {
+        flex: 0 0 20%;
+        margin: 0;
+        border-right: none;
       }
     }
-  
-    .register-form {
-      margin-top: 10vh;
-      padding: 15% 15%;
-      padding-top: 7%;
-      border-radius: 13px;
-      border: 2px solid $primary-color;
-      color: $primary-color;
-  
-      .register-heading {
-        text-align: center;
-        margin-bottom: 10%;
-      }
-  
-      .link {
-        margin-top: 30px;
-        cursor: pointer;
-      }
 
-      .register-btn{
-        margin-top: 20px;
-        background-color: $primary-color;
-        color: $secondary-color;
-        border: none;
-        font-size: 18px;
-      }
+    .selection {
+      display: flex;
+      flex-wrap: wrap;
 
-      .form-group{
-        margin-bottom: 20px;
-      }
-
-      .phone {
-        display: flex;
-
-        .code {
-          flex: 0 0 20%;
-          margin: 0;
-          border-right: none;
-        }
-      }
-
-      .selection{
-        display: flex;
-        flex-wrap: wrap;
-
-        label{
-          flex: 0 0 100%;
-        }
+      label {
+        flex: 0 0 100%;
       }
     }
   }
+
+  .lawyer-info {
+    flex: 0 0 20%;
+
+    color: $primary-color;
+  }
+}
+
+.primary-btn {
+  margin-top: 20px;
+  background-color: $primary-color;
+  color: $secondary-color;
+  border: none;
+  font-size: 18px;
+
+  &:hover{
+    color: $primary-color;
+    background-color: $secondary-color;
+  }
+}
+
+@media (max-width: 1150px) {
+  .wrap{
+
+    .row {
+      flex-wrap: wrap;
+    }
+  
+    .form-wrapper-reg{
+      flex: 0 0 80%;
+      margin: 0 auto;
+    }
+
+    .lawyer-info{
+      margin: 0 auto;
+      margin-top: 30px;
+      flex: 0 0 60%;
+    }
+  }
+}

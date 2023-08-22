@@ -37,6 +37,11 @@
         width: 100px;
         height: 50px;
         font-size: 18px;
+
+        &:hover{
+          color: $primary-color;
+          background-color: $secondary-color;
+        }
       }
     }
   }
