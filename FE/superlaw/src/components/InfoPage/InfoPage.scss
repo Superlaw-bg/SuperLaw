@@ -42,6 +42,26 @@
     }
 }
 
+.info {
+    padding: 100px 0px;
+    text-align: center;
+    color: $primary-color;
+
+    .title{
+        margin-bottom: 50px;
+    }
+
+    .row {
+        margin-top: 50px;
+    }
+
+    .img-wrapper {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+
 @media (max-width: 900px) {
     .cta{
         padding: 24rem 0.2rem;

@@ -30,7 +30,7 @@ const InfoPage = () => {
       </section>
       <section className="info">
         <div className="container-fluid">
-          <h4>Какво предоставя Superlaw?</h4>
+          <h1 className="title">Какво предоставя Superlaw?</h1>
           <div className="row justify-content-around">
             <div className="col-md-4 col-xl-3">
               <div className="img-wrapper">
