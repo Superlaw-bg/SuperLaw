@@ -4,9 +4,18 @@
     text-align: center;
     color: $primary-color;
     padding: 0.5rem;
-}
 
-.site-footer p{
-    margin: 0;
-    font-size: 1.3rem;
+    p {
+        margin: 0;
+        font-size: 1.3rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: $primary-color;
+
+        &:hover{
+            text-decoration: underline;
+        }
+    }
 }
