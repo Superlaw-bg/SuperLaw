@@ -1,0 +1,76 @@
+@import "../../style-constants.scss";
+
+.reg-lawyer-row {
+  padding-bottom: 5%;
+
+  .form-wrapper-reg {
+    width: 40%;
+    margin: 0 auto;
+  }
+
+  .register-law-form {
+    margin-top: 10vh;
+    padding: 15% 15%;
+    padding-top: 7%;
+    border-radius: 13px;
+    border: 2px solid $primary-color;
+    color: $primary-color;
+
+    .register-heading {
+      text-align: center;
+      margin-bottom: 10%;
+    }
+
+    .link {
+      margin-top: 30px;
+      cursor: pointer;
+    }
+
+   
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .phone {
+      display: flex;
+
+      .code {
+        flex: 0 0 20%;
+        margin: 0;
+        border-right: none;
+      }
+    }
+
+    .selection {
+      display: flex;
+      flex-wrap: wrap;
+
+      label {
+        flex: 0 0 100%;
+      }
+    }
+  }
+}
+
+.primary-btn {
+  margin-top: 20px;
+  background-color: $primary-color;
+  color: $secondary-color;
+  border: none;
+  font-size: 18px;
+
+  &:hover{
+    color: $primary-color;
+    background-color: $secondary-color;
+  }
+}
+
+@media (max-width: 1150px) {
+
+    .reg-lawyer-row {
+        .form-wrapper-reg {
+            width: 80%;
+        }
+    }
+}
