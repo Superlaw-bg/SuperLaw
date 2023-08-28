@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperLaw.Api", "SuperLaw.Api.csproj", "{B5C7D42E-9BAB-43D5-97CA-668A5DC11C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuperLaw.Api", "SuperLaw.Api.csproj", "{B5C7D42E-9BAB-43D5-97CA-668A5DC11C50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperLaw.Data", "..\SuperLaw.Data\SuperLaw.Data.csproj", "{5D9B3830-71CB-43DF-A373-77C2241C3271}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperLaw.Common", "..\SuperLaw.Common\SuperLaw.Common.csproj", "{6EC29CD0-C9EB-4908-87BB-4A7381469BA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{B5C7D42E-9BAB-43D5-97CA-668A5DC11C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5C7D42E-9BAB-43D5-97CA-668A5DC11C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5C7D42E-9BAB-43D5-97CA-668A5DC11C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D9B3830-71CB-43DF-A373-77C2241C3271}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D9B3830-71CB-43DF-A373-77C2241C3271}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D9B3830-71CB-43DF-A373-77C2241C3271}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D9B3830-71CB-43DF-A373-77C2241C3271}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EC29CD0-C9EB-4908-87BB-4A7381469BA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC29CD0-C9EB-4908-87BB-4A7381469BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC29CD0-C9EB-4908-87BB-4A7381469BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC29CD0-C9EB-4908-87BB-4A7381469BA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
