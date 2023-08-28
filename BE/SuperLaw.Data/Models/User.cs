@@ -34,6 +34,8 @@ namespace SuperLaw.Data.Models
 
         public bool IsFlagged { get; set; }
 
-        public List<Meeting> Meetings { get; set; }
+        public DateTimeOffset RegisteredOn { get; set; }
+
+        public ICollection<Meeting> Meetings { get; set; } = new List<Meeting>();
     }
 }

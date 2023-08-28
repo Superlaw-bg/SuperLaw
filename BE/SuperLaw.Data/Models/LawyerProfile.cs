@@ -19,9 +19,13 @@
 
         public bool IsCompleted { get; set; }
 
+        public DateTime CompletedOn { get; set; }
+
         public ICollection<LawyerProfileJudicialRegion> JudicialRegions { get; set; } = new List<LawyerProfileJudicialRegion>();
 
         public ICollection<LawyerProfileLegalCategory> LegalCategories { get; set; } =
             new List<LawyerProfileLegalCategory>();
+
+        public ICollection<Meeting> Meetings { get; set; } = new List<Meeting>();
     }
 }

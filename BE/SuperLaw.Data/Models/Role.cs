@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using SuperLaw.Common;
 using SuperLaw.Data.Models.Enums;
 
 namespace SuperLaw.Data.Models
