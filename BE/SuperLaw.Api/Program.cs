@@ -1,4 +1,3 @@
-using Firebase.Auth.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -7,6 +6,7 @@ using SuperLaw.Data.DataSeeders;
 using SuperLaw.Data.Models;
 using SuperLaw.Services;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +30,7 @@ builder.Services
         options.Password.RequireUppercase = false;
         options.Password.RequireNonAlphanumeric = false;
         options.User.RequireUniqueEmail = true;
+        options.SignIn.RequireConfirmedEmail = true;
     })
     .AddEntityFrameworkStores<SuperLawDbContext>();
 
@@ -55,8 +56,12 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<SuperLawDbContext>()
+    .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<EmailService>();
 
 var app = builder.Build();
 

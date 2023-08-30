@@ -11,7 +11,6 @@ namespace SuperLaw.Data.EntityConfigs
         {
             entity.Ignore(c => c.AccessFailedCount)
                 .Ignore(c => c.LockoutEnabled)
-                .Ignore(c => c.SecurityStamp)
                 .Ignore(c => c.ConcurrencyStamp)
                 .Ignore(c => c.PhoneNumber)
                 .Ignore(c => c.PhoneNumberConfirmed)

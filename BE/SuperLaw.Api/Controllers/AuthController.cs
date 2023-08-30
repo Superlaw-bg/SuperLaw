@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SuperLaw.Services;
 
@@ -29,6 +30,14 @@ namespace SuperLaw.Api.Controllers
             var idToken = await _authService.Login(email, password);
 
             return idToken;
+        }
+
+        [AllowAnonymous]
+        [HttpGet(nameof(ConfirmEmail))]
+        public async Task<bool> ConfirmEmail(string token, string email)
+        {
+            token = token.Replace(" ", "");
+            return await _authService.ConfirmEmail(token, email);
         }
 
         [HttpGet(nameof(Test))]
