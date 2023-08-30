@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SuperLaw.Data;
+using SuperLaw.Data.DataSeeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,11 +11,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//TODO: Add seeders for cities, legal categories and judicial regions
 builder.Services.AddDbContext<SuperLawDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("MainDbConnection")));
 
 var app = builder.Build();
+
+using var serviceScope = app.Services.CreateScope();
+
+using var context = serviceScope.ServiceProvider.GetRequiredService<SuperLawDbContext>();
+
+context.Database.EnsureCreated();
+
+new CitySeeder(context).Run();
+new JudicialRegionSeeder(context).Run();
+new LegalCategorySeeder(context).Run();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
