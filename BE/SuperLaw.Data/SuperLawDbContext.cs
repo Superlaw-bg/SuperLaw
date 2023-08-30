@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SuperLaw.Data.Models;
-using System.Reflection.Emit;
-using SuperLaw.Data.Models.Enums;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace SuperLaw.Data
 {
-    public class SuperLawDbContext : DbContext
+    public class SuperLawDbContext : IdentityDbContext<User, Role, string>
     {
         public SuperLawDbContext(DbContextOptions<SuperLawDbContext> options)
             : base(options)
@@ -14,9 +13,9 @@ namespace SuperLaw.Data
 
         public DbSet<City> Cities { get; set; }
 
-        public DbSet<Role> Roles { get; set; }
+        public override DbSet<Role> Roles { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public override DbSet<User> Users { get; set; }
 
         public DbSet<JudicialRegion> JudicialRegions { get; set; }
 
@@ -40,8 +39,6 @@ namespace SuperLaw.Data
             }
 
             builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-
-            builder.SeedEnumValues<Role, RoleEnum>(x => x);
         }
     }
 }

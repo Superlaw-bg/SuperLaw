@@ -1,11 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SuperLaw.Services;
 
 namespace SuperLaw.Api.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController : ApiController
     {
         private readonly IAuthService _authService;
 
@@ -14,12 +13,35 @@ namespace SuperLaw.Api.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost(nameof(Register))]
-        public async Task<string?> Register(string email, string password)
+        public async Task<string> Register(string email, string password)
         {
             var idToken = await _authService.Register(email, password, password);
 
             return idToken;
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(Login))]
+        public async Task<string> Login(string email, string password)
+        {
+            var idToken = await _authService.Login(email, password);
+
+            return idToken;
+        }
+
+        [HttpGet(nameof(Test))]
+        public string Test()
+        {
+            return "You are authorized";
+        }
+
+        [Authorize(Roles = "Lawyer, Admin")]
+        [HttpGet(nameof(TestRoles))]
+        public string TestRoles()
+        {
+            return "You are a lawyer";
         }
     }
 }

@@ -1,24 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using SuperLaw.Data.Models.Enums;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace SuperLaw.Data.Models
 {
-    public class Role
+    public class Role : IdentityRole<string>
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
-
-        [Required, MaxLength(20)]
-        public string Name { get; set; }
-
-        private Role(RoleEnum role)
+        public Role(string name) : base(name)
         {
-            Id = (int)role;
-            Name = role.GetEnumName();
+            Id = Guid.NewGuid().ToString();
+            NormalizedName = name.ToUpper();
         }
-        public Role() { }
-
-        public static implicit operator Role(RoleEnum role) => new Role(role);
     }
 }
