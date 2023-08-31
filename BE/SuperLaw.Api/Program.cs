@@ -7,6 +7,8 @@ using SuperLaw.Data.Models;
 using SuperLaw.Services;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using SuperLaw.Common.Options;
+using Microsoft.AspNetCore.Builder.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,10 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<SuperLawDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+builder.Services.AddOptions();
+
+builder.Services.Configure<EmailSendingOptions>(builder.Configuration.GetSection(EmailSendingOptions.Section));
+builder.Services.Configure<ClientLinksOption>(builder.Configuration.GetSection(ClientLinksOption.Section));
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<EmailService>();

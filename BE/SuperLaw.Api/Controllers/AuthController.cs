@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SuperLaw.Services;
 
@@ -36,7 +35,6 @@ namespace SuperLaw.Api.Controllers
         [HttpGet(nameof(ConfirmEmail))]
         public async Task<bool> ConfirmEmail(string token, string email)
         {
-            token = token.Replace(" ", "");
             return await _authService.ConfirmEmail(token, email);
         }
 

@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using SuperLaw.Common.Options;
+using Microsoft.Extensions.Options;
 
 namespace SuperLaw.Services
 {
     public class EmailService
     {
+        private readonly IOptions<EmailSendingOptions> _options;
+
+        public EmailService(IOptions<EmailSendingOptions> options)
+        {
+            _options = options;
+        }
+
         public void SendEmail(string email, string subject, string message)
         {
-            string fromMail = "kostadinovk2001@gmail.com";
-            string fromPassword = "lohgtcneszcfhavw";
+            var fromMail = _options.Value.Email;
+            var fromPassword = _options.Value.Password;
 
-            MailMessage mailMessage = new MailMessage();
+            var mailMessage = new MailMessage();
             mailMessage.From = new MailAddress(fromMail);
             mailMessage.Subject = subject;
             mailMessage.To.Add(new MailAddress(email));

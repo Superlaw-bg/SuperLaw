@@ -7,20 +7,23 @@ using Microsoft.Extensions.Configuration;
 using SuperLaw.Common;
 using SuperLaw.Data.Models;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using SuperLaw.Common.Options;
 
 namespace SuperLaw.Services
 {
     public class AuthService : IAuthService
     {
-        private IConfiguration _configuration;
+        private IOptions<ClientLinksOption> _options;
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
 
         private readonly string? _secret;
 
-        public AuthService(IConfiguration configuration, UserManager<User> userManager, EmailService emailService)
+        //TODO: Add register and login functionality on backend
+        public AuthService(IConfiguration configuration, IOptions<ClientLinksOption> options, UserManager<User> userManager, EmailService emailService)
         {
-            _configuration = configuration;
+            _options = options;
             _userManager = userManager;
             _emailService = emailService;
 
@@ -55,8 +58,7 @@ namespace SuperLaw.Services
             byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailToken);
             var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
 
-            //TODO: Refactor this link to use the current one, maybe through appsettings file
-            var confirmationLink = $"https://localhost:44350/api/Auth/ConfirmEmail?token={codeEncoded}&email={email}";
+            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={email}";
 
             _emailService.SendEmail(email, "Потвърждение на акаунт", $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
 
