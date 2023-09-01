@@ -9,6 +9,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using SuperLaw.Common.Options;
 using Microsoft.AspNetCore.Builder.Extensions;
+using SuperLaw.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +69,7 @@ builder.Services.Configure<ClientLinksOption>(builder.Configuration.GetSection(C
 
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<EmailService>();
+builder.Services.AddTransient<ISimpleDataService, SimpleDataService>();
 
 var app = builder.Build();
 

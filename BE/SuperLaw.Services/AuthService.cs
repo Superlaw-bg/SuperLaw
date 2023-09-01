@@ -9,6 +9,8 @@ using SuperLaw.Data.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using SuperLaw.Common.Options;
+using SuperLaw.Services.Input;
+using SuperLaw.Services.Interfaces;
 
 namespace SuperLaw.Services
 {
@@ -17,94 +19,148 @@ namespace SuperLaw.Services
         private IOptions<ClientLinksOption> _options;
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
+        private readonly ISimpleDataService _simpleDataService;
 
         private readonly string? _secret;
 
-        //TODO: Add register and login functionality on backend
-        public AuthService(IConfiguration configuration, IOptions<ClientLinksOption> options, UserManager<User> userManager, EmailService emailService)
+        public AuthService(IConfiguration configuration, IOptions<ClientLinksOption> options, UserManager<User> userManager, EmailService emailService, ISimpleDataService simpleDataService)
         {
             _options = options;
             _userManager = userManager;
             _emailService = emailService;
+            _simpleDataService = simpleDataService;
 
             _secret = configuration["Secret"];
         }
 
-        public async Task<string> Register(string email, string password, string confirmPassword)
+        public async Task RegisterUser(RegisterUserInput input)
         {
-            if (password != confirmPassword)
-            {
-                throw new ArgumentException("Passwords don't match");
-            }
-
-            var user = await _userManager.FindByNameAsync(email);
+            var user = await _userManager.FindByNameAsync(input.Email);
 
             if (user != null)
             {
-                throw new ArgumentException("There is already such user");
+                throw new ArgumentException("Регистриран е вече такъв потребител");
+            }
+
+            var city = _simpleDataService.GetCity(input.CityId);
+
+            if (city == null)
+            {
+                throw new ArgumentException("Невалиден град");
             }
 
             user = new User()
             {
-                Email = email,
-                UserName = email,
-                CityId = 1,
+                FirstName = input.FirstName,
+                Surname = input.Surname,
+                LastName = input.LastName,
+                Phone = input.Phone,
+                Email = input.Email,
+                UserName = input.Email,
+                CityId = input.CityId,
             };
 
-            await _userManager.CreateAsync(user, password);
+            await _userManager.CreateAsync(user, input.Password);
 
             var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
            
             byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailToken);
             var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
 
-            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={email}";
+            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={input.Email}";
 
-            _emailService.SendEmail(email, "Потвърждение на акаунт", $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
+            _emailService.SendEmail(input.Email, "Потвърждение на акаунт", $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
 
-            await _userManager.AddToRoleAsync(user, RoleNames.LawyerRole);
-
-            var token = GenerateJwtToken(user.Id, user.Email, RoleNames.LawyerRole);
-
-            return token;
+            await _userManager.AddToRoleAsync(user, RoleNames.UserRole);
         }
 
-        public async Task<bool> ConfirmEmail(string token, string email)
+        public async Task RegisterLawyer(RegisterLawyerInput input)
+        {
+            var user = await _userManager.FindByNameAsync(input.Email);
+
+            if (user != null)
+            {
+                throw new ArgumentException("Регистриран е вече такъв потребител");
+            }
+
+            var city = _simpleDataService.GetCity(input.CityId);
+
+            if (city == null)
+            {
+                throw new ArgumentException("Невалиден град");
+            }
+
+            user = new User()
+            {
+                FirstName = input.FirstName,
+                Surname = input.Surname,
+                LastName = input.LastName,
+                Phone = input.Phone,
+                Email = input.Email,
+                UserName = input.Email,
+                CityId = input.CityId,
+                LawyerIdNumber = input.LawyerIdNumber
+            };
+
+            await _userManager.CreateAsync(user, input.Password);
+
+            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailToken);
+            var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+
+            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={input.Email}";
+
+            _emailService.SendEmail(input.Email, "Потвърждение на акаунт", $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
+
+            await _userManager.AddToRoleAsync(user, RoleNames.LawyerRole);
+        }
+
+        public async Task<string> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
-                throw new ArgumentException("Invalid user");
+                throw new ArgumentException("Невалиден потребител");
 
             var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
             var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
 
             var result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
 
-            return result.Succeeded;
+            if (!result.Succeeded)
+            {
+                throw new ArgumentException("Невалиден имейл токен");
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var idToken = GenerateJwtToken(user.Id, user.Email, roles.First());
+
+            return idToken;
         }
 
-        public async Task<string> Login(string email, string password)
+        public async Task<string> Login(LoginInput input)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(input.Email);
 
             if (user == null)
             {
-                throw new ArgumentException("There is no user with that email!");
+                throw new ArgumentException("Няма потребител с този имейл");
             }
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, password);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, input.Password);
 
             if (!isPasswordValid)
             {
-                throw new ArgumentException("Incorrect password!");
+                throw new ArgumentException("Грешна парола");
             }
 
             var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
             if (!isEmailConfirmed)
             {
-                throw new ArgumentException("Please confirm your email");
+                throw new ArgumentException("Моля потвърдете имейла си");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
