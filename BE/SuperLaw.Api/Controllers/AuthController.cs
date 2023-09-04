@@ -49,25 +49,25 @@ namespace SuperLaw.Api.Controllers
 
             await _authService.RegisterLawyer(input);
 
-            return Ok();
+            return Ok("Всеки момент ще ви изпратим имейл с линк за потвърждение на акаунта");
         }
 
         [AllowAnonymous]
         [HttpPost(nameof(Login))]
         public async Task<IActionResult> Login(LoginInput input)
         {
-            var idToken = await _authService.Login(input);
+            var userInfo = await _authService.Login(input);
 
-            return Ok(idToken);
+            return Ok(userInfo);
         }
 
         [AllowAnonymous]
         [HttpGet(nameof(ConfirmEmail))]
         public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
-            var idToken = await _authService.ConfirmEmail(token, email);
+            var userInfo = await _authService.ConfirmEmail(token, email);
 
-            return Ok(idToken);
+            return Ok(userInfo);
         }
 
         [HttpGet(nameof(Test))]

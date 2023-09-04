@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using SuperLaw.Data.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using SuperLaw.Common.Options;
+using SuperLaw.Services.DTO;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 
@@ -39,14 +41,14 @@ namespace SuperLaw.Services
 
             if (user != null)
             {
-                throw new ArgumentException("Регистриран е вече такъв потребител");
+                throw new HttpRequestException("Регистриран е вече такъв потребител", null, HttpStatusCode.BadRequest);
             }
 
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
             {
-                throw new ArgumentException("Невалиден град");
+                throw new HttpRequestException("Регистриран е вече такъв потребител", null, HttpStatusCode.BadRequest);
             }
 
             user = new User()
@@ -116,7 +118,7 @@ namespace SuperLaw.Services
             await _userManager.AddToRoleAsync(user, RoleNames.LawyerRole);
         }
 
-        public async Task<string> ConfirmEmail(string token, string email)
+        public async Task<UserInfoDto> ConfirmEmail(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
@@ -137,10 +139,18 @@ namespace SuperLaw.Services
 
             var idToken = GenerateJwtToken(user.Id, user.Email, roles.First());
 
-            return idToken;
+            var userInfo = new UserInfoDto()
+            {
+                Email = user.Email,
+                Id = user.Id,
+                IdToken = idToken,
+                Role = roles.First()
+            };
+
+            return userInfo;
         }
 
-        public async Task<string> Login(LoginInput input)
+        public async Task<UserInfoDto> Login(LoginInput input)
         {
             var user = await _userManager.FindByEmailAsync(input.Email);
 
@@ -167,7 +177,15 @@ namespace SuperLaw.Services
 
             var token = GenerateJwtToken(user.Id, user.Email, roles[0]);
 
-            return token;
+            var userInfo = new UserInfoDto()
+            {
+                Email = user.Email,
+                Id = user.Id,
+                IdToken = token,
+                Role = roles.First()
+            };
+
+            return userInfo;
         }
 
         private string GenerateJwtToken(string userId, string email, string role)
