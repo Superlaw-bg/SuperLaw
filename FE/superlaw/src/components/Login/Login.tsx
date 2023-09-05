@@ -28,13 +28,32 @@ const Login = () => {
     });
   };
 
+  const isDataValid = () => {
+    if(loginForm.email === ''){
+      setErrorMessage('Имейлът е задължителен');
+      return false;
+    }
+
+    if(loginForm.password === ''){
+      setErrorMessage('Паролата е задължителна');
+      return false;
+    }
+
+    setErrorMessage('');
+    return true
+  }
+
   const onLogin = async (event: any) => {
     event.preventDefault();
-  
+
+    if (!isDataValid()){
+      return;
+    }
+
     let res = await authService.login(loginForm);
     
     if(!res.isError){
-      let user: User= {
+      let user: User = {
         id: res.data.id,
         email: res.data.email,
         token: res.data.idToken,
@@ -63,6 +82,7 @@ const Login = () => {
                 <input type='password' className='form-control' name='password' onChange={(e) => onInput(e)}/>
               </div>
 
+            <p className='error'>{errorMessage}</p>
           <Button className='login-btn' type='submit' variant='primary'>Влез</Button>
           <h5 className='link'>Нямаш акаунт?</h5>
           <NavLink className='link' to="/register" >Регистрирай се</NavLink>

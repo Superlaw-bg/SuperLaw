@@ -69,10 +69,10 @@ const responseHandler = async (res: any) => {
         if (res.status === 400){
             const error = await res.json();
             
-            toastService.showError(error.Message);
+            toastService.showError(error.Message || error.message);
             return {
                 isError: true,
-                msg: error.Message
+                msg: error.Message || error.message
             }
         }
 

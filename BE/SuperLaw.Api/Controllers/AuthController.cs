@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
+using System;
 
 namespace SuperLaw.Api.Controllers
 {
@@ -20,12 +21,18 @@ namespace SuperLaw.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Данните са невалидни");
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Данните са невалидни"
+                });
             }
 
             if (input.Password != input.ConfirmPassword)
             {
-                return BadRequest("Паролите не съвпадат");
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Паролите не съвпадат"
+                });
             }
 
             await _authService.RegisterUser(input);
@@ -39,12 +46,18 @@ namespace SuperLaw.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Данните са невалидни");
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Данните са невалидни"
+                });
             }
 
             if (input.Password != input.ConfirmPassword)
             {
-                return BadRequest("Паролите не съвпадат");
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Паролите не съвпадат"
+                });
             }
 
             await _authService.RegisterLawyer(input);

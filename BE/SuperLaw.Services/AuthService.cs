@@ -41,14 +41,14 @@ namespace SuperLaw.Services
 
             if (user != null)
             {
-                throw new HttpRequestException("Регистриран е вече такъв потребител");
+                throw new BusinessException("Регистриран е вече такъв потребител");
             }
 
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
             {
-                throw new HttpRequestException("Регистриран е вече такъв потребител");
+                throw new BusinessException("Невалиден град");
             }
 
             user = new User()
@@ -82,14 +82,14 @@ namespace SuperLaw.Services
 
             if (user != null)
             {
-                throw new HttpRequestException("Регистриран е вече такъв потребител");
+                throw new BusinessException("Регистриран е вече такъв потребител");
             }
 
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
             {
-                throw new HttpRequestException("Невалиден град");
+                throw new BusinessException("Невалиден град");
             }
 
             user = new User()
@@ -123,7 +123,7 @@ namespace SuperLaw.Services
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
-                throw new HttpRequestException("Невалиден потребител");
+                throw new BusinessException("Невалиден потребител");
 
             var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
             var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
@@ -132,7 +132,7 @@ namespace SuperLaw.Services
 
             if (!result.Succeeded)
             {
-                throw new HttpRequestException("Невалиден имейл токен");
+                throw new BusinessException("Невалиден имейл токен");
             }
 
             var roles = await _userManager.GetRolesAsync(user);

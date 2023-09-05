@@ -7,6 +7,7 @@ import City from "../../models/City";
 import cityService from "../../services/cityService";
 import authService from "../../services/authService";
 import RegisterUserInput from "../../models/inputs/RegisterUserInput";
+import toastService from '../../services/toastService';
 
 const Register = () => {  
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Register = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [successRegister, setSuccessRegister] = useState(false);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -48,10 +50,82 @@ const Register = () => {
     });
   };
 
+  const isDataValid = () => {
+    if (registerForm.firstName === ''){
+      setErrorMessage("Името е задължително");
+      return false;
+    }
+
+    if (registerForm.surname === ''){
+      setErrorMessage("Презимето е задължително");
+      return false;
+    }
+
+    if (registerForm.lastName === ''){
+      setErrorMessage("Фамилията е задължителна");
+      return false;
+    }
+
+    if (registerForm.cityId === 0){
+      setErrorMessage("Моля изберете град");
+      return false;
+    }
+
+    const phoneRegex = /[a-zA-Z]/g;
+          
+    if (registerForm.phone === '' || phoneRegex.test(registerForm.phone)){
+      setErrorMessage("Телефонът е невалиден");
+      return false;
+    }
+
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    if (registerForm.email === '' || !emailRegex.test(registerForm.email)){
+      setErrorMessage("Имейлът е невалиден");
+      return false;
+    }
+
+    if (registerForm.password === ''){
+      setErrorMessage("Моля въведете парола");
+      return false;
+    }
+
+    if (registerForm.password.length <= 4){
+      setErrorMessage("Паролата трябва да бъде поне 5 символа");
+      return false;
+    }
+
+    if (registerForm.confirmPassword === ''){
+      setErrorMessage("Моля потвърдете паролата");
+      return false;
+    }
+
+    if (registerForm.confirmPassword !== registerForm.password){
+      setErrorMessage("Паролите не съвпадат");
+      return false;
+    }
+
+    setErrorMessage('');
+    return true;
+  }
+
   const onRegister = async (event: FormEvent) => {
     event.preventDefault();
-    authService.registerUser(registerForm);
-    setErrorMessage("Потвърдете имейла си!");
+    
+    if(successRegister){
+      setSuccessRegister(false);
+    }
+
+    if (!isDataValid()){
+      return;
+    }
+
+    let res = await authService.registerUser(registerForm);
+
+    if (!res.isError){
+      toastService.showSuccess('Регистрацията е успешна. Моля потвърдете имейла си за да се логнете');
+      setSuccessRegister(true);
+    }
   };
 
 
@@ -117,13 +191,16 @@ const Register = () => {
               />
             </div>
 
-             <p>
+             <p className='error'>
               {errorMessage}
              </p>
 
             <Button className="primary-btn" type="submit" variant="primary">
               Регистрация
             </Button>
+
+            {successRegister &&
+               <p className='success'>Регистрирахте се успешно. Остана само да потвърдите имейла си като цъкнете на линка, който ви изпратихме.</p>}
           </form>
         </div>
         <div className="lawyer-info">
