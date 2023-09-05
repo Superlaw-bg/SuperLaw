@@ -1,6 +1,7 @@
 const apiRoutes = {
     cities: 'SimpleData/Cities',
-    registerUser: 'Auth/RegisterUser'
+    registerUser: 'Auth/RegisterUser',
+    login: 'Auth/Login'
 };
 
 export default apiRoutes;

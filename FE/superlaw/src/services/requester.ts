@@ -1,3 +1,4 @@
+import { error } from 'console';
 import ApiBaseUrl from '../constants/env';
 import store from '../store/store';
 import toastService from './toastService';
@@ -55,27 +56,50 @@ const makeRequest = (url: string, method: string, hasFormData: boolean, body: an
         };
     }
 
-    return fetch(apiUrl, request).then(responseHandler);
+    return fetch(apiUrl, request)
+    .then(responseHandler);
 };
 
 const responseHandler = async (res: any) => {
     if (!res.ok) {
-        console.error(res);
         if (res.status === 401) {
             toastService.showError("Трябва да се влезете в акаунта си отново");
+        }
+
+        if (res.status === 400){
+            const error = await res.json();
+            
+            toastService.showError(error.Message);
+            return {
+                isError: true,
+                msg: error.Message
+            }
+        }
+
+        if (res.status === 500){
+            const msg = await res.text();
+            toastService.showError(msg);
+            return {
+                isError: true,
+                msg: msg
+            }
         }
         return;
     }
 
     const contentType = res.headers.get("content-type");
-
+    let response;
     if (contentType && contentType.indexOf("application/json") !== -1) {
-        return await res.json();
+        response = await res.json();
+
     } else if (contentType && contentType.indexOf("text") !== -1) {
-        return await res.text();
+        response = await res.text();
+
     } else {
-        return await res;
+        response = await res;
     }
+
+    return response;
 };
 
 const requester = {

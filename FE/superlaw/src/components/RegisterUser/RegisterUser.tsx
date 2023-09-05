@@ -1,13 +1,14 @@
+import React from 'react';
 import "./RegisterUser.scss";
 import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import City from "../../models/City";
 import cityService from "../../services/cityService";
 import authService from "../../services/authService";
 import RegisterUserInput from "../../models/inputs/RegisterUserInput";
 
-const Register = () => {
+const Register = () => {  
   const navigate = useNavigate();
   const redirect = () => {
     navigate('/info');
@@ -30,7 +31,7 @@ const Register = () => {
 
   useEffect(() => {
     const fetchCities = async () => {
-        const cities: City[] = await cityService.getCities();
+        const cities = await cityService.getCities();
         setCities(cities);
     };
     
@@ -49,7 +50,8 @@ const Register = () => {
 
   const onRegister = async (event: FormEvent) => {
     event.preventDefault();
-    const res = authService.registerUser(registerForm);
+    authService.registerUser(registerForm);
+    setErrorMessage("Потвърдете имейла си!");
   };
 
 
@@ -114,6 +116,10 @@ const Register = () => {
                 onChange={(e) => onInput(e)}
               />
             </div>
+
+             <p>
+              {errorMessage}
+             </p>
 
             <Button className="primary-btn" type="submit" variant="primary">
               Регистрация
