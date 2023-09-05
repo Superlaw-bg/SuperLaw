@@ -41,14 +41,14 @@ namespace SuperLaw.Services
 
             if (user != null)
             {
-                throw new HttpRequestException("Регистриран е вече такъв потребител", null, HttpStatusCode.BadRequest);
+                throw new HttpRequestException("Регистриран е вече такъв потребител");
             }
 
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
             {
-                throw new HttpRequestException("Регистриран е вече такъв потребител", null, HttpStatusCode.BadRequest);
+                throw new HttpRequestException("Регистриран е вече такъв потребител");
             }
 
             user = new User()
@@ -82,14 +82,14 @@ namespace SuperLaw.Services
 
             if (user != null)
             {
-                throw new ArgumentException("Регистриран е вече такъв потребител");
+                throw new HttpRequestException("Регистриран е вече такъв потребител");
             }
 
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
             {
-                throw new ArgumentException("Невалиден град");
+                throw new HttpRequestException("Невалиден град");
             }
 
             user = new User()
@@ -123,7 +123,7 @@ namespace SuperLaw.Services
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
-                throw new ArgumentException("Невалиден потребител");
+                throw new HttpRequestException("Невалиден потребител");
 
             var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
             var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
@@ -132,7 +132,7 @@ namespace SuperLaw.Services
 
             if (!result.Succeeded)
             {
-                throw new ArgumentException("Невалиден имейл токен");
+                throw new HttpRequestException("Невалиден имейл токен");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -156,21 +156,21 @@ namespace SuperLaw.Services
 
             if (user == null)
             {
-                throw new ArgumentException("Няма потребител с този имейл");
+                throw new BusinessException("Няма потребител с този имейл");
             }
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, input.Password);
 
             if (!isPasswordValid)
             {
-                throw new ArgumentException("Грешна парола");
+                throw new BusinessException("Грешна парола");
             }
 
             var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
 
             if (!isEmailConfirmed)
             {
-                throw new ArgumentException("Моля потвърдете имейла си");
+                throw new BusinessException("Моля потвърдете имейла си");
             }
 
             var roles = await _userManager.GetRolesAsync(user);

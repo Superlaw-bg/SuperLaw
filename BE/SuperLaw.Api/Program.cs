@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using SuperLaw.Common.Options;
 using Microsoft.AspNetCore.Builder.Extensions;
 using SuperLaw.Services.Interfaces;
+using SuperLaw.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +91,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors(options => options
     .AllowAnyOrigin()
