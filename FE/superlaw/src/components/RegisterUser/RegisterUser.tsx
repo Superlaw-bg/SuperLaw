@@ -154,7 +154,7 @@ const Register = () => {
               <label htmlFor="city">Град</label>
               <select className="form-select" name="cityId" id="city" onChange={(e) => onInput(e)}>
                 <option selected disabled defaultValue="none">
-                  Изберете област
+                  Изберете град
                 </option>
                 {cities.map((city) => 
                   <option key={city.id} value={city.id}>{city.name}</option>
