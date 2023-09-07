@@ -53,10 +53,27 @@ const login: (input: LoginUserInput) => Promise<Result> = async (input) => {
     };
 }
 
+const confirmEmail: (email: string, token: string) => Promise<Result> = async (email, token) => {
+    const res = await requester.post(apiRoutes.confirmEmail, {email, token});
+
+    if(res.isError){
+        return {
+            isError: true,
+            data: res.msg
+        }
+    }
+
+    return {
+        isError: false,
+        data: res
+    };
+}
+
 const authService = {
     registerUser,
     registerLawyer,
-    login
+    login,
+    confirmEmail
 };
 
 export default authService;

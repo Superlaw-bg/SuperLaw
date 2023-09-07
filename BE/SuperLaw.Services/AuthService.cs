@@ -64,14 +64,7 @@ namespace SuperLaw.Services
 
             await _userManager.CreateAsync(user, input.Password);
 
-            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-           
-            byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailToken);
-            var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
-
-            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={input.Email}";
-
-            _emailService.SendEmail(input.Email, "Потвърждение на акаунт", $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
+            await SendConfirmationEmail(input.Email, user);
 
             await _userManager.AddToRoleAsync(user, RoleNames.UserRole);
         }
@@ -106,14 +99,7 @@ namespace SuperLaw.Services
 
             await _userManager.CreateAsync(user, input.Password);
 
-            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-
-            byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailToken);
-            var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
-
-            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={input.Email}";
-
-            _emailService.SendEmail(input.Email, "Потвърждение на акаунт", $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
+            await SendConfirmationEmail(input.Email, user);
 
             await _userManager.AddToRoleAsync(user, RoleNames.LawyerRole);
         }
@@ -207,6 +193,19 @@ namespace SuperLaw.Services
             var encryptedToken = tokenHandler.WriteToken(token);
 
             return encryptedToken;
+        }
+
+        private async Task SendConfirmationEmail(string email, User user)
+        {
+            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(emailToken);
+            var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+
+            var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={email}";
+
+            _emailService.SendEmail(email, "Потвърждение на акаунт",
+                $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
         }
     }
 }

@@ -75,10 +75,10 @@ namespace SuperLaw.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet(nameof(ConfirmEmail))]
-        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        [HttpPost(nameof(ConfirmEmail))]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailInput input)
         {
-            var userInfo = await _authService.ConfirmEmail(token, email);
+            var userInfo = await _authService.ConfirmEmail(input.Token, input.Email);
 
             return Ok(userInfo);
         }

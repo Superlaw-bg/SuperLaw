@@ -23,7 +23,7 @@ const Header = () => {
         };
 
         dispatchLogout(user);
-        toastService.showSuccess('Успешно илзязохте от акаунта си');
+        toastService.showSuccess('Успешно излязохте от акаунта си');
         navigate('/');
     };
 
