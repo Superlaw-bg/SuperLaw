@@ -6,6 +6,7 @@ import LoginUserInput from '../../models/inputs/LoginInput';
 import authService from '../../services/authService';
 import { useStoreActions } from '../../store/hooks';
 import User from '../../store/auth/models/User';
+import { Lawyer } from '../../constants/roles';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -62,7 +63,12 @@ const Login = () => {
       }
     
       dispatchLogin(user);
-      navigate('/');
+
+      if (user.role === Lawyer){
+        navigate('/profile');
+      } else {
+        navigate('/');
+      }
     }
   };
   

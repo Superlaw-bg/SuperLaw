@@ -10,6 +10,9 @@ import Login from './components/Login';
 import RegisterUser from './components/RegisterUser';
 import InfoPage from './components/InfoPage';
 import RegisterLawyer from './components/RegisterLawyer';
+import Profile from './components/Lawyer/Profile/Profile';
+import isGuest from './hooks/isGuest';
+import isAuth from './hooks/isAuth';
 
 const App: React.FC = () => (
   <>
@@ -18,10 +21,11 @@ const App: React.FC = () => (
           <Header/>
           <Routes>
               <Route path='/' Component={HomePage}/>
-              <Route path='/login' Component={Login}/>
-              <Route path='/register' Component={RegisterUser}/>
-              <Route path='/registerLaw' Component={RegisterLawyer}/>
+              <Route path='/login' Component={isGuest(Login)}/>
+              <Route path='/register' Component={isGuest(RegisterUser)}/>
+              <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
               <Route path='/info' Component={InfoPage}/>
+              <Route path='/profile' Component={isAuth(Profile)}/>
           </Routes>
           <Footer/>
       </Router>
