@@ -19,8 +19,6 @@ const ConfirmEmail = () => {
 
     useEffect(() => {
         const confirmEmail = async () => {
-            console.log('token: ' + token);
-            console.log('email: ' + email);
             const res = await authService.confirmEmail(email, token);
             
             if (!res.isError) {
@@ -34,11 +32,8 @@ const ConfirmEmail = () => {
               };
             
               dispatchRegister(user);
-        
-              const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
-
-              await delay(5000);
-              if (user.role === Lawyer){
+            
+              if (res.data.role === Lawyer){
                 navigate('/profile');
               } else {
                 navigate('/');
