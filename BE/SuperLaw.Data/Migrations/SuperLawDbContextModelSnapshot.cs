@@ -370,6 +370,9 @@ namespace SuperLaw.Data.Migrations
                     b.Property<DateTimeOffset>("RegisteredOn")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(30)

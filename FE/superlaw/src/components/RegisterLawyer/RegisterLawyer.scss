@@ -50,6 +50,16 @@
         flex: 0 0 100%;
       }
     }
+
+    .error{
+      color: red;
+      margin-top: 40px;
+    }
+    
+    .success {
+      color: green;
+      margin-top: 20px;
+    }
   }
 }
 

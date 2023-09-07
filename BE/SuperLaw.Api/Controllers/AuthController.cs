@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SuperLaw.Services;
+using SuperLaw.Services.Input;
+using SuperLaw.Services.Interfaces;
+using System;
 
 namespace SuperLaw.Api.Controllers
 {
@@ -14,21 +16,71 @@ namespace SuperLaw.Api.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost(nameof(Register))]
-        public async Task<string> Register(string email, string password)
+        [HttpPost(nameof(RegisterUser))]
+        public async Task<IActionResult> RegisterUser(RegisterUserInput input)
         {
-            var idToken = await _authService.Register(email, password, password);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Данните са невалидни"
+                });
+            }
 
-            return idToken;
+            if (input.Password != input.ConfirmPassword)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Паролите не съвпадат"
+                });
+            }
+
+            await _authService.RegisterUser(input);
+
+            return Ok("Всеки момент ще ви изпратим имейл с линк за потвърждение на акаунта");
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(RegisterLawyer))]
+        public async Task<IActionResult> RegisterLawyer(RegisterLawyerInput input)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Данните са невалидни"
+                });
+            }
+
+            if (input.Password != input.ConfirmPassword)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Паролите не съвпадат"
+                });
+            }
+
+            await _authService.RegisterLawyer(input);
+
+            return Ok("Всеки момент ще ви изпратим имейл с линк за потвърждение на акаунта");
         }
 
         [AllowAnonymous]
         [HttpPost(nameof(Login))]
-        public async Task<string> Login(string email, string password)
+        public async Task<IActionResult> Login(LoginInput input)
         {
-            var idToken = await _authService.Login(email, password);
+            var userInfo = await _authService.Login(input);
 
-            return idToken;
+            return Ok(userInfo);
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(ConfirmEmail))]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailInput input)
+        {
+            var userInfo = await _authService.ConfirmEmail(input.Token, input.Email);
+
+            return Ok(userInfo);
         }
 
         [HttpGet(nameof(Test))]
