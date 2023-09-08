@@ -12,8 +12,9 @@ import InfoPage from './components/InfoPage';
 import RegisterLawyer from './components/RegisterLawyer';
 import Profile from './components/Lawyer/Profile/Profile';
 import isGuest from './hooks/isGuest';
-import isAuth from './hooks/isAuth';
 import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail';
+import isLawyer from './hooks/isLawyer';
+import CreateProfile from './components/Lawyer/CreateProfile/CreateProfile';
 
 const App: React.FC = () => (
   <>
@@ -27,7 +28,8 @@ const App: React.FC = () => (
               <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
               <Route path='/emailConfirm' Component={isGuest(ConfirmEmail)}/>
               <Route path='/info' Component={InfoPage}/>
-              <Route path='/profile' Component={isAuth(Profile)}/>
+              <Route path='/profile' Component={isLawyer(Profile)}/>
+              <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
           </Routes>
           <Footer/>
       </Router>
