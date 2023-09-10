@@ -1,0 +1,79 @@
+@import "../../../style-constants.scss";
+
+.form-wrapper-create-profile {
+    width: 40%;
+    margin: 0 auto;
+  }
+
+  .create-profile-form {
+    margin: 100px 0px;
+    color: $primary-color;
+
+    .register-heading {
+      text-align: center;
+      margin-bottom: 10%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+
+      label {
+        font-size: 1.2rem;
+      }
+    }
+
+    .picture {
+        text-align: center;
+        margin-bottom: 100px;
+    }
+
+    .selection {
+      flex-wrap: wrap;
+
+      label {
+        flex: 0 0 100%;
+      }
+    }
+
+    .checkboxes {
+      margin-top: 40px;
+
+      .checkbox{
+        margin-bottom: 40px;
+
+        &:hover {
+          cursor: pointer;
+        }
+
+        label:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .error{
+      color: red;
+      margin-top: 40px;
+      font-size: 1.2rem;
+    }
+
+  }
+
+.primary-btn {
+  margin-top: 20px;
+  background-color: $primary-color;
+  color: $secondary-color;
+  border: none;
+  font-size: 1.2rem;
+
+  &:hover{
+    color: $primary-color;
+    background-color: $secondary-color;
+  }
+}
+
+@media (max-width: 1150px) {
+    .form-wrapper-create-profile {
+        width: 80%;
+    }
+}
