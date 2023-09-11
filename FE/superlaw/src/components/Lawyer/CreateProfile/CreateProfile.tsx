@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import './CreateProfile.scss';
 import { Button, Form } from "react-bootstrap";
 import FileUpload from '../../FileUpload';
@@ -7,8 +7,12 @@ import Select from 'react-select';
 import { MultiValue, ActionMeta, InputActionMeta } from 'react-select';
 import ProfileInput from '../../../models/ProfileInput';
 import profileService from '../../../services/profileService';
+import legalCategoriesService from '../../../services/legalCategoriesService';
+import judicialRegionsService from '../../../services/judicialRegionsService';
 
 const CreateProfile = () => {
+  const [categories, setCategories] = useState([]);
+  const [regions, setRegions] = useState([]);
   const [profile, setProfile] = useState<ProfileInput>({
     image: '',
     description: "",
@@ -22,23 +26,40 @@ const CreateProfile = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const categories: any[]= [
-    { value: 1, label: 'Категория 1' },
-    { value: 2, label: 'Категория 2' },
-    { value: 3, label: 'Категория 3' },
-    { value: 4, label: 'Категория 4' },
-    { value: 5, label: 'Категория 5' },
-    { value: 6, label: 'Категория 6' }
-  ];
+  useEffect(() => {
+    const fetchCategories = async () => {
+        const res = await legalCategoriesService.getCategories();
 
-  const regions: any[]= [
-    { value: 1, label: 'Район 1' },
-    { value: 2, label: 'Район 2' },
-    { value: 3, label: 'Район 3' },
-    { value: 4, label: 'Район 4' },
-    { value: 5, label: 'Район 5' },
-    { value: 6, label: 'Район 6' }
-  ];
+        let categoriesRes: any = [];
+
+        res.forEach(x => {
+          categoriesRes.push({
+            value: x.id,
+            label: x.name
+          });
+        });
+
+        setCategories(categoriesRes);
+    };
+
+    const fetchRegions = async () => {
+      const res = await judicialRegionsService.getRegions();
+
+      let regionsRes: any = [];
+
+      res.forEach(x => {
+        regionsRes.push({
+          value: x.id,
+          label: x.name
+        });
+      });
+
+      setRegions(regionsRes);
+  };
+  
+    fetchCategories();
+    fetchRegions();
+  }, []);
 
   const onProfilePicUploadSuccess = (file: File) => {
     setProfile({...profile, image: file});

@@ -3,7 +3,7 @@ import "./RegisterUser.scss";
 import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
-import City from "../../models/City";
+import City from "../../models/SimpleData";
 import cityService from "../../services/cityService";
 import authService from "../../services/authService";
 import RegisterUserInput from "../../models/inputs/RegisterUserInput";

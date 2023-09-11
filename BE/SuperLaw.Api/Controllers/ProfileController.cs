@@ -12,7 +12,8 @@ namespace SuperLaw.Api.Controllers
         public async Task<IActionResult> Create()
         {
             var formCollection = await Request.ReadFormAsync();
-            var image = formCollection.Files.First();
+
+            var image = formCollection.Files.FirstOrDefault();
 
             var success = formCollection.TryGetValue("description", out var description);
 
