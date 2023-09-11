@@ -1,5 +1,5 @@
 interface ProfileInput {
-    profilePic: Blob | null,
+    image: Blob | string,
     description: string,
     hourlyRate: number,
     address: string,

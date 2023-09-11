@@ -33,7 +33,7 @@ const makeRequest = (url: string, method: string, hasFormData: boolean, body: an
     if (hasFormData) {
         if (token) {
             request.headers = {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
             };
         }
 

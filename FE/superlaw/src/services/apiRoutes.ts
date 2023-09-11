@@ -3,7 +3,8 @@ const apiRoutes = {
     registerUser: 'Auth/RegisterUser',
     registerLawyer: 'Auth/RegisterLawyer',
     login: 'Auth/Login',
-    confirmEmail: 'Auth/ConfirmEmail'
+    confirmEmail: 'Auth/ConfirmEmail',
+    createProfile: 'Profile/Create'
 };
 
 export default apiRoutes;

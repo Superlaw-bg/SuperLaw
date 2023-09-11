@@ -6,10 +6,11 @@ import toastService from '../../../services/toastService';
 import Select from 'react-select';
 import { MultiValue, ActionMeta, InputActionMeta } from 'react-select';
 import ProfileInput from '../../../models/ProfileInput';
+import profileService from '../../../services/profileService';
 
 const CreateProfile = () => {
   const [profile, setProfile] = useState<ProfileInput>({
-    profilePic: null,
+    image: '',
     description: "",
     hourlyRate: 0,
     address: "",
@@ -22,25 +23,25 @@ const CreateProfile = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const categories: any[]= [
-    { value: '1', label: 'Категория 1' },
-    { value: '2', label: 'Категория 2' },
-    { value: '3', label: 'Категория 3' },
-    { value: '4', label: 'Категория 4' },
-    { value: '5', label: 'Категория 5' },
-    { value: '6', label: 'Категория 6' }
+    { value: 1, label: 'Категория 1' },
+    { value: 2, label: 'Категория 2' },
+    { value: 3, label: 'Категория 3' },
+    { value: 4, label: 'Категория 4' },
+    { value: 5, label: 'Категория 5' },
+    { value: 6, label: 'Категория 6' }
   ];
 
   const regions: any[]= [
-    { value: '1', label: 'Район 1' },
-    { value: '2', label: 'Район 2' },
-    { value: '3', label: 'Район 3' },
-    { value: '4', label: 'Район 4' },
-    { value: '5', label: 'Район 5' },
-    { value: '6', label: 'Район 6' }
+    { value: 1, label: 'Район 1' },
+    { value: 2, label: 'Район 2' },
+    { value: 3, label: 'Район 3' },
+    { value: 4, label: 'Район 4' },
+    { value: 5, label: 'Район 5' },
+    { value: 6, label: 'Район 6' }
   ];
 
   const onProfilePicUploadSuccess = (file: File) => {
-    setProfile({...profile, profilePic: file});
+    setProfile({...profile, image: file});
   };
 
   const onProfilePicUploadError = (error: string) => {
@@ -111,11 +112,18 @@ const CreateProfile = () => {
   const onCreate = async (event: FormEvent) => {
     event.preventDefault();
 
-    console.log(profile);
-
     if (!isDataValid()){
       return;
     }
+
+    let categories = profile.categories.map((c: any) => c.value);
+    let regions = profile.regions.map((r: any) => r.value);
+
+    const formData = new FormData();
+    formData.append('image', profile.image);
+    formData.append('description', profile.description);
+
+    await profileService.createProfile(formData);
   };
 
   return (
