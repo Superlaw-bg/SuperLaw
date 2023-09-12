@@ -6,6 +6,7 @@ using SuperLaw.Data.DataSeeders;
 using SuperLaw.Data.Models;
 using SuperLaw.Services;
 using System.Text;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
 using SuperLaw.Common.Options;
 using Microsoft.AspNetCore.Builder.Extensions;
@@ -60,6 +61,13 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+var cloudinaryCredentials = new Account(
+    builder.Configuration["Cloudinary:CloudName"],
+    builder.Configuration["Cloudinary:ApiKey"],
+    builder.Configuration["Cloudinary:ApiSecret"]);
+
+var cloudinaryUtility = new Cloudinary(cloudinaryCredentials);
+
 builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<SuperLawDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
@@ -67,10 +75,14 @@ builder.Services.AddOptions();
 
 builder.Services.Configure<EmailSendingOptions>(builder.Configuration.GetSection(EmailSendingOptions.Section));
 builder.Services.Configure<ClientLinksOption>(builder.Configuration.GetSection(ClientLinksOption.Section));
+builder.Services.Configure<CloudinaryOptions>(builder.Configuration.GetSection(CloudinaryOptions.Section));
 
+builder.Services.AddSingleton(cloudinaryUtility);
 builder.Services.AddTransient<IAuthService, AuthService>();
 builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<ISimpleDataService, SimpleDataService>();
+builder.Services.AddTransient<IFileUploadService, FileUploadService>();
+builder.Services.AddTransient<IProfileService, ProfileService>();
 
 var app = builder.Build();
 

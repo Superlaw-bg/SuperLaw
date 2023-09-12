@@ -1,12 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SuperLaw.Data.Models;
 using SuperLaw.Services.Input;
+using SuperLaw.Services.Interfaces;
+using System.Security.Claims;
 
 namespace SuperLaw.Api.Controllers
 {
     public class ProfileController : ApiController
     {
+        private readonly IProfileService _profileService;
+
+        public ProfileController(IProfileService profileService)
+        {
+            _profileService = profileService;
+        }
+
         [Authorize(Roles = "Lawyer")]
         [HttpPost(nameof(Create))]
         public async Task<IActionResult> Create()
@@ -15,9 +23,9 @@ namespace SuperLaw.Api.Controllers
 
             var image = formCollection.Files.FirstOrDefault();
 
-            var success = formCollection.TryGetValue("description", out var description);
-
-            if (!success)
+            var hasDescr = formCollection.TryGetValue("description", out var description);
+            var a = description.ToString();
+            if (!hasDescr)
             {
                 return BadRequest(new ErrorDetails()
                 {
@@ -25,7 +33,91 @@ namespace SuperLaw.Api.Controllers
                 });
             }
 
-            return Ok("All set");
+            var hasHourlyRate = formCollection.TryGetValue("hourlyRate", out var hourlyRateStr);
+
+            if (!hasHourlyRate)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Часовата ставка е задължителна"
+                });
+            }
+
+            var hasAddress = formCollection.TryGetValue("address", out var address);
+
+            if (!hasAddress)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Адресът е задължителен"
+                });
+            }
+
+            var hasCategories = formCollection.TryGetValue("categories", out var categoriesStr);
+
+            if (!hasCategories)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Поне една категория е задължителна"
+                });
+            }
+
+            var hasRegions = formCollection.TryGetValue("regions", out var regionsStr);
+
+            if (!hasRegions)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Поне един съдебен район е задължителен"
+                });
+            }
+
+            var hasIsJunior = formCollection.TryGetValue("isJunior", out var isJuniorStr);
+
+            if (!hasIsJunior)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Отметката е задължителна"
+                });
+            }
+
+            var hasIsCompleted = formCollection.TryGetValue("isCompleted", out var isCompletedStr);
+
+            if (!hasIsCompleted)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Отметката е задължителна"
+                });
+            }
+
+            var profileInput = new CreateProfileInput()
+            {
+                Image = image,
+                Description = description.ToString(),
+                Address = address.ToString(),
+                HourlyRate = int.Parse(hourlyRateStr.ToString()),
+                Categories = categoriesStr
+                    .ToString()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList(),
+                Regions = regionsStr
+                    .ToString()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList(),
+                IsJunior = isJuniorStr.ToString() == "true",
+                IsCompleted = isCompletedStr.ToString() == "true",
+            };
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await _profileService.CreateProfileAsync(userId, profileInput);
+
+            return Ok();
         }
     }
 }
