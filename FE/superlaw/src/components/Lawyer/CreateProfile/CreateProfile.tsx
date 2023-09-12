@@ -221,6 +221,7 @@ const CreateProfile = () => {
               name='isJunior'
               onChange={onCheckbox}
             />
+            <p className='info-isCompleted'>Със завършването на профила Ви той ще бъде видим за потребителите</p>
             <Form.Check
               className='checkbox'
               type="switch"
