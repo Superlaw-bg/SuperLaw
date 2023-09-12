@@ -9,8 +9,11 @@ import ProfileInput from '../../../models/ProfileInput';
 import profileService from '../../../services/profileService';
 import legalCategoriesService from '../../../services/legalCategoriesService';
 import judicialRegionsService from '../../../services/judicialRegionsService';
+import { useNavigate } from 'react-router-dom';
 
 const CreateProfile = () => {
+  const navigate = useNavigate();
+
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
   const [profile, setProfile] = useState<ProfileInput>({
@@ -143,8 +146,20 @@ const CreateProfile = () => {
     const formData = new FormData();
     formData.append('image', profile.image);
     formData.append('description', profile.description);
+    formData.append('hourlyRate', profile.hourlyRate.toString());
+    formData.append('address', profile.address);
+    formData.append('categories', categories.join());
+    formData.append('regions', regions.join());
+    formData.append('isJunior', profile.isJunior.toString());
+    formData.append('isCompleted', profile.isCompleted.toString());
 
-    await profileService.createProfile(formData);
+    const res = await profileService.createProfile(formData);
+
+    if(!res.isError){
+      toastService.showSuccess("Успешно създадохте вашия адвокатски профил");
+      navigate('/profile');
+    }
+
   };
 
   return (
