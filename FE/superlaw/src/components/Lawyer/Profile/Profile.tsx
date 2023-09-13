@@ -4,13 +4,14 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import profileService from '../../../services/profileService';
 import LawyerProfile from '../../../models/LawyerProfile';
+import noProfilePic from "../../../assets/no-profile-picture-256.png";
 
 const Profile = () => {
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState<LawyerProfile>({
     id: -1,
-    image: '',
+    imgPath: '',
     description: '',
     hourlyRate: 0,
     phone: '',
@@ -23,12 +24,10 @@ const Profile = () => {
   
   useEffect(() => {
     const fetchProfile = async () => {
-        const profile = await profileService.getOwnProfile();
-
-        if (profile !== null){
-          setProfile(profile);
+        const res = await profileService.getOwnProfile();
+        if (res !== null){
+          setProfile(res);
         }
-        console.log(profile);
     };
     
     fetchProfile();
@@ -40,8 +39,8 @@ const Profile = () => {
 
   return (
     <div>
-       { profile.id === -1 && 
-        <div className='profile-info'>
+       { (!profile.id || profile.id === -1) && 
+        <div className='create-profile-info'>
         <div className='wrapper'>
           <div className='text'>
             <h2>Все още нямате профил</h2>
@@ -59,16 +58,22 @@ const Profile = () => {
       </div>
        }
 
-       { profile.id !== -1 &&
+       { profile.id && profile.id !== -1 &&
           <div className='profile-info'>
-          <div className='wrapper'>
-            <div className='text'>
-              <h2>Вече имате профил в системата</h2>
-              <p>{profile.address}</p>
-              <p>{profile.description}</p>
+          <div className='header'>
+            <div className='profile-image'>
+                <img src={profile.imgPath !== '' ? profile.imgPath : noProfilePic} alt="profile picture" />
             </div>
-            <div className='create-profile'>
-              <Button className='create-btn' variant='primary' onClick={onClick}>Създай профил</Button>
+            <div className='important-info'>
+
+            </div>
+          </div>
+          <div>
+            Additional info
+
+
+            <div className='edit-profile'>
+              <Button className='edit-btn' variant='primary' onClick={onClick}>Редактирай</Button>
             </div>
           </div>
         </div>

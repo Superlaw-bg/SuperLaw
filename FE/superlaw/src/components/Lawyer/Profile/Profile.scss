@@ -1,6 +1,6 @@
 @import '../../../style-constants.scss';
 
-.profile-info{
+.create-profile-info{
     padding: 100px 40px;
     padding-bottom: 200px;
 
@@ -35,7 +35,7 @@
 }
 
 @media (max-width: 1050px) {
-    .profile-info {
+    .create-profile-info {
         .wrapper {
             width: 80%;
         }
