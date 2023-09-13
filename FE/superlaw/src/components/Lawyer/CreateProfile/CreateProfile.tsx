@@ -5,11 +5,11 @@ import FileUpload from '../../FileUpload';
 import toastService from '../../../services/toastService';
 import Select from 'react-select';
 import { MultiValue, ActionMeta, InputActionMeta } from 'react-select';
-import ProfileInput from '../../../models/ProfileInput';
 import profileService from '../../../services/profileService';
 import legalCategoriesService from '../../../services/legalCategoriesService';
 import judicialRegionsService from '../../../services/judicialRegionsService';
 import { useNavigate } from 'react-router-dom';
+import ProfileInput from '../../../models/inputs/ProfileInput';
 
 const CreateProfile = () => {
   const navigate = useNavigate();

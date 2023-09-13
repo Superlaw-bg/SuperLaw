@@ -15,8 +15,8 @@ namespace SuperLaw.Api.Controllers
         }
 
         [Authorize(Roles = "Lawyer")]
-        [HttpGet(nameof(OwnProfile))]
-        public async Task<IActionResult> OwnProfile()
+        [HttpGet(nameof(Own))]
+        public async Task<IActionResult> Own()
         {
             var userId = GetCurrentUserId();
 

@@ -10,8 +10,8 @@ namespace SuperLaw.Services
 {
     public class ProfileService : IProfileService
     {
-        private SuperLawDbContext _context;
-        private IFileUploadService _uploadService;
+        private readonly SuperLawDbContext _context;
+        private readonly IFileUploadService _uploadService;
 
         public ProfileService(SuperLawDbContext context, IFileUploadService uploadService)
         {
@@ -81,12 +81,20 @@ namespace SuperLaw.Services
                 return null;
             }
 
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == userId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
             var result = new LawyerProfileDto()
             {
                 Id = userLawyerProfile.Id,
                 ImgPath = userLawyerProfile.ImgPath,
                 Description = userLawyerProfile.Info,
                 Address = userLawyerProfile.Address,
+                Phone = $"0{user.Phone}",
                 HourlyRate = userLawyerProfile.HourlyRate,
                 Categories = userLawyerProfile.LegalCategories
                     .Select(x => new SimpleDto()

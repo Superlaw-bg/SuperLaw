@@ -12,6 +12,8 @@
 
         public string Address { get; set; }
 
+        public string Phone { get; set; }
+
         public List<SimpleDto> Categories { get; set; } = new List<SimpleDto>();
 
         public List<SimpleDto> Regions { get; set; } = new List<SimpleDto>();
