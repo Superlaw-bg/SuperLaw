@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
-using System.Security.Claims;
 
 namespace SuperLaw.Api.Controllers
 {
@@ -16,6 +15,22 @@ namespace SuperLaw.Api.Controllers
         }
 
         [Authorize(Roles = "Lawyer")]
+        [HttpGet(nameof(OwnProfile))]
+        public async Task<IActionResult> OwnProfile()
+        {
+            var userId = GetCurrentUserId();
+
+            var result = await _profileService.GetOwnProfileAsync(userId);
+
+            if (result == null)
+            {
+                return Ok();
+            }
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Lawyer")]
         [HttpPost(nameof(Create))]
         public async Task<IActionResult> Create()
         {
@@ -24,7 +39,7 @@ namespace SuperLaw.Api.Controllers
             var image = formCollection.Files.FirstOrDefault();
 
             var hasDescr = formCollection.TryGetValue("description", out var description);
-            var a = description.ToString();
+            
             if (!hasDescr)
             {
                 return BadRequest(new ErrorDetails()
@@ -113,7 +128,7 @@ namespace SuperLaw.Api.Controllers
                 IsCompleted = isCompletedStr.ToString() == "true",
             };
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = GetCurrentUserId();
 
             await _profileService.CreateProfileAsync(userId, profileInput);
 

@@ -1,6 +1,8 @@
-﻿using SuperLaw.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using SuperLaw.Common;
 using SuperLaw.Data;
 using SuperLaw.Data.Models;
+using SuperLaw.Services.DTO;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 
@@ -63,6 +65,46 @@ namespace SuperLaw.Services
 
             await _context.LawyerProfiles.AddAsync(profile);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<LawyerProfileDto?> GetOwnProfileAsync(string userId)
+        {
+            var userLawyerProfile = await _context.LawyerProfiles
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .SingleOrDefaultAsync(x => x.UserId == userId);
+
+            if (userLawyerProfile == null)
+            {
+                return null;
+            }
+
+            var result = new LawyerProfileDto()
+            {
+                Id = userLawyerProfile.Id,
+                ImgPath = userLawyerProfile.ImgPath,
+                Description = userLawyerProfile.Info,
+                Address = userLawyerProfile.Address,
+                HourlyRate = userLawyerProfile.HourlyRate,
+                Categories = userLawyerProfile.LegalCategories
+                    .Select(x => new SimpleDto()
+                    {
+                        Id = x.CategoryId,
+                        Name = x.Category.Name
+                    }).ToList(),
+                Regions = userLawyerProfile.JudicialRegions
+                    .Select(x => new SimpleDto()
+                    {
+                        Id = x.RegionId,
+                        Name = x.Region.Name,
+                    }).ToList(),
+                IsCompleted = userLawyerProfile.IsCompleted,
+                IsJunior = userLawyerProfile.IsJunior,
+            };
+
+            return result;
         }
     }
 }
