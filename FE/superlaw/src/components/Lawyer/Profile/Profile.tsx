@@ -34,7 +34,11 @@ const Profile = () => {
     fetchProfile();
   }, []);
   
-  const onClick = () => {
+  const onCreateClick = () => {
+    navigate('/profile/create');
+  }
+
+  const onEditClick = () => {
     navigate('/profile/edit');
   }
 
@@ -53,7 +57,7 @@ const Profile = () => {
             </p>
           </div>
           <div className='create-profile'>
-            <Button className='create-btn' variant='primary' onClick={onClick}>Създай профил</Button>
+            <Button className='create-btn' variant='primary' onClick={onCreateClick}>Създай профил</Button>
           </div>
         </div>
       </div>
@@ -107,7 +111,7 @@ const Profile = () => {
             </div>
 
             <div className='edit-profile'>
-              <Button className='edit-btn' variant='primary' onClick={onClick}>Редактирай</Button>
+              <Button className='edit-btn' variant='primary' onClick={onEditClick}>Редактирай</Button>
             </div>
           </div>
         </div>
