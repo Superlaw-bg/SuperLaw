@@ -92,6 +92,7 @@ namespace SuperLaw.Services
             {
                 Id = userLawyerProfile.Id,
                 ImgPath = userLawyerProfile.ImgPath,
+                FullName = $"{user.FirstName} {user.Surname} {user.LastName}",
                 Description = userLawyerProfile.Info,
                 Address = userLawyerProfile.Address,
                 Phone = $"0{user.Phone}",

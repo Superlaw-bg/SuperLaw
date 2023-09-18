@@ -12,6 +12,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<LawyerProfile>({
     id: -1,
     imgPath: '',
+    fullName: '',
     description: '',
     hourlyRate: 0,
     phone: '',
@@ -65,12 +66,45 @@ const Profile = () => {
                 <img src={profile.imgPath !== '' ? profile.imgPath : noProfilePic} alt="profile picture" />
             </div>
             <div className='important-info'>
+               <div className='sect'>
+                  <h3>{profile.fullName}</h3>
+                  <p>{profile.isJunior ? 'Младши адвокат' : 'адвокат'}</p>
+               </div>
 
+                <div className='sect categories'>
+                  <p className='bold'>Категории: </p>
+                  {profile.categories.map((cat, ind) => 
+                    <span key={cat.id}> {ind !== profile.categories.length - 1 ? cat.name + ', ' : cat.name}</span>
+                  )}
+                </div>
+              
+                <div className='sect regions'>
+                  <p className='bold'>Райони: </p>
+                  {profile.regions.map((reg, ind) => 
+                    <span key={reg.id}> {ind !== profile.regions.length - 1 ? reg.name + ', ' : reg.name}</span>
+                  )}
+                </div>
+                <div className='sect'>
+                <p className='bold'>Часова ставка: {profile.hourlyRate}лв</p>
+                </div>
+                
             </div>
           </div>
-          <div>
-            Additional info
+          <div className='additional-info'>
+            <div className='sect phone'>
+              <p className='bold'>Телефон:</p>
+              <p>{profile.phone}</p>    
+            </div>
 
+            <div className='sect address'>
+              <p className='bold'>Адрес:</p>
+              <p>{profile.address}</p>    
+            </div>
+
+            <div className='sect description'>
+              <p className='bold'>Информация:</p>
+              <p>{profile.description}</p>    
+            </div>
 
             <div className='edit-profile'>
               <Button className='edit-btn' variant='primary' onClick={onClick}>Редактирай</Button>

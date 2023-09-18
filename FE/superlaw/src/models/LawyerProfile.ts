@@ -3,6 +3,7 @@ import SimpleData from "./SimpleData";
 interface LawyerProfile {
     id: number,
     imgPath: string,
+    fullName: string,
     description: string,
     hourlyRate: number,
     phone: string,
