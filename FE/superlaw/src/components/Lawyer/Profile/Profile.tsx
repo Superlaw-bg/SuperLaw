@@ -35,7 +35,7 @@ const Profile = () => {
   }, []);
   
   const onClick = () => {
-    navigate('/profile/create');
+    navigate('/profile/edit');
   }
 
   return (

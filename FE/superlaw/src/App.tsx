@@ -15,6 +15,7 @@ import isGuest from './hooks/isGuest';
 import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail';
 import isLawyer from './hooks/isLawyer';
 import CreateProfile from './components/Lawyer/CreateProfile/CreateProfile';
+import EditProfile from './components/Lawyer/EditProfile';
 
 const App: React.FC = () => (
   <>
@@ -30,6 +31,7 @@ const App: React.FC = () => (
               <Route path='/info' Component={InfoPage}/>
               <Route path='/profile' Component={isLawyer(Profile)}/>
               <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
+              <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
           </Routes>
           <Footer/>
       </Router>
