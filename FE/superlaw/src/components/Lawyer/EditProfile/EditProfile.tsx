@@ -10,12 +10,14 @@ import legalCategoriesService from '../../../services/legalCategoriesService';
 import judicialRegionsService from '../../../services/judicialRegionsService';
 import { useNavigate } from 'react-router-dom';
 import ProfileInput from '../../../models/inputs/ProfileInput';
+import LawyerProfileForEdit from '../../../models/LawyerProfileForEdit';
 
 const EditProfile = () => {
   const navigate = useNavigate();
 
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
+
   const [profile, setProfile] = useState<ProfileInput>({
     image: '',
     description: "",
@@ -58,10 +60,26 @@ const EditProfile = () => {
       });
 
       setRegions(regionsRes);
-  };
+    };
+
+    const fetchProfile = async () => {
+      const res = await profileService.getOwnProfileDataForEdit();
+
+      setProfile({
+        ...profile,
+        description: res.description,
+        hourlyRate: res.hourlyRate,
+        address: res.address,
+        categories: res.categories,
+        regions: res.regions,
+        isCompleted: res.isCompleted,
+        isJunior: res.isJunior
+      });
+    };
   
     fetchCategories();
     fetchRegions();
+    fetchProfile();
   }, []);
 
   const onProfilePicUploadSuccess = (file: File) => {
@@ -153,9 +171,9 @@ const EditProfile = () => {
     formData.append('isJunior', profile.isJunior.toString());
     formData.append('isCompleted', profile.isCompleted.toString());
 
-    const res = await profileService.createProfile(formData);
+    const res = await profileService.editProfile(formData);
 
-    if(!res.isError){
+    if (!res.isError){
       toastService.showSuccess("Успешно редактирахте вашия профил");
       navigate('/profile');
     }
@@ -173,17 +191,17 @@ const EditProfile = () => {
 
           <div className="form-group">
             <label htmlFor="description">Описание</label>
-            <textarea id="description" className="form-control" name="description" placeholder='Основна информация за Вас като адвокат' rows={4} onChange={(e) => onInput(e)}/>
+            <textarea id="description" className="form-control" name="description" placeholder='Основна информация за Вас като адвокат' value={profile.description} rows={4} onChange={(e) => onInput(e)}/>
           </div>
 
           <div className="form-group">
             <label htmlFor="hourly-rate">Часова ставка</label>
-            <input id="hourly-rate" type="text" className="form-control" name="hourlyRate" onChange={(e) => onInput(e)}/>
+            <input id="hourly-rate" type="text" className="form-control" name="hourlyRate" value={profile.hourlyRate} onChange={(e) => onInput(e)}/>
           </div>
 
           <div className="form-group">
             <label htmlFor="address">Работен адрес</label>
-            <input id="address" type="text" className="form-control" name="address" onChange={(e) => onInput(e)}/>
+            <input id="address" type="text" className="form-control" name="address" value={profile.address} onChange={(e) => onInput(e)}/>
           </div>
 
           <div className="form-group selection">
@@ -219,6 +237,7 @@ const EditProfile = () => {
               id="isJunior"
               label="Младши адвокат ли сте?"
               name='isJunior'
+              checked={profile.isJunior}
               onChange={onCheckbox}
             />
             <p className='info-isCompleted'>Със завършването на профила Ви той ще бъде видим за потребителите</p>
@@ -228,6 +247,7 @@ const EditProfile = () => {
               label="Профилът Ви завършен ли е?"
               id="isCompleted"
               name='isCompleted'
+              checked={profile.isCompleted}
               onChange={onCheckbox}
             />
           </div>

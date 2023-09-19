@@ -7,6 +7,10 @@ namespace SuperLaw.Services.Interfaces
     {
         Task CreateProfileAsync(string userId, CreateProfileInput input);
 
+        Task EditProfileAsync(string userId, CreateProfileInput input);
+
         Task<LawyerProfileDto?> GetOwnProfileAsync(string userId);
+
+        Task<LawyerProfileEditDto> GetOwnProfileDataForEditAsync(string userId);
     }
 }

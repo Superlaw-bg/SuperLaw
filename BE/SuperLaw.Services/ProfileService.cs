@@ -67,6 +67,63 @@ namespace SuperLaw.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task EditProfileAsync(string userId, CreateProfileInput input)
+        {
+            var profile = await _context.LawyerProfiles
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .SingleOrDefaultAsync(x => x.UserId == userId);
+
+            if (profile == null)
+            {
+                throw new BusinessException("Нямате адвокатски профил в системата");
+            }
+
+            var categories = _context.LegalCategories
+                .Where(x => input.Categories.Contains(x.Id))
+                .ToList();
+
+            var regions = _context.JudicialRegions
+                .Where(x => input.Regions.Contains(x.Id))
+                .ToList();
+
+            if (input.Image != null)
+            {
+                if (!string.IsNullOrEmpty(profile.ImgPath))
+                {
+                    await _uploadService.DeleteImageAsync(profile.ImgPath);
+                }
+
+                var imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
+
+                profile.ImgPath = imagePath;
+            }
+
+            profile.Address = input.Address;
+            profile.HourlyRate = input.HourlyRate;
+            profile.Info = input.Description;
+            profile.LegalCategories = categories.Select(x => new LawyerProfileLegalCategory()
+            {
+                CategoryId = x.Id,
+            }).ToList();
+            profile.JudicialRegions = regions.Select(x => new LawyerProfileJudicialRegion()
+            {
+                RegionId = x.Id,
+            }).ToList(); ;
+            profile.IsCompleted = input.IsCompleted;
+            profile.IsJunior = input.IsJunior;
+
+            if (profile.IsCompleted)
+            {
+                profile.CompletedOn = DateTime.UtcNow;
+            }
+
+            _context.LawyerProfiles.Update(profile);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<LawyerProfileDto?> GetOwnProfileAsync(string userId)
         {
             var userLawyerProfile = await _context.LawyerProfiles
@@ -108,6 +165,40 @@ namespace SuperLaw.Services
                     {
                         Id = x.RegionId,
                         Name = x.Region.Name,
+                    }).ToList(),
+                IsCompleted = userLawyerProfile.IsCompleted,
+                IsJunior = userLawyerProfile.IsJunior,
+            };
+
+            return result;
+        }
+
+        public async Task<LawyerProfileEditDto> GetOwnProfileDataForEditAsync(string userId)
+        {
+            var userLawyerProfile = await _context.LawyerProfiles
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .SingleAsync(x => x.UserId == userId);
+
+            var result = new LawyerProfileEditDto()
+            {
+                Id = userLawyerProfile.Id,
+                Description = userLawyerProfile.Info,
+                Address = userLawyerProfile.Address,
+                HourlyRate = userLawyerProfile.HourlyRate,
+                Categories = userLawyerProfile.LegalCategories
+                    .Select(x => new FrontEndOptionDto()
+                    {
+                        Value = x.CategoryId,
+                        Label = x.Category.Name
+                    }).ToList(),
+                Regions = userLawyerProfile.JudicialRegions
+                    .Select(x => new FrontEndOptionDto()
+                    {
+                        Value = x.RegionId,
+                        Label = x.Region.Name,
                     }).ToList(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,

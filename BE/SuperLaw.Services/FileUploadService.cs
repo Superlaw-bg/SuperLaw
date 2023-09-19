@@ -49,5 +49,13 @@ namespace SuperLaw.Services
 
             return uploadResult?.SecureUri.AbsoluteUri;
         }
+
+        public async Task DeleteImageAsync(string imagePath)
+        {
+            var imageIdWithExtension = imagePath.Split($"{_options.Value.ImgFolder}/")[1];
+            var imageId = imageIdWithExtension.Split(".")[0];
+
+            await _cloudinary.DestroyAsync(new DeletionParams($"{_options.Value.ImgFolder}/{imageId}"));
+        }
     }
 }

@@ -31,6 +31,17 @@ namespace SuperLaw.Api.Controllers
         }
 
         [Authorize(Roles = "Lawyer")]
+        [HttpGet(nameof(OwnDataForEdit))]
+        public async Task<IActionResult> OwnDataForEdit()
+        {
+            var userId = GetCurrentUserId();
+
+            var result = await _profileService.GetOwnProfileDataForEditAsync(userId);
+
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Lawyer")]
         [HttpPost(nameof(Create))]
         public async Task<IActionResult> Create()
         {
@@ -131,6 +142,111 @@ namespace SuperLaw.Api.Controllers
             var userId = GetCurrentUserId();
 
             await _profileService.CreateProfileAsync(userId, profileInput);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Lawyer")]
+        [HttpPost(nameof(Edit))]
+        public async Task<IActionResult> Edit()
+        {
+            var formCollection = await Request.ReadFormAsync();
+
+            var image = formCollection.Files.FirstOrDefault();
+
+            var hasDescr = formCollection.TryGetValue("description", out var description);
+
+            if (!hasDescr)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Информацията за профила е задължителна"
+                });
+            }
+
+            var hasHourlyRate = formCollection.TryGetValue("hourlyRate", out var hourlyRateStr);
+
+            if (!hasHourlyRate)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Часовата ставка е задължителна"
+                });
+            }
+
+            var hasAddress = formCollection.TryGetValue("address", out var address);
+
+            if (!hasAddress)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Адресът е задължителен"
+                });
+            }
+
+            var hasCategories = formCollection.TryGetValue("categories", out var categoriesStr);
+
+            if (!hasCategories)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Поне една категория е задължителна"
+                });
+            }
+
+            var hasRegions = formCollection.TryGetValue("regions", out var regionsStr);
+
+            if (!hasRegions)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Поне един съдебен район е задължителен"
+                });
+            }
+
+            var hasIsJunior = formCollection.TryGetValue("isJunior", out var isJuniorStr);
+
+            if (!hasIsJunior)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Отметката е задължителна"
+                });
+            }
+
+            var hasIsCompleted = formCollection.TryGetValue("isCompleted", out var isCompletedStr);
+
+            if (!hasIsCompleted)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Отметката е задължителна"
+                });
+            }
+
+            var profileInput = new CreateProfileInput()
+            {
+                Image = image,
+                Description = description.ToString(),
+                Address = address.ToString(),
+                HourlyRate = int.Parse(hourlyRateStr.ToString()),
+                Categories = categoriesStr
+                    .ToString()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList(),
+                Regions = regionsStr
+                    .ToString()
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList(),
+                IsJunior = isJuniorStr.ToString() == "true",
+                IsCompleted = isCompletedStr.ToString() == "true",
+            };
+
+            var userId = GetCurrentUserId();
+
+            await _profileService.EditProfileAsync(userId, profileInput);
 
             return Ok();
         }

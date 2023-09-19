@@ -7,7 +7,9 @@ const apiRoutes = {
     login: 'Auth/Login',
     confirmEmail: 'Auth/ConfirmEmail',
     createProfile: 'Profile/Create',
-    ownProfile: 'Profile/Own'
+    editProfile: 'Profile/Edit',
+    ownProfile: 'Profile/Own',
+    ownProfileDataForEdit: 'Profile/OwnDataForEdit',
 };
 
 export default apiRoutes;
