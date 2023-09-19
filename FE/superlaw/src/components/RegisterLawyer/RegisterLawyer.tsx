@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import City from "../../models/City";
+import City from "../../models/SimpleData";
 import "./RegisterLawyer.scss";
 import { Button } from "react-bootstrap";
 import RegisterLawyerInput from "../../models/inputs/RegisterLawyerInput";

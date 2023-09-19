@@ -33,11 +33,7 @@ const ConfirmEmail = () => {
             
               dispatchRegister(user);
             
-              if (res.data.role === Lawyer){
-                navigate('/profile');
-              } else {
-                navigate('/');
-              }
+              navigate('../profile');
             }
         };
         

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace SuperLaw.Api.Controllers
 {
@@ -8,5 +9,16 @@ namespace SuperLaw.Api.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class ApiController : ControllerBase
     {
+        protected string GetCurrentUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            return userId;
+        }
     }
 }

@@ -1,9 +1,9 @@
 import requester from './requester';
 import apiRoutes from './apiRoutes';
-import City from '../models/City';
+import SimpleData from '../models/SimpleData';
 
-const getCities: () => Promise<City[]> = async () => {
-    let res: City[] = await requester.get(apiRoutes.cities);
+const getCities: () => Promise<SimpleData[]> = async () => {
+    let res: SimpleData[] = await requester.get(apiRoutes.cities);
     
     return res;
 }
