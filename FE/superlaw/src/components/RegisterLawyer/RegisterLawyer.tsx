@@ -60,18 +60,18 @@ const RegisterLawyer = () => {
       return false;
     }
 
-    if (registerForm.cityId === 0){
-      setErrorMessage("Моля изберете град");
-      return false;
-    }
-
     const phoneAndLawyerIdRegex = /[a-zA-Zа-яА-Я]/g;
 
     if (registerForm.lawyerIdNumber === '' || phoneAndLawyerIdRegex.test(registerForm.lawyerIdNumber)){
       setErrorMessage("Личният номер е невалиден");
       return false;
     }
-  
+
+    if (registerForm.cityId === 0){
+      setErrorMessage("Моля изберете град");
+      return false;
+    }
+
     if (registerForm.phone === '' || phoneAndLawyerIdRegex.test(registerForm.phone)){
       setErrorMessage("Телефонът е невалиден");
       return false;

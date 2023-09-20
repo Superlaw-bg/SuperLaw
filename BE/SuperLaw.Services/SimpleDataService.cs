@@ -17,10 +17,10 @@ namespace SuperLaw.Services
         public List<SimpleDto> GetAllCities()
         {
             var result = _context.Cities.Select(x => new SimpleDto
-            {
-                Id = x.Id,
-                Name = x.Name
-            })
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
                 .ToList();
 
             return result;
@@ -41,6 +41,7 @@ namespace SuperLaw.Services
                     Name = x.Name,
                     Description = x.Description
                 })
+                .OrderBy(x => x.Name)
                 .ToList();
 
             return result;

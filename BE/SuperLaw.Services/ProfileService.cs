@@ -28,13 +28,6 @@ namespace SuperLaw.Services
                 throw new BusinessException("Вече имате адвокатски профил в системата");
             }
 
-            var imagePath = string.Empty;
-
-            if (input.Image != null)
-            {
-                imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
-            }
-
             var categories = _context.LegalCategories
                 .Where(x => input.Categories.Contains(x.Id))
                 .ToList();
@@ -42,6 +35,19 @@ namespace SuperLaw.Services
             var regions = _context.JudicialRegions
                 .Where(x => input.Regions.Contains(x.Id))
                 .ToList();
+
+            //If user had selected whole country option
+            if (regions.SingleOrDefault(x => x.Id == 1) != null)
+            {
+                regions = regions.Where(x => x.Id == 1).ToList();
+            }
+
+            var imagePath = string.Empty;
+
+            if (input.Image != null)
+            {
+                imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
+            }
 
             var profile = new LawyerProfile()
             {
@@ -88,6 +94,12 @@ namespace SuperLaw.Services
             var regions = _context.JudicialRegions
                 .Where(x => input.Regions.Contains(x.Id))
                 .ToList();
+
+            //If user had selected whole country option
+            if (regions.SingleOrDefault(x => x.Id == 1) != null)
+            {
+                regions = regions.Where(x => x.Id == 1).ToList();
+            }
 
             if (input.Image != null)
             {
@@ -159,13 +171,17 @@ namespace SuperLaw.Services
                     {
                         Id = x.CategoryId,
                         Name = x.Category.Name
-                    }).ToList(),
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList(),
                 Regions = userLawyerProfile.JudicialRegions
                     .Select(x => new SimpleDto()
                     {
                         Id = x.RegionId,
                         Name = x.Region.Name,
-                    }).ToList(),
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
@@ -193,13 +209,17 @@ namespace SuperLaw.Services
                     {
                         Value = x.CategoryId,
                         Label = x.Category.Name
-                    }).ToList(),
+                    })
+                    .OrderBy(x => x.Label)
+                    .ToList(),
                 Regions = userLawyerProfile.JudicialRegions
                     .Select(x => new FrontEndOptionDto()
                     {
                         Value = x.RegionId,
                         Label = x.Region.Name,
-                    }).ToList(),
+                    })
+                    .OrderBy(x => x.Label)
+                    .ToList(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };

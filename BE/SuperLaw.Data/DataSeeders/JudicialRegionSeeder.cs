@@ -16,41 +16,22 @@ namespace SuperLaw.Data.DataSeeders
             if (_context.JudicialRegions.Any())
                 return;
 
-            var regions = new List<JudicialRegion>()
+            var regions = new List<JudicialRegion>();
+
+            var regionsStr =
+                "Цялата страна, София-град, София-област, Благоевград, Бургас, Варна, Велико Търново, Видин, Враца, Габрово, Добрич, Кюстендил, Кърджали, Ловеч, Монтана, Пазарджик, Перник, Плевен, Пловдив, Разград, Русе, Силистра, Сливен, Смолян Стара Загора, Търговище, Хасково, Шумен, Ямбол";
+
+            var regionsStrings = regionsStr.Split(", ").ToList();
+
+            foreach (var str in regionsStrings)
             {
-                new JudicialRegion()
+                var entity = new JudicialRegion()
                 {
-                    Name = "Софийски"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Пернишки"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Варненски"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Пловдивски"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Шуменски"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Бургаски"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Кюстендилски"
-                },
-                new JudicialRegion()
-                {
-                    Name = "Русенски"
-                },
-            };
+                    Name = str
+                };
+
+                regions.Add(entity);
+            }
 
             _context.JudicialRegions.AddRange(regions);
             _context.SaveChanges();
