@@ -16,41 +16,41 @@ namespace SuperLaw.Data.DataSeeders
             if (_context.LegalCategories.Any())
                 return;
 
-            var categories = new List<LegalCategory>()
+            var categories = new List<LegalCategory>();
+
+            var categoriesStr = new List<string>()
             {
-                new LegalCategory()
-                {
-                    Name = "Наследство"
-                },
-                new LegalCategory()
-                {
-                    Name = "Развод"
-                },
-                new LegalCategory()
-                {
-                    Name = "Недвижимо имущество"
-                },
-                new LegalCategory()
-                {
-                    Name = "Движимо имущество"
-                },
-                new LegalCategory()
-                {
-                    Name = "Физически разправи"
-                },
-                new LegalCategory()
-                {
-                    Name = "Катастрофи"
-                },
-                new LegalCategory()
-                {
-                    Name = "Природни бедствия"
-                },
-                new LegalCategory()
-                {
-                    Name = "Болести"
-                },
+                "Спорове за собственост",
+                "Сключване на сделки",
+                "Предварителни договори",
+                "Договори за кредит",
+                "Принудително изпълнение",
+                "Бракоразводни дела",
+                "Издръжка",
+                "Спорове за наследство",
+                "Брачни договори",
+                "Наказателни постановления, актове, фишове, глоби",
+                "Жалби и сигнали",
+                "Разрешения за строителство",
+                "Обществени поръчки",
+                "Регистрация на фирма",
+                "Търговски спорове",
+                "Несъстоятелност",
+                "Търговски сделки",
+                "Проучвания (Due diligence)",
+                "Данъчно право",
+                "Митническо право"
             };
+
+            foreach (var str in categoriesStr)
+            {
+                var entity = new LegalCategory()
+                {
+                    Name = str
+                };
+
+                categories.Add(entity);
+            }
 
             _context.LegalCategories.AddRange(categories);
             _context.SaveChanges();

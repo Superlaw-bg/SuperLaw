@@ -16,41 +16,22 @@ namespace SuperLaw.Data.DataSeeders
             if (_context.Cities.Any())
                 return;
 
-            var cities = new List<City>()
+            var cities = new List<City>();
+
+            var citiesStr =
+                "София, София-област, Благоевград, Бургас, Варна, Велико Търново, Видин, Враца, Габрово, Добрич, Кюстендил, Кърджали, Ловеч, Монтана, Пазарджик, Перник, Плевен, Пловдив, Разград, Русе, Силистра, Сливен, Смолян Стара Загора, Търговище, Хасково, Шумен, Ямбол";
+
+            var citiesStrings = citiesStr.Split(", ").ToList();
+
+            foreach (var str in citiesStrings)
             {
-                new City()
+                var entity = new City()
                 {
-                    Name = "София град"
-                },
-                new City()
-                {
-                    Name = "София област"
-                },
-                new City()
-                {
-                    Name = "Перник"
-                },
-                new City()
-                {
-                    Name = "Пловдив"
-                },
-                new City()
-                {
-                    Name = "Варна"
-                },
-                new City()
-                {
-                    Name = "Бургас"
-                },
-                new City()
-                {
-                    Name = "Русе"
-                },
-                new City()
-                {
-                    Name = "Плевен"
-                },
-            };
+                    Name = str
+                };
+
+                cities.Add(entity);
+            }
 
             _context.Cities.AddRange(cities);
             _context.SaveChanges();
