@@ -218,7 +218,7 @@ const EditProfile = () => {
           </div>
 
           <div className="form-group selection">
-            <label htmlFor="legalCategory">Юридически райони</label>
+            <label htmlFor="legalCategory">Съдебни райони</label>
             <Select
               isMulti
               name="regions"
