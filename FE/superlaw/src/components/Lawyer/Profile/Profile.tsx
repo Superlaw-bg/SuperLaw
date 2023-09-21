@@ -72,7 +72,7 @@ const Profile = () => {
             <div className='important-info'>
                <div className='sect'>
                   <h3>{profile.fullName}</h3>
-                  <p>{profile.isJunior ? 'Младши адвокат' : 'адвокат'}</p>
+                  <p>{profile.isJunior ? 'Младши адвокат' : 'Адвокат'}</p>
                </div>
 
                 <div className='sect categories'>

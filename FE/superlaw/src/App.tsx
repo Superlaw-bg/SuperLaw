@@ -16,6 +16,7 @@ import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail';
 import isLawyer from './hooks/isLawyer';
 import CreateProfile from './components/Lawyer/CreateProfile/CreateProfile';
 import EditProfile from './components/Lawyer/EditProfile';
+import FindPage from './components/FindPage';
 
 const App: React.FC = () => (
   <>
@@ -32,6 +33,7 @@ const App: React.FC = () => (
               <Route path='/profile' Component={isLawyer(Profile)}/>
               <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
               <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
+              <Route path='/find' Component={FindPage}/>
           </Routes>
           <Footer/>
       </Router>
