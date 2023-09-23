@@ -5,6 +5,8 @@ import legalCategoriesService from "../../services/legalCategoriesService";
 import judicialRegionsService from "../../services/judicialRegionsService";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
+import profileService from "../../services/profileService";
+import LawyerProfile from "../../models/LawyerProfile";
 
 const FindPage = () => {
   const [allCategories, setCategories] = useState([]);
@@ -16,7 +18,7 @@ const FindPage = () => {
     regions: [],
   });
 
-  const [profiles, setProfiles] = useState<any>([]);
+  const [profiles, setProfiles] = useState<LawyerProfile[]>([]);
 
   const onCategorySelect = (
     newValue: any,
@@ -63,10 +65,37 @@ const FindPage = () => {
       setRegions(regionsRes);
     };
 
+    const fetchProfiles = async () => {
+      const res = await profileService.getAll(null, [], []);
+
+      setProfiles(res);
+    };
+
     fetchCategories();
     fetchRegions();
-    setProfiles(profilesTest);
+    fetchProfiles();
   }, []);
+
+  const onInput = (e: any) => {
+    const inputName = e.target.name;
+    const value = e.target.value;
+
+    setSearchForm({
+      ...searchForm,
+      [inputName]: value,
+    });
+  };
+
+  const onSearchSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    const categories = searchForm.categories.map((c: any) => c.value);
+    const regions = searchForm.regions.map((r: any) => r.value);
+    console.log(searchForm);
+    const res = await profileService.getAll(searchForm.name, categories, regions);
+
+    setProfiles(res);
+  }
 
   const orderByNameAsc = () => {
     setProfiles(profiles.slice().sort((a: any, b: any) => {
@@ -108,69 +137,12 @@ const FindPage = () => {
     }));
   };
 
-  let profilesTest = [
-    {
-      id: 1,
-      imgPath: "",
-      fullName: "Костадин Христов Костадинов",
-      isJunior: true,
-      categories: [
-        { id: 1, name: "Категория 1" },
-        { id: 2, name: "Категория 2" },
-        { id: 3, name: "Категория 3" },
-      ],
-      regions: [
-        { id: 1, name: "София" },
-        { id: 2, name: "София-област" },
-        { id: 3, name: "Перник" },
-        { id: 4, name: "Дупница" },
-      ],
-      hourlyRate: 100,
-    },
-    {
-      id: 2,
-      imgPath:
-        "https://res.cloudinary.com/dh0ue97bs/image/upload/v1695208002/profilePics_test/gmifitwl1f8zhayji5fm.jpg",
-      fullName: "Симеон Симеонов Драганов",
-      isJunior: false,
-      categories: [
-        { id: 1, name: "Категория 1" },
-        { id: 2, name: "Категория 2" },
-        { id: 3, name: "Категория 3" },
-        { id: 5, name: "Категория 4" },
-        { id: 6, name: "Категория 5" },
-        { id: 7, name: "Категория 6" },
-      ],
-      regions: [{ id: 1, name: "София" }],
-      hourlyRate: 200,
-    },
-    {
-      id: 3,
-      imgPath:
-        "https://ontolerance.eu/wp-content/uploads/2021/09/Elon-Musk.jpg",
-      fullName: "Асен Петров Петров",
-      isJunior: false,
-      categories: [{ id: 1, name: "Категория 1" }],
-      regions: [
-        { id: 1, name: "София" },
-        { id: 2, name: "Регион 2" },
-        { id: 3, name: "Регион 3" },
-        { id: 4, name: "Регион 4" },
-        { id: 5, name: "Регион 5" },
-        { id: 6, name: "Регион 6" },
-        { id: 7, name: "Регион 7" },
-        { id: 8, name: "Регион 8" },
-      ],
-      hourlyRate: 50,
-    },
-  ];
-
   return (
     <div className="find-page-wrapper">
-      <form className="search">
+      <form className="search" onSubmit={onSearchSubmit}>
         <h3>Намерете адвокат и резервирайте консултация онлайн</h3>
         <div className="form-group search-bar">
-          <input type="text" placeholder="Търси по име..." />
+          <input type="text" placeholder="Търси по име..." name='name' onChange={(e) => onInput(e)}/>
         </div>
 
         <div className="form-group selection">
@@ -213,6 +185,7 @@ const FindPage = () => {
           <span className="sorter" onClick={orderByHourlyRateDesc}>Ставка ↓</span>
         </div>
         <div className="profiles">
+          {profiles.length === 0 && <p className="no-profiles-msg">Съжаляваме, но не намираме адвокати</p>}
           {profiles.map((profile: any) => (
             <div key={profile.id} className="profile">
               <div className="profile-image">

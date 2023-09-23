@@ -250,5 +250,15 @@ namespace SuperLaw.Api.Controllers
 
             return Ok();
         }
+
+        [HttpGet(nameof(GetAll))]
+        public IActionResult GetAll([FromQuery]GetAllProfilesInput input)
+        {
+            var userId = GetCurrentUserId();
+
+            var result = _profileService.GetAll(userId, input);
+
+            return Ok(result);
+        }
     }
 }

@@ -10,6 +10,7 @@ const apiRoutes = {
     editProfile: 'Profile/Edit',
     ownProfile: 'Profile/Own',
     ownProfileDataForEdit: 'Profile/OwnDataForEdit',
+    allProfiles: 'Profile/GetAll'
 };
 
 export default apiRoutes;

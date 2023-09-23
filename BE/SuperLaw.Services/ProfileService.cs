@@ -226,5 +226,70 @@ namespace SuperLaw.Services
 
             return result;
         }
+
+        public List<LawyerProfileDto> GetAll(string userId, GetAllProfilesInput input)
+        {
+            var profiles = _context.LawyerProfiles
+                .Where(x => x.IsCompleted)
+                .Where(x => x.UserId != userId)
+                .Include(x => x.User)
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .Select(x => new LawyerProfileDto()
+                {
+                    Id = x.Id,
+                    FullName = $"{x.User.FirstName} {x.User.Surname} {x.User.LastName}",
+                    ImgPath = x.ImgPath,
+                    Description = x.Info,
+                    Address = x.Address,
+                    HourlyRate = x.HourlyRate,
+                    Phone = x.User.Phone,
+                    IsJunior = x.IsJunior,
+                    Categories = x.LegalCategories.Select(lc => new SimpleDto()
+                    {
+                        Id = lc.CategoryId,
+                        Name = lc.Category.Name,
+                    }).ToList(),
+                    Regions = x.JudicialRegions.Select(r => new SimpleDto()
+                    {
+                        Id = r.RegionId,
+                        Name = r.Region.Name,
+                    }).ToList()
+                })
+                .ToList();
+
+            if (!string.IsNullOrEmpty(input.Name))
+            {
+                profiles = profiles
+                    .Where(x => x.FullName.ToLower().Contains(input.Name.ToLower()))
+                    .ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Categories))
+            {
+                var categoryIds = input.Categories
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+
+               
+            }
+
+            if (!string.IsNullOrEmpty(input.Regions))
+            {
+                var regionIds = input.Regions
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+
+
+            }
+
+            return profiles
+                .OrderBy(x => x.FullName)
+                .ToList();
+        }
     }
 }
