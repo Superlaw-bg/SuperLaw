@@ -10,12 +10,15 @@ import Login from './components/Login';
 import RegisterUser from './components/RegisterUser';
 import InfoPage from './components/InfoPage';
 import RegisterLawyer from './components/RegisterLawyer';
-import Profile from './components/Lawyer/Profile/Profile';
 import isGuest from './hooks/isGuest';
 import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail';
 import isLawyer from './hooks/isLawyer';
 import CreateProfile from './components/Lawyer/CreateProfile/CreateProfile';
 import EditProfile from './components/Lawyer/EditProfile';
+import FindPage from './components/FindPage';
+import OwnProfile from './components/Lawyer/OwnProfile/OwnProfile';
+import isAuth from './hooks/isAuth';
+import Profile from './components/Lawyer/Profile';
 
 const App: React.FC = () => (
   <>
@@ -29,9 +32,11 @@ const App: React.FC = () => (
               <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
               <Route path='/emailConfirm' Component={isGuest(ConfirmEmail)}/>
               <Route path='/info' Component={InfoPage}/>
-              <Route path='/profile' Component={isLawyer(Profile)}/>
+              <Route path='/profile' Component={isLawyer(OwnProfile)}/>
+              <Route path='/profile/:id' Component={isAuth(Profile)}/>
               <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
               <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
+              <Route path='/find' Component={FindPage}/>
           </Routes>
           <Footer/>
       </Router>

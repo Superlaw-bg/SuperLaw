@@ -1,6 +1,40 @@
 @import '../../../style-constants.scss';
 
-.profile-info {
+.create-profile-info{
+    padding: 100px 40px;
+    padding-bottom: 200px;
+
+    .wrapper {
+        width: 50%;
+        text-align: center;
+        margin: 0 auto;
+
+        h2 {
+            margin-bottom: 40px;
+            color: $primary-color;
+        }
+
+        p {
+            color: $primary-color;
+            font-size: 1.4rem;
+        }
+
+        .create-btn{
+            margin-top: 20px;
+            background-color: $primary-color;
+            color: $secondary-color;
+            border: none;
+            font-size: 1.4rem;
+
+            &:hover{
+                color: $primary-color;
+                background-color: $secondary-color;
+            }
+        }
+    } 
+}
+
+.own-profile-info {
     padding: 100px 40px;
     padding-bottom: 200px;
 
@@ -43,10 +77,10 @@
     .additional-info{
         margin-top: 50px;
 
-        .book {
+        .edit-profile {
             margin-top: 50px;
 
-            .book-btn {
+            .btn {
                 background-color: $primary-color;
                 color: $secondary-color;
                 border: none;
@@ -62,8 +96,16 @@
     }
 }
 
+@media (max-width: 1050px) {
+    .create-profile-info {
+        .wrapper {
+            width: 80%;
+        }
+    }
+}
+
 @media (max-width: 900px) {
-    .profile-info {
+    .own-profile-info {
         .header {
             flex-wrap: wrap;
             .profile-image {

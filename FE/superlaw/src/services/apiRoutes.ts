@@ -9,7 +9,9 @@ const apiRoutes = {
     createProfile: 'Profile/Create',
     editProfile: 'Profile/Edit',
     ownProfile: 'Profile/Own',
+    profile: 'Profile/Get',
     ownProfileDataForEdit: 'Profile/OwnDataForEdit',
+    allProfiles: 'Profile/GetAll'
 };
 
 export default apiRoutes;

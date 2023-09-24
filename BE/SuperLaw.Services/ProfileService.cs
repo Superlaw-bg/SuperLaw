@@ -189,6 +189,59 @@ namespace SuperLaw.Services
             return result;
         }
 
+        public async Task<LawyerProfileDto?> GetProfileByIdAsync(int id)
+        {
+            var userLawyerProfile = await _context.LawyerProfiles
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .SingleOrDefaultAsync(x => x.Id == id && x.IsCompleted);
+
+            if (userLawyerProfile == null)
+            {
+                return null;
+            }
+
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == userLawyerProfile.UserId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = new LawyerProfileDto()
+            {
+                Id = userLawyerProfile.Id,
+                ImgPath = userLawyerProfile.ImgPath,
+                FullName = $"{user.FirstName} {user.Surname} {user.LastName}",
+                Description = userLawyerProfile.Info,
+                Address = userLawyerProfile.Address,
+                Phone = $"0{user.Phone}",
+                HourlyRate = userLawyerProfile.HourlyRate,
+                Categories = userLawyerProfile.LegalCategories
+                    .Select(x => new SimpleDto()
+                    {
+                        Id = x.CategoryId,
+                        Name = x.Category.Name
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList(),
+                Regions = userLawyerProfile.JudicialRegions
+                    .Select(x => new SimpleDto()
+                    {
+                        Id = x.RegionId,
+                        Name = x.Region.Name,
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList(),
+                IsCompleted = userLawyerProfile.IsCompleted,
+                IsJunior = userLawyerProfile.IsJunior,
+            };
+
+            return result;
+        }
+
         public async Task<LawyerProfileEditDto> GetOwnProfileDataForEditAsync(string userId)
         {
             var userLawyerProfile = await _context.LawyerProfiles
@@ -225,6 +278,92 @@ namespace SuperLaw.Services
             };
 
             return result;
+        }
+
+        public List<LawyerProfileDto> GetAll(string userId, GetAllProfilesInput input)
+        {
+            var profiles = _context.LawyerProfiles
+                .Where(x => x.IsCompleted)
+                .Where(x => x.UserId != userId)
+                .Include(x => x.User)
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .Select(x => new LawyerProfileDto()
+                {
+                    Id = x.Id,
+                    FullName = $"{x.User.FirstName} {x.User.Surname} {x.User.LastName}",
+                    ImgPath = x.ImgPath,
+                    Description = x.Info,
+                    Address = x.Address,
+                    HourlyRate = x.HourlyRate,
+                    Phone = x.User.Phone,
+                    IsJunior = x.IsJunior,
+                    Categories = x.LegalCategories.Select(lc => new SimpleDto()
+                    {
+                        Id = lc.CategoryId,
+                        Name = lc.Category.Name,
+                    }).ToList(),
+                    Regions = x.JudicialRegions.Select(r => new SimpleDto()
+                    {
+                        Id = r.RegionId,
+                        Name = r.Region.Name,
+                    }).ToList()
+                })
+                .ToList();
+
+            if (!string.IsNullOrEmpty(input.Name))
+            {
+                profiles = profiles
+                    .Where(x => x.FullName.ToLower().Contains(input.Name.ToLower()))
+                    .ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Categories))
+            {
+                var categoryIds = input.Categories
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+
+                foreach (var profile in profiles.ToList())
+                {
+                    var profileCategories = profile.Categories.Select(x => x.Id).ToList();
+
+                    var commonCategories = profileCategories.Intersect(categoryIds).ToList();
+
+                    if (commonCategories.Count == 0)
+                    {
+                        profiles.Remove(profile);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(input.Regions))
+            {
+                var regionIds = input.Regions
+                    .Split(',')
+                    .Select(int.Parse)
+                    .ToList();
+
+                foreach (var profile in profiles.ToList())
+                {
+                    var profileRegions = profile.Regions.Select(x => x.Id).ToList();
+
+                    var commonRegions = profileRegions.Intersect(regionIds).ToList();
+
+                    //Only removes profile if there are no region matches and the profile doesn't have 'whole country' option
+                    if (commonRegions.Count == 0 && profile.Regions.SingleOrDefault(x => x.Name == "Цялата страна") == null)
+                    {
+                        profiles.Remove(profile);
+                    }
+                }
+            }
+
+            return profiles
+                .OrderBy(x => x.FullName)
+                .ToList();
         }
     }
 }

@@ -30,6 +30,20 @@ namespace SuperLaw.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("Get/{id:int}")]
+        public async Task<IActionResult> Get([FromRoute]int id)
+        {
+            var result = await _profileService.GetProfileByIdAsync(id);
+
+            if (result == null)
+            {
+                return Ok();
+            }
+
+            return Ok(result);
+        }
+
         [Authorize(Roles = "Lawyer")]
         [HttpGet(nameof(OwnDataForEdit))]
         public async Task<IActionResult> OwnDataForEdit()
@@ -249,6 +263,16 @@ namespace SuperLaw.Api.Controllers
             await _profileService.EditProfileAsync(userId, profileInput);
 
             return Ok();
+        }
+
+        [HttpGet(nameof(GetAll))]
+        public IActionResult GetAll([FromQuery]GetAllProfilesInput input)
+        {
+            var userId = GetCurrentUserId();
+
+            var result = _profileService.GetAll(userId, input);
+
+            return Ok(result);
         }
     }
 }
