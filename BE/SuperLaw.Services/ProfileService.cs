@@ -274,7 +274,17 @@ namespace SuperLaw.Services
                     .Select(int.Parse)
                     .ToList();
 
-               
+                foreach (var profile in profiles.ToList())
+                {
+                    var profileCategories = profile.Categories.Select(x => x.Id).ToList();
+
+                    var commonCategories = profileCategories.Intersect(categoryIds).ToList();
+
+                    if (commonCategories.Count == 0)
+                    {
+                        profiles.Remove(profile);
+                    }
+                }
             }
 
             if (!string.IsNullOrEmpty(input.Regions))
@@ -284,7 +294,18 @@ namespace SuperLaw.Services
                     .Select(int.Parse)
                     .ToList();
 
+                foreach (var profile in profiles.ToList())
+                {
+                    var profileRegions = profile.Regions.Select(x => x.Id).ToList();
 
+                    var commonRegions = profileRegions.Intersect(regionIds).ToList();
+
+                    //Only removes profile if there are no region matches and the profile doesn't have 'whole country' option
+                    if (commonRegions.Count == 0 && profile.Regions.SingleOrDefault(x => x.Name == "Цялата страна") == null)
+                    {
+                        profiles.Remove(profile);
+                    }
+                }
             }
 
             return profiles
