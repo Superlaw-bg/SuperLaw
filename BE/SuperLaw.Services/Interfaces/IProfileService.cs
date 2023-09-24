@@ -11,6 +11,8 @@ namespace SuperLaw.Services.Interfaces
 
         Task<LawyerProfileDto?> GetOwnProfileAsync(string userId);
 
+        Task<LawyerProfileDto?> GetProfileByIdAsync(int id);
+
         Task<LawyerProfileEditDto> GetOwnProfileDataForEditAsync(string userId);
 
         List<LawyerProfileDto> GetAll(string userId, GetAllProfilesInput input);

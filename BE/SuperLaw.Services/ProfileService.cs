@@ -189,6 +189,59 @@ namespace SuperLaw.Services
             return result;
         }
 
+        public async Task<LawyerProfileDto?> GetProfileByIdAsync(int id)
+        {
+            var userLawyerProfile = await _context.LawyerProfiles
+                .Include(x => x.JudicialRegions)
+                .ThenInclude(x => x.Region)
+                .Include(x => x.LegalCategories)
+                .ThenInclude(x => x.Category)
+                .SingleOrDefaultAsync(x => x.Id == id && x.IsCompleted);
+
+            if (userLawyerProfile == null)
+            {
+                return null;
+            }
+
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == userLawyerProfile.UserId);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = new LawyerProfileDto()
+            {
+                Id = userLawyerProfile.Id,
+                ImgPath = userLawyerProfile.ImgPath,
+                FullName = $"{user.FirstName} {user.Surname} {user.LastName}",
+                Description = userLawyerProfile.Info,
+                Address = userLawyerProfile.Address,
+                Phone = $"0{user.Phone}",
+                HourlyRate = userLawyerProfile.HourlyRate,
+                Categories = userLawyerProfile.LegalCategories
+                    .Select(x => new SimpleDto()
+                    {
+                        Id = x.CategoryId,
+                        Name = x.Category.Name
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList(),
+                Regions = userLawyerProfile.JudicialRegions
+                    .Select(x => new SimpleDto()
+                    {
+                        Id = x.RegionId,
+                        Name = x.Region.Name,
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList(),
+                IsCompleted = userLawyerProfile.IsCompleted,
+                IsJunior = userLawyerProfile.IsJunior,
+            };
+
+            return result;
+        }
+
         public async Task<LawyerProfileEditDto> GetOwnProfileDataForEditAsync(string userId)
         {
             var userLawyerProfile = await _context.LawyerProfiles

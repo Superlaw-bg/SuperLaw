@@ -28,6 +28,12 @@ const getOwnProfileDataForEdit: () => Promise<LawyerProfileForEdit> = async () =
     return res;
 }
 
+const getProfile: (id: number) => Promise<LawyerProfile | null> = async (id) => {
+    const res = await requester.get(`${apiRoutes.profile}/${id}`);
+    
+    return res;
+}
+
 const getAll: (name: string | null, categories: number[], regions: number[]) => Promise<LawyerProfile[]> = async (name, categories, regions) => {
     let path = apiRoutes.allProfiles;
     
@@ -35,7 +41,6 @@ const getAll: (name: string | null, categories: number[], regions: number[]) => 
         path = `${apiRoutes.allProfiles}?name=${name === null ? '' : name}&categories=${categories.join()}&regions=${regions.join()}`;
     }
    
-    console.log(path);
     const res = await requester.get(path);
     
     return res;
@@ -45,6 +50,7 @@ const profileService = {
     createProfile,
     editProfile,
     getOwnProfile,
+    getProfile,
     getOwnProfileDataForEdit,
     getAll
 };

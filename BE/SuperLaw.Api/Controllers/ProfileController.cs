@@ -30,6 +30,20 @@ namespace SuperLaw.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("Get/{id:int}")]
+        public async Task<IActionResult> Get([FromRoute]int id)
+        {
+            var result = await _profileService.GetProfileByIdAsync(id);
+
+            if (result == null)
+            {
+                return Ok();
+            }
+
+            return Ok(result);
+        }
+
         [Authorize(Roles = "Lawyer")]
         [HttpGet(nameof(OwnDataForEdit))]
         public async Task<IActionResult> OwnDataForEdit()

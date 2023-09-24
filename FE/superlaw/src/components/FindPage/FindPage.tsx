@@ -7,8 +7,10 @@ import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
 import profileService from "../../services/profileService";
 import LawyerProfile from "../../models/LawyerProfile";
+import { useNavigate } from "react-router-dom";
 
 const FindPage = () => {
+  const navigate = useNavigate();
   const [allCategories, setCategories] = useState([]);
   const [allRegions, setRegions] = useState([]);
 
@@ -137,6 +139,10 @@ const FindPage = () => {
     }));
   };
 
+  const redirectToProfile = (profileId: string) => {
+    navigate(`/profile/${profileId}`);
+  };
+
   return (
     <div className="find-page-wrapper">
       <form className="search" onSubmit={onSearchSubmit}>
@@ -224,7 +230,7 @@ const FindPage = () => {
                 <div className="sect">
                   <p className="bold">Часова ставка: {profile.hourlyRate}лв</p>
                 </div>
-                <Button className="primary-btn">Запази час</Button>
+                <Button onClick={() => redirectToProfile(profile.id)} className="primary-btn">Запази час</Button>
               </div>
             </div>
           ))}
