@@ -3,6 +3,8 @@ const getApiBaseUrl = () => {
 
     if (process.env.NODE_ENV === 'development') {
         url = 'https://localhost:44350/api/';
+    } else {
+        url = 'https://superlawapi.azurewebsites.net/api/';
     }
 
     return url;
