@@ -83,6 +83,7 @@ builder.Services.AddTransient<EmailService>();
 builder.Services.AddTransient<ISimpleDataService, SimpleDataService>();
 builder.Services.AddTransient<IFileUploadService, FileUploadService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 
