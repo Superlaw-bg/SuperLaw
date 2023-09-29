@@ -1,7 +1,7 @@
 @import '../../style-constants.scss';
 
 .cta-lawyer{
-    padding: 24rem 8rem;
+    padding: 10rem 8rem;
     color: $white;
     position: relative;
     text-align: center;
@@ -63,13 +63,14 @@
 
 
 @media (max-width: 900px) {
-    .cta{
-        padding: 24rem 0.2rem;
+    .cta-lawyer{
+        padding: 5rem 2rem;
 
         h4,p {
             z-index: 2;
             width: 100%;
             margin: 0;
+            font-size: 2rem;
         }
     }
 }
