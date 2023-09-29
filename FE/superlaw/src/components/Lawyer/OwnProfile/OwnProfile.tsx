@@ -110,6 +110,92 @@ const OwnProfile = () => {
               <p>{profile.description}</p>    
             </div>
 
+            <div className='schedule'>
+                <p className='bold header'>График:</p>
+                <div className='day monday'>
+                  <div className='day-name'>
+                    <p className='bold'>Понеделник</p>
+                  </div>
+                  <div className='time-slots'>
+                    <p>9:00 - 10:00</p>
+                    <p>10:00 - 11:00</p>
+                    <p>11:00 - 12:00</p>
+                    <p>13:00 - 14:00</p>
+                    <p>14:00 - 15:00</p>
+                    <p>15:00 - 16:00</p>
+                    <p>16:00 - 17:00</p>
+                    <p>17:00 - 18:00</p>
+                  </div>
+                </div>
+                <hr />
+                <div className='day tuesday'>
+                  <div className='day-name'>
+                    <p className='bold'>Вторник</p>
+                  </div>
+                  <div className='time-slots'>
+                    <p>9:00 - 11:00</p>
+                    <p>11:00 - 13:00</p>
+                    <p>15:00 - 17:00</p>
+                  </div>
+                </div>
+                <hr />
+                <div className='day wednesday'>
+                  <div className='day-name'>
+                    <p className='bold'>Сряда</p>
+                  </div>
+                  <div className='time-slots'>
+                    <p>9:00 - 10:00</p>
+                    <p>10:00 - 11:00</p>
+                    <p>11:00 - 12:00</p>
+                    <p>13:00 - 14:00</p>
+                  </div>
+                </div>
+                <hr />
+                <div className='day thursday'>
+                  <div className='day-name'>
+                    <p className='bold'>Четвъртък</p>
+                  </div>
+                  <div className='time-slots'>
+                    <p>9:00 - 9:30</p>
+                    <p>9:30 - 10:00</p>
+                    <p>10:00 - 10:30</p>
+                    <p>11:00 - 11:30</p>
+                    <p>11:30 - 12:00</p>
+                    <p>12:00 - 12:30</p>
+                    <p>13:00 - 13:30</p>
+                  </div>
+                </div>
+                <hr />
+                <div className='day friday'>
+                  <div className='day-name'>
+                    <p className='bold'>Петък</p>
+                  </div>
+                  <div className='time-slots'>
+                  </div>
+                </div>
+                <hr />
+                <div className='day saturday'>
+                  <div className='day-name'>
+                    <p className='bold'>Събота</p>
+                  </div>
+                  <div className='time-slots'>
+                    <p>9:00 - 10:00</p>
+                    <p>10:00 - 11:00</p>
+                    <p>11:00 - 12:00</p>
+                    <p>13:00 - 14:00</p>
+                  </div>
+                </div>
+                <hr />
+                <div className='day sunday'>
+                  <div className='day-name'>
+                    <p className='bold'>Неделя</p>
+                  </div>
+                  <div className='time-slots'>
+                  </div>
+                </div>
+                <hr />
+            </div>
+
             <div className='edit-profile'>
               <Button className='edit-btn' variant='primary' onClick={onEditClick}>Редактирай</Button>
             </div>

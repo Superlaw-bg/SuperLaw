@@ -1,7 +1,7 @@
 @import '../../../style-constants.scss';
 
 .create-profile-info{
-    padding: 100px 40px;
+    padding: 5rem 40px;
     padding-bottom: 200px;
 
     .wrapper {
@@ -35,12 +35,14 @@
 }
 
 .own-profile-info {
-    padding: 100px 40px;
+    padding: 5rem 40px;
     padding-bottom: 200px;
 
     color: $primary-color;
     font-size: 1.2rem;
-
+    .bold {
+        font-weight: bold;
+    }
     .sect {
         margin-bottom: 30px;
 
@@ -48,9 +50,7 @@
             margin-bottom: 0px;
         }
 
-        .bold {
-            font-weight: bold;
-        }
+       
     }
 
     .header {
@@ -76,6 +76,45 @@
 
     .additional-info{
         margin-top: 50px;
+
+        .schedule {
+            display: flex;
+            flex-wrap: wrap;
+
+            .header {
+                margin: 0 auto;
+                margin-bottom: 10px;
+            }
+
+            .day {
+                flex: 0 0 100%;
+                display: flex;
+                flex-wrap: nowrap;
+
+                .day-name {
+                    flex: 0 0 20%;
+                }
+
+                .time-slots {
+                    flex: 0 0 70%;
+                    display: flex;
+                    flex-wrap: wrap;
+
+                    p{
+                        flex: 0 0 20%;
+                        margin-bottom: 0px;
+                        text-align: center;
+                        margin-bottom: 3px;
+                    }
+                }
+
+            }
+
+            hr {
+                color: black;
+                width: 100%;
+            }
+        }
 
         .edit-profile {
             margin-top: 50px;
@@ -111,6 +150,32 @@
             .profile-image {
                 flex: 0 0 80%;
                 margin-bottom: 50px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .own-profile-info {
+        .additional-info {
+            
+            .schedule {
+                
+                .day {
+                    flex-wrap: wrap;
+                    .day-name {
+                        flex: 0 0 100%;
+                    }
+
+                    .time-slots {
+                        flex: 0 0 100%;
+
+                        p {
+                            flex: none;
+                            margin: 0px 5px;
+                        }
+                    }
+                }
             }
         }
     }
