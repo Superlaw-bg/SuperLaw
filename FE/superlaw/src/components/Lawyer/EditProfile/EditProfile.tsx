@@ -25,6 +25,15 @@ const EditProfile = () => {
     address: "",
     categories: [],
     regions: [],
+    schedule: {
+      monday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+      saturday: [],
+      sunday: []
+    },
     isJunior: false,
     isCompleted: false,
   });
@@ -153,7 +162,7 @@ const EditProfile = () => {
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
-
+   
     if (!isDataValid()){
       return;
     }
