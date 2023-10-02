@@ -11,6 +11,8 @@ namespace SuperLaw.Services.Input
         public List<int> Categories { get; set; }
         public List<int> Regions { get; set; }
 
+        public ScheduleInput Schedule { get; set; }
+
         public bool IsJunior { get; set; }
         public bool IsCompleted { get; set; }
     }
