@@ -29,6 +29,8 @@ namespace SuperLaw.Data
 
         public DbSet<LawyerProfileJudicialRegion> LawyerProfilesJudicialRegions { get; set; }
 
+        public DbSet<TimeSlot> TimeSlots { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
