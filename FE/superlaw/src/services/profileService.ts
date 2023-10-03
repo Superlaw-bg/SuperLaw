@@ -49,7 +49,7 @@ const getAll: (name: string | null, categories: number[], regions: number[]) => 
     return res;
 }
 
-const getScheduleForDay = (dayOfWeek: string, schedule: ScheduleInput) => {
+const getScheduleForDayStr = (dayOfWeek: string, schedule: ScheduleInput) => {
     let scheduleForDay = schedule.monday;
     
     switch(dayOfWeek){
@@ -77,6 +77,39 @@ const getScheduleForDay = (dayOfWeek: string, schedule: ScheduleInput) => {
     }
 
     return scheduleForDay;
+}
+
+const getScheduleForDay = (dayOfWeek: number, schedule: ScheduleInput) => {
+  let scheduleForDay = schedule.sunday;
+  
+  switch(dayOfWeek){
+    case 1:
+      scheduleForDay = schedule.monday;
+      break;
+    case 2:
+      scheduleForDay = schedule.tuesday;
+      break;
+    case 3:
+      scheduleForDay = schedule.wednesday;
+      break;
+    case 4:
+      scheduleForDay = schedule.thursday;
+      break;
+    case 5:
+      scheduleForDay = schedule.friday;
+      break;
+    case 6:
+      scheduleForDay = schedule.saturday;
+      break;
+    case 7:
+      scheduleForDay = schedule.sunday;
+      break;
+    default:
+      scheduleForDay = schedule.sunday;
+      break;
+  }
+
+  return scheduleForDay;
 }
 
 const validateTimeSlot = (from: string, to: string) => {
@@ -172,6 +205,7 @@ const profileService = {
     getProfile,
     getOwnProfileDataForEdit,
     getAll,
+    getScheduleForDayStr,
     getScheduleForDay,
     validateTimeSlot,
     validateTimeSlotsInDay

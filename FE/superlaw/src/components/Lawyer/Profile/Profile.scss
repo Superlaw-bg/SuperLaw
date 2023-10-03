@@ -1,7 +1,7 @@
 @import '../../../style-constants.scss';
 
 .profile-info {
-    padding: 100px 40px;
+    padding: 10rem 4rem;
     padding-bottom: 200px;
 
     color: $primary-color;
@@ -43,22 +43,73 @@
     .additional-info{
         margin-top: 50px;
 
-        .book {
-            margin-top: 50px;
+        .book-calendar {
+            width: 50%;
+            margin: 0 auto;
 
-            .book-btn {
-                background-color: $primary-color;
-                color: $secondary-color;
-                border: none;
-                font-size: 1.2rem;
-              
-                &:hover{
-                  color: $primary-color;
-                  background-color: $secondary-color;
+            .react-calendar {
+                margin: 0 auto;
+            }
+
+            .time-slots {
+                width: 50%;
+                margin: 0 auto;
+                margin-top: 1rem;
+
+                .time-slot{
+                    margin-bottom: 0px;
+                    text-align: center;
+                    margin-bottom: 3px;
+                    border: 1px solid $primary-color;
+                    border-radius: 10px;
+                    margin-bottom: 1rem;
+  
+                    p {
+                      margin-bottom: 0px;
+                    }
+                
+                    &:hover{
+                        cursor: pointer;
+                        background-color: $primary-color;
+                        color: $secondary-color;
+                    }
+
+                    &.selected {
+                        background-color: $primary-color;
+                        color: $secondary-color;
+                    }
                 }
             }
+
+            form {
+                width: 50%;
+                margin: 0 auto;
+                margin-top: 50px;
+
+                select {
+                    width: 100%;
+                    margin-bottom: 1rem;
+                }
+
+                .btn-wrapper {
+                    text-align: center;
+
+                    .book-btn {
+                        margin-top: 2rem;
+                        background-color: $primary-color;
+                        color: $secondary-color;
+                        border: none;
+                        font-size: 1.2rem;
+                      
+                        &:hover{
+                          color: $primary-color;
+                          background-color: $secondary-color;
+                        }
+                    }
+                }
+                
+            }
         }
-       
     }
 }
 
@@ -69,6 +120,42 @@
             .profile-image {
                 flex: 0 0 80%;
                 margin-bottom: 50px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .profile-info {
+        .additional-info {
+            .book-calendar{
+                width: 80%;
+
+                .time-slots{
+                    width: 100%;
+                }
+
+                form{
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-info {
+        .additional-info {
+            .book-calendar{
+                width: 100%;
+
+                .react-calendar{
+                    width: 100%;
+                }
+
+                form{
+                    width: 100%;
+                }
             }
         }
     }

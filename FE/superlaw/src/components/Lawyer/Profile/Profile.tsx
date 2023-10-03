@@ -5,9 +5,25 @@ import profileService from "../../../services/profileService";
 import LawyerProfile from "../../../models/LawyerProfile";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../../assets/no-profile-picture-256.png";
+import Calendar, { TileDisabledFunc } from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import moment from"moment";
+import { TileArgs } from "react-calendar/dist/cjs/shared/types";
+import TimeSlotInput from "../../../models/inputs/TimeSlotInput";
 
 const Profile = () => {
     const params = useParams();
+
+    type ValuePiece = Date | null;
+
+    type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+    const todayDate = moment().toDate();
+    const maxDate = moment().add(1, 'M').toDate();
+
+    const [selectedDate, setSelectedDate] = useState<Value>(null);
+    const [timeSlotOptions, setTimeSlotOptions] = useState<TimeSlotInput[]>([]);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlotInput>();
 
     const [profile, setProfile] = useState<LawyerProfile>({
         id: -1,
@@ -43,7 +59,43 @@ const Profile = () => {
         const profileId = Number(params.id);
 
         fetchProfile(profileId);
+        console.log(profile);
       }, []);
+
+    const onDateSelect = (date: any) => {
+      const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
+
+      let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
+
+      if (timeSlotsSelectedElem) {
+        timeSlotsSelectedElem.classList.remove("selected");
+      }
+      
+      setSelectedDate(date);
+      setTimeSlotOptions(timeSlots);
+    }
+
+    const onSlotSelect = (event: any, slot: any) => {
+      let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
+
+      if (timeSlotsSelectedElem) {
+        timeSlotsSelectedElem.classList.remove("selected");
+      }
+
+      const slotDiv = event.target.parentElement;
+      slotDiv.classList.add("selected");
+      setSelectedTimeSlot(slot);
+    }  
+
+    const isDayDisabled: TileDisabledFunc = ({ activeStartDate, date, view }: TileArgs) => {
+      const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
+
+      if (timeSlots.length !== 0){
+        return false;
+      }
+
+      return true;
+    }
 
     return (
         <div className='profile-info'>
@@ -92,9 +144,65 @@ const Profile = () => {
             <p>{profile.description}</p>    
           </div>
 
-          <div className="book">
-            <Button className="book-btn" variant='primary'>Запази час</Button>
+          <div className="book-calendar">
+            <Calendar 
+              onChange={onDateSelect}
+              value={selectedDate}
+              defaultView="month"
+              minDetail="month"
+              maxDetail="month"
+              next2Label={null}
+              prev2Label={null}
+              minDate={todayDate}
+              maxDate={maxDate}
+              tileDisabled={isDayDisabled}
+            />
+             {selectedDate &&
+              <div className="time-slots">
+                {timeSlotOptions.map((timeSlot, ind) => 
+                  <div className='time-slot' key={ind} onClick={(e) => onSlotSelect(e, timeSlot)}>
+                    <p>{timeSlot.from} - {timeSlot.to}</p>
+                  </div>
+                )}
+              </div>
+                
+             }
+             {selectedTimeSlot && 
+              <form className="book-form">
+                <div className="form-group selection">
+                  <label htmlFor="category">Категория</label>
+                  <select className="form-select" name="category">
+                    <option selected disabled defaultValue="none">
+                      Моля, изберете категория
+                    </option>
+                    {profile.categories.map((cat) => 
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    )}
+                  </select>
+                </div>
+                <div className="form-group selection">
+                  <label htmlFor="region">Град</label>
+                  <select className="form-select" name="category">
+                    <option selected disabled defaultValue="none">
+                      Моля, изберете град
+                    </option>
+                    {profile.regions.map((r) => 
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                    )}
+                  </select>
+                </div>
+                  <div className="form-group">
+                    <label htmlFor="info">Повече информация</label>
+                    <textarea id="info" className="form-control" name="info" placeholder='Информация относно казуса' rows={4}/>
+                  </div>
+                  <div className="btn-wrapper">
+                    <Button className="book-btn" variant='primary'>Запази час</Button>
+                  </div>
+              </form>
+             }
           </div>
+
+          
         </div>
       </div>
     );

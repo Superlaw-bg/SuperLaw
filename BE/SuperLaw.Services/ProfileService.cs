@@ -286,6 +286,7 @@ namespace SuperLaw.Services
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
+                .Include(x => x.TimeSlots)
                 .SingleOrDefaultAsync(x => x.Id == id && x.IsCompleted);
 
             if (userLawyerProfile == null)
@@ -328,6 +329,8 @@ namespace SuperLaw.Services
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
+
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
 
             return result;
         }

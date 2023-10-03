@@ -134,7 +134,7 @@ const EditProfile = () => {
 
   const onTimeSlotDelete = (dayOfWeek: string, index: number) => {
 
-    let schedule = profileService.getScheduleForDay(dayOfWeek, profile.schedule);
+    let schedule = profileService.getScheduleForDayStr(dayOfWeek, profile.schedule);
 
     schedule.splice(index, 1);
 
@@ -165,7 +165,7 @@ const EditProfile = () => {
       return;
     }
     
-    let scheduleForDay = profileService.getScheduleForDay(dayOfWeek, profile.schedule);
+    let scheduleForDay = profileService.getScheduleForDayStr(dayOfWeek, profile.schedule);
 
     const errMsg = profileService.validateTimeSlotsInDay(from, to, scheduleForDay);
 
