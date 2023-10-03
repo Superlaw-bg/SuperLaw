@@ -91,7 +91,6 @@ using var serviceScope = app.Services.CreateScope();
 
 using var context = serviceScope.ServiceProvider.GetRequiredService<SuperLawDbContext>();
 
-context.Database.EnsureCreated();
 context.Database.Migrate();
 
 new RoleSeeder(context).Run();
