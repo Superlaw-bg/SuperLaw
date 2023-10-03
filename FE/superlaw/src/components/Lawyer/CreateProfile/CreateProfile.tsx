@@ -234,7 +234,7 @@ const CreateProfile = () => {
     formData.append('schedule', JSON.stringify(profile.schedule));
     formData.append('isJunior', profile.isJunior.toString());
     formData.append('isCompleted', profile.isCompleted.toString());
-    console.log(JSON.stringify(profile.schedule));
+    
     const res = await profileService.createProfile(formData);
 
     if(!res.isError){
@@ -333,7 +333,7 @@ const CreateProfile = () => {
                       <span>От: </span>
                       <input type="time" className='from' />
                       <span>До: </span>
-                      <input type="time"/>
+                      <input type="time" className='to'/>
                       <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Tuesday)}>✓</span>
                     </div>
                     {scheduleErrorMessages.tuesday && 

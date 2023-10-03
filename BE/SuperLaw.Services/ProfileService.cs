@@ -2,6 +2,7 @@
 using SuperLaw.Common;
 using SuperLaw.Data;
 using SuperLaw.Data.Models;
+using SuperLaw.Data.Models.Enums;
 using SuperLaw.Services.DTO;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
@@ -49,6 +50,8 @@ namespace SuperLaw.Services
                 imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
             }
 
+            var timeSlots = GetProfileTimeSlots(input);
+
             var profile = new LawyerProfile()
             {
                 UserId = userId,
@@ -66,11 +69,84 @@ namespace SuperLaw.Services
                 {
                     RegionId = x.Id,
                 }).ToList(),
+                TimeSlots = timeSlots,
                 CompletedOn = input.IsCompleted ? DateTime.UtcNow : DateTime.MinValue
             };
 
             await _context.LawyerProfiles.AddAsync(profile);
+
             await _context.SaveChangesAsync();
+        }
+
+        private List<TimeSlot> GetProfileTimeSlots(CreateProfileInput input)
+        {
+            var timeSlots = new List<TimeSlot>();
+
+            for (var i = 1; i <= 7; i++)
+            {
+                var timeSlotsForTheDay = input.Schedule.Monday;
+                var dayOfWeek = DayEnum.Monday;
+
+                switch (i)
+                {
+                    case 1:
+                        timeSlotsForTheDay = input.Schedule.Monday;
+                        dayOfWeek = DayEnum.Monday;
+                        break;
+                    case 2:
+                        timeSlotsForTheDay = input.Schedule.Tuesday;
+                        dayOfWeek = DayEnum.Tuesday;
+                        break;
+                    case 3:
+                        timeSlotsForTheDay = input.Schedule.Wednesday;
+                        dayOfWeek = DayEnum.Wednesday;
+                        break;
+                    case 4:
+                        timeSlotsForTheDay = input.Schedule.Thursday;
+                        dayOfWeek = DayEnum.Thursday;
+                        break;
+                    case 5:
+                        timeSlotsForTheDay = input.Schedule.Friday;
+                        dayOfWeek = DayEnum.Friday;
+                        break;
+                    case 6:
+                        timeSlotsForTheDay = input.Schedule.Saturday;
+                        dayOfWeek = DayEnum.Saturday;
+                        break;
+                    case 7:
+                        timeSlotsForTheDay = input.Schedule.Sunday;
+                        dayOfWeek = DayEnum.Sunday;
+                        break;
+                }
+
+                for (var j = 0; j < timeSlotsForTheDay.ToList().Count; j++)
+                {
+                    var timeSlotDto = timeSlotsForTheDay[j];
+
+                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
+                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
+
+                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
+                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
+
+                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, dayOfWeek);
+
+                    var otherTimeSlots = timeSlotsForTheDay.Where((x, index) => index != j).ToList();
+
+                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, dayOfWeek);
+
+                    var timeSlot = new TimeSlot()
+                    {
+                        From = new TimeSpan(fromHours, fromMinutes, 0),
+                        To = new TimeSpan(toHours, toMinutes, 0),
+                        DayOfWeek = dayOfWeek
+                    };
+
+                    timeSlots.Add(timeSlot);
+                }
+            }
+
+            return timeSlots;
         }
 
         public async Task EditProfileAsync(string userId, CreateProfileInput input)
@@ -364,6 +440,72 @@ namespace SuperLaw.Services
             return profiles
                 .OrderBy(x => x.FullName)
                 .ToList();
+        }
+
+        private void ValidateTimeSlot(int fromHours, int fromMinutes, int toHours, int toMinutes, DayEnum day) 
+        {
+            var todayDate = DateTime.Now;
+
+            var newFrom = new DateTime(todayDate.Year, todayDate.Month, todayDate.Day, fromHours, fromMinutes, 0);
+            var newTo = new DateTime(todayDate.Year, todayDate.Month, todayDate.Day, toHours, toMinutes, 0);
+
+            var newFromTime = newFrom.Ticks;
+            var newToTime = newTo.Ticks;
+
+            //Check if time slot is valid
+            if (newFromTime >= newToTime) {
+                throw new BusinessException($"{day}: Началният час не може да е след крайния");
+            }
+
+            //Check if from time is valid
+            if (fromHours is >= 21 or < 6) {
+                throw new BusinessException($"{day}: Началният час трябва да е между 6 и 21");
+            }
+  
+            //Check if to time is valid
+            if (toHours is >= 22 or < 6) {
+                throw new BusinessException($"{day}: Крайният час трябва да е между 6 и 22");
+            }
+
+            var minuteDiffBetweenToAndFrom = Math.Abs((newFrom.Minute + (newFrom.Hour * 60)) - (newTo.Minute + (newTo.Hour * 60)));
+            //Check for minute diffs if its more than 2 hours
+            if (minuteDiffBetweenToAndFrom > 120)
+            {
+                throw new BusinessException($"{day}: Не може да е повече от 2 часа");
+            }
+
+            //Check for minute diffs if its less than half hour
+            if (minuteDiffBetweenToAndFrom < 30)
+            {
+                throw new BusinessException($"{day}: Не може да е по-малко от половин час");
+            }
+        }
+
+        private void ValidateTimeSlotsInDay(int fromHours, int fromMinutes, int toHours, int toMinutes, List<TimeSlotDto> timeSlots, DayEnum day)
+        {
+            var todayDate = DateTime.Now;
+
+            var newFrom = new DateTime(todayDate.Year, todayDate.Month, todayDate.Day, fromHours, fromMinutes, 0);
+            var newTo = new DateTime(todayDate.Year, todayDate.Month, todayDate.Day, toHours, toMinutes, 0);
+
+            for (var i = 0; i < timeSlots.Count; i++)
+            {
+                var timeSlot = timeSlots[i];
+
+                var timeSlotFromHours = int.Parse(timeSlot.From.Split(':')[0]);
+                var timeSlotFromMinutes = int.Parse(timeSlot.From.Split(':')[1]);
+
+                var timeSlotToHours = int.Parse(timeSlot.To.Split(':')[0]);
+                var timeSlotToMinutes = int.Parse(timeSlot.To.Split(':')[1]);
+
+                var timeSlotFrom = new DateTime(todayDate.Year, todayDate.Month, todayDate.Day, timeSlotFromHours, timeSlotFromMinutes, 0);
+                var timeSlotTo = new DateTime(todayDate.Year, todayDate.Month, todayDate.Day, timeSlotToHours, timeSlotToMinutes, 0);
+
+                if (timeSlotFrom < newTo && newFrom < timeSlotTo)
+                {
+                    throw new BusinessException($"{day}: Застъпват се");
+                }
+            }
         }
     }
 }
