@@ -274,7 +274,7 @@ namespace SuperLaw.Services
                 IsJunior = userLawyerProfile.IsJunior,
             };
 
-            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.ToList(), result);
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
 
             return result;
         }
@@ -368,7 +368,7 @@ namespace SuperLaw.Services
                 IsJunior = userLawyerProfile.IsJunior,
             };
 
-            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.ToList(), result);
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
 
             return result;
         }

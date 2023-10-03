@@ -161,9 +161,8 @@ const validateTimeSlotsInDay = (from: string, to: string, scheduleForDay: TimeSl
 
           return msg;
         }
-
-        return null;
-      }
+    }
+    return null;
 }
 
 const profileService = {
