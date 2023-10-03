@@ -156,6 +156,7 @@ namespace SuperLaw.Services
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
+                .Include(x => x.TimeSlots)
                 .SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (profile == null)
@@ -208,6 +209,15 @@ namespace SuperLaw.Services
                 profile.CompletedOn = DateTime.UtcNow;
             }
 
+            var profileTimeSlots = _context.TimeSlots
+                .Where(x => x.ProfileId == profile.Id)
+                .ToList();
+            
+            _context.TimeSlots.RemoveRange(profileTimeSlots);
+
+            var timeSlots = GetProfileTimeSlots(input);
+            profile.TimeSlots = timeSlots;
+
             _context.LawyerProfiles.Update(profile);
             await _context.SaveChangesAsync();
         }
@@ -219,6 +229,7 @@ namespace SuperLaw.Services
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
+                .Include(x => x.TimeSlots)
                 .SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (userLawyerProfile == null)
@@ -258,9 +269,12 @@ namespace SuperLaw.Services
                     })
                     .OrderBy(x => x.Name)
                     .ToList(),
+                Schedule = new ScheduleDto(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
+
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.ToList(), result);
 
             return result;
         }
@@ -325,6 +339,7 @@ namespace SuperLaw.Services
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
+                .Include(x => x.TimeSlots)
                 .SingleAsync(x => x.UserId == userId);
 
             var result = new LawyerProfileEditDto()
@@ -352,6 +367,8 @@ namespace SuperLaw.Services
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
+
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.ToList(), result);
 
             return result;
         }
@@ -504,6 +521,60 @@ namespace SuperLaw.Services
                 if (timeSlotFrom < newTo && newFrom < timeSlotTo)
                 {
                     throw new BusinessException($"{day}: Застъпват се");
+                }
+            }
+        }
+
+        private void SetScheduleForProfileDto(List<TimeSlot> timeSlots, LawyerProfileBaseDto dto)
+        {
+            foreach (var timeSlot in timeSlots)
+            {
+                var fromStr = $"{timeSlot.From.Hours}:{timeSlot.From.Minutes}";
+                var toStr = $"{timeSlot.To.Hours}:{timeSlot.To.Minutes}";
+
+                if (timeSlot.From.Minutes < 10)
+                {
+                    fromStr = $"{timeSlot.From.Hours}:0{timeSlot.From.Minutes}";
+                }
+
+                if (timeSlot.To.Minutes < 10)
+                {
+                    toStr = $"{timeSlot.To.Hours}:0{timeSlot.To.Minutes}";
+                }
+
+                var timeSlotDto = new TimeSlotDto()
+                {
+                    From = fromStr,
+                    To = toStr
+                };
+
+                if (timeSlot.DayOfWeek == DayEnum.Monday)
+                {
+                    dto.Schedule.Monday.Add(timeSlotDto);
+                }
+                else if (timeSlot.DayOfWeek == DayEnum.Tuesday)
+                {
+                    dto.Schedule.Tuesday.Add(timeSlotDto);
+                }
+                else if (timeSlot.DayOfWeek == DayEnum.Wednesday)
+                {
+                    dto.Schedule.Wednesday.Add(timeSlotDto);
+                }
+                else if (timeSlot.DayOfWeek == DayEnum.Thursday)
+                {
+                    dto.Schedule.Thursday.Add(timeSlotDto);
+                }
+                else if (timeSlot.DayOfWeek == DayEnum.Friday)
+                {
+                    dto.Schedule.Friday.Add(timeSlotDto);
+                }
+                else if (timeSlot.DayOfWeek == DayEnum.Saturday)
+                {
+                    dto.Schedule.Saturday.Add(timeSlotDto);
+                }
+                else if (timeSlot.DayOfWeek == DayEnum.Sunday)
+                {
+                    dto.Schedule.Sunday.Add(timeSlotDto);
                 }
             }
         }

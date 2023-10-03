@@ -1,8 +1,6 @@
-﻿using SuperLaw.Services.DTO;
-
-namespace SuperLaw.Services.Input
+﻿namespace SuperLaw.Services.DTO
 {
-    public class ScheduleInput
+    public class ScheduleDto
     {
         public List<TimeSlotDto> Monday { get; set; } = new List<TimeSlotDto>();
 

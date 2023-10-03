@@ -19,6 +19,15 @@ const OwnProfile = () => {
     address: '',
     categories: [],
     regions: [],
+    schedule: {
+      monday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+      saturday: [],
+      sunday: []
+    },
     isJunior: false,
     isCompleted: false
   });
@@ -27,6 +36,7 @@ const OwnProfile = () => {
     const fetchProfile = async () => {
         const res = await profileService.getOwnProfile();
         if (res !== null){
+          console.log(res);
           setProfile(res);
         }
     };
@@ -117,14 +127,9 @@ const OwnProfile = () => {
                     <p className='bold'>Понеделник</p>
                   </div>
                   <div className='time-slots'>
-                    <p>9:00 - 10:00</p>
-                    <p>10:00 - 11:00</p>
-                    <p>11:00 - 12:00</p>
-                    <p>13:00 - 14:00</p>
-                    <p>14:00 - 15:00</p>
-                    <p>15:00 - 16:00</p>
-                    <p>16:00 - 17:00</p>
-                    <p>17:00 - 18:00</p>
+                  {profile.schedule.monday && profile.schedule.monday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -133,9 +138,9 @@ const OwnProfile = () => {
                     <p className='bold'>Вторник</p>
                   </div>
                   <div className='time-slots'>
-                    <p>9:00 - 11:00</p>
-                    <p>11:00 - 13:00</p>
-                    <p>15:00 - 17:00</p>
+                  {profile.schedule.tuesday && profile.schedule.tuesday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -144,10 +149,9 @@ const OwnProfile = () => {
                     <p className='bold'>Сряда</p>
                   </div>
                   <div className='time-slots'>
-                    <p>9:00 - 10:00</p>
-                    <p>10:00 - 11:00</p>
-                    <p>11:00 - 12:00</p>
-                    <p>13:00 - 14:00</p>
+                  {profile.schedule.wednesday && profile.schedule.wednesday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -156,13 +160,9 @@ const OwnProfile = () => {
                     <p className='bold'>Четвъртък</p>
                   </div>
                   <div className='time-slots'>
-                    <p>9:00 - 9:30</p>
-                    <p>9:30 - 10:00</p>
-                    <p>10:00 - 10:30</p>
-                    <p>11:00 - 11:30</p>
-                    <p>11:30 - 12:00</p>
-                    <p>12:00 - 12:30</p>
-                    <p>13:00 - 13:30</p>
+                  {profile.schedule.thursday && profile.schedule.thursday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -171,6 +171,9 @@ const OwnProfile = () => {
                     <p className='bold'>Петък</p>
                   </div>
                   <div className='time-slots'>
+                  {profile.schedule.friday && profile.schedule.friday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -179,10 +182,9 @@ const OwnProfile = () => {
                     <p className='bold'>Събота</p>
                   </div>
                   <div className='time-slots'>
-                    <p>9:00 - 10:00</p>
-                    <p>10:00 - 11:00</p>
-                    <p>11:00 - 12:00</p>
-                    <p>13:00 - 14:00</p>
+                  {profile.schedule.saturday && profile.schedule.saturday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />
@@ -191,6 +193,9 @@ const OwnProfile = () => {
                     <p className='bold'>Неделя</p>
                   </div>
                   <div className='time-slots'>
+                  {profile.schedule.sunday && profile.schedule.sunday.map((timeSlot, ind) => 
+                      <p key={ind}>{timeSlot.from} - {timeSlot.to}</p>
+                    )}
                   </div>
                 </div>
                 <hr />

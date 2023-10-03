@@ -19,6 +19,15 @@ const Profile = () => {
         address: '',
         categories: [],
         regions: [],
+        schedule: {
+          monday: [],
+          tuesday: [],
+          wednesday: [],
+          thursday: [],
+          friday: [],
+          saturday: [],
+          sunday: []
+        },
         isJunior: false,
         isCompleted: false
       });

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using SuperLaw.Services.DTO;
 
 namespace SuperLaw.Services.Input
 {
@@ -11,7 +12,7 @@ namespace SuperLaw.Services.Input
         public List<int> Categories { get; set; }
         public List<int> Regions { get; set; }
 
-        public ScheduleInput Schedule { get; set; }
+        public ScheduleDto Schedule { get; set; }
 
         public bool IsJunior { get; set; }
         public bool IsCompleted { get; set; }
