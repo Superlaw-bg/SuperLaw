@@ -1,6 +1,6 @@
 ﻿namespace SuperLaw.Services.DTO
 {
-    public class LawyerProfileEditDto
+    public class LawyerProfileEditDto : LawyerProfileBaseDto
     {
         public int Id { get; set; }
 

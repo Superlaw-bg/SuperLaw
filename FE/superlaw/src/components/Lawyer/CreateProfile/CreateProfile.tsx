@@ -4,12 +4,13 @@ import { Button, Form } from "react-bootstrap";
 import FileUpload from '../../FileUpload';
 import toastService from '../../../services/toastService';
 import Select from 'react-select';
-import { MultiValue, ActionMeta, InputActionMeta } from 'react-select';
+import { ActionMeta } from 'react-select';
 import profileService from '../../../services/profileService';
 import legalCategoriesService from '../../../services/legalCategoriesService';
 import judicialRegionsService from '../../../services/judicialRegionsService';
 import { useNavigate } from 'react-router-dom';
 import ProfileInput from '../../../models/inputs/ProfileInput';
+import Days from '../../../constants/daysOfWeek';
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -23,11 +24,30 @@ const CreateProfile = () => {
     address: "",
     categories: [],
     regions: [],
+    schedule: {
+      monday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+      saturday: [],
+      sunday: []
+    },
     isJunior: false,
     isCompleted: false,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [scheduleErrorMessages, setScheduleErrorMessages] = useState({
+    monday: '',
+    tuesday: '',
+    wednesday: '',
+    thursday: '',
+    friday: '',
+    saturday: '',
+    sunday: ''
+  });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -94,6 +114,67 @@ const CreateProfile = () => {
     setProfile({...profile, regions: newValue});
   }; 
 
+  const onTimeSlotDelete = (dayOfWeek: string, index: number) => {
+
+    let schedule = profileService.getScheduleForDay(dayOfWeek, profile.schedule);
+
+    schedule.splice(index, 1);
+
+    setProfile({
+      ...profile,
+      schedule: {
+        ...profile.schedule,
+        [dayOfWeek]: schedule
+      }
+    });
+  }
+
+  const onTimeSlotAdd = (event: any, dayOfWeek: string) => {
+    const from = event.target.parentElement.getElementsByClassName('from')[0].value;
+    const to = event.target.parentElement.getElementsByClassName('to')[0].value;
+
+    if (from === '' || to === ''){
+      return;
+    }
+
+    const err = profileService.validateTimeSlot(from, to);
+
+    if (err) {
+      setScheduleErrorMessages({
+        ...scheduleErrorMessages,
+        [dayOfWeek]: err
+      });
+      return;
+    }
+    
+    let scheduleForDay = profileService.getScheduleForDay(dayOfWeek, profile.schedule);
+
+    const errMsg = profileService.validateTimeSlotsInDay(from, to, scheduleForDay);
+
+    if (errMsg) {
+      setScheduleErrorMessages({
+        ...scheduleErrorMessages,
+        [dayOfWeek]: errMsg
+      });
+      return;
+    }
+
+    scheduleForDay.push({from: from, to: to});
+
+    setProfile({
+      ...profile,
+      schedule: {
+        ...profile.schedule,
+        [dayOfWeek]: scheduleForDay
+      }
+    });
+
+    setScheduleErrorMessages({
+      ...scheduleErrorMessages,
+      [dayOfWeek]: ''
+    });
+  }
+
   const onCheckbox = (e: any) => {
     const inputName = e.target.name;
     const value = e.target.checked;
@@ -135,7 +216,7 @@ const CreateProfile = () => {
 
   const onCreate = async (event: FormEvent) => {
     event.preventDefault();
-
+    
     if (!isDataValid()){
       return;
     }
@@ -150,9 +231,10 @@ const CreateProfile = () => {
     formData.append('address', profile.address);
     formData.append('categories', categories.join());
     formData.append('regions', regions.join());
+    formData.append('schedule', JSON.stringify(profile.schedule));
     formData.append('isJunior', profile.isJunior.toString());
     formData.append('isCompleted', profile.isCompleted.toString());
-
+    
     const res = await profileService.createProfile(formData);
 
     if(!res.isError){
@@ -200,7 +282,7 @@ const CreateProfile = () => {
           </div>
 
           <div className="form-group selection">
-            <label htmlFor="legalCategory">Съдебни райони</label>
+            <label htmlFor="regions">Съдебни райони</label>
             <Select
               isMulti
               name="regions"
@@ -210,6 +292,171 @@ const CreateProfile = () => {
               value={profile.regions}
               onChange={onRegionSelect} 
             />
+          </div>
+
+          <div className='form-group schedule'>
+            <label htmlFor="schedule">График</label>
+            <div className='day monday'>
+                  <div className='day-name'>
+                    <p className='bold'>Понеделник</p>
+                  </div>
+                  <div className='time-slots'>
+                    {profile.schedule.monday && profile.schedule.monday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Monday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from' />
+                      <span>До: </span>
+                      <input type="time" className='to' />
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Monday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.monday && 
+                      <p className='error'>{scheduleErrorMessages.monday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
+                <div className='day tuesday'>
+                  <div className='day-name'>
+                    <p className='bold'>Вторник</p>
+                  </div>
+                  <div className='time-slots'>
+                  {profile.schedule.tuesday && profile.schedule.tuesday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Tuesday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from' />
+                      <span>До: </span>
+                      <input type="time" className='to'/>
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Tuesday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.tuesday && 
+                      <p className='error'>{scheduleErrorMessages.tuesday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
+                <div className='day wednesday'>
+                  <div className='day-name'>
+                    <p className='bold'>Сряда</p>
+                  </div>
+                  <div className='time-slots'>
+                  {profile.schedule.wednesday && profile.schedule.wednesday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Wednesday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from'/>
+                      <span>До: </span>
+                      <input type="time" className='to' />
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Wednesday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.wednesday && 
+                      <p className='error'>{scheduleErrorMessages.wednesday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
+                <div className='day thursday'>
+                  <div className='day-name'>
+                    <p className='bold'>Четвъртък</p>
+                  </div>
+                  <div className='time-slots'>
+                  {profile.schedule.thursday && profile.schedule.thursday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Thursday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from'/>
+                      <span>До: </span>
+                      <input type="time" className='to'/>
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Thursday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.thursday && 
+                      <p className='error'>{scheduleErrorMessages.thursday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
+                <div className='day friday'>
+                  <div className='day-name'>
+                    <p className='bold'>Петък</p>
+                  </div>
+                  <div className='time-slots'>
+                  {profile.schedule.friday && profile.schedule.friday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Friday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from'/>
+                      <span>До: </span>
+                      <input type="time" className='to'/>
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Friday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.friday && 
+                      <p className='error'>{scheduleErrorMessages.friday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
+                <div className='day saturday'>
+                  <div className='day-name'>
+                    <p className='bold'>Събота</p>
+                  </div>
+                  <div className='time-slots'>
+                  {profile.schedule.saturday && profile.schedule.saturday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Saturday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from' />
+                      <span>До: </span>
+                      <input type="time" className='to'/>
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Saturday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.saturday && 
+                      <p className='error'>{scheduleErrorMessages.saturday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
+                <div className='day sunday'>
+                  <div className='day-name'>
+                    <p className='bold'>Неделя</p>
+                  </div>
+                  <div className='time-slots'>
+                  {profile.schedule.sunday && profile.schedule.sunday.map((timeSlot, ind) => 
+                      <div className='time-slot' key={ind}>
+                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Sunday, ind)}>X</span></p>
+                      </div>
+                    )}
+                    <div className='select-range'>
+                      <span>От: </span>
+                      <input type="time" className='from'/>
+                      <span>До: </span>
+                      <input type="time" className='to'/>
+                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Sunday)}>✓</span>
+                    </div>
+                    {scheduleErrorMessages.sunday && 
+                      <p className='error'>{scheduleErrorMessages.sunday}</p>
+                    }
+                  </div>
+                </div>
+                <hr />
           </div>
 
           <div className="form-group checkboxes">

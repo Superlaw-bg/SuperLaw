@@ -1,4 +1,5 @@
 import SimpleData from "./SimpleData";
+import ScheduleInput from "./inputs/ScheduleInput";
 
 interface LawyerProfile {
     id: number,
@@ -10,6 +11,7 @@ interface LawyerProfile {
     address: string,
     categories: SimpleData[],
     regions: SimpleData[],
+    schedule: ScheduleInput,
     isJunior: boolean,
     isCompleted: boolean
 }

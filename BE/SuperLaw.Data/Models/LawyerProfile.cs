@@ -27,5 +27,7 @@
             new List<LawyerProfileLegalCategory>();
 
         public ICollection<Meeting> Meetings { get; set; } = new List<Meeting>();
+
+        public ICollection<TimeSlot> TimeSlots { get; set; } = new List<TimeSlot>();
     }
 }

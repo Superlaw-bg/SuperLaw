@@ -38,7 +38,7 @@ const Header = () => {
     return(
         <Navbar className='nav d-flex justify-content-between'>
             <div className='left'>
-                <Navbar.Brand as={Link} to="/" className='logo'>SuperLaw</Navbar.Brand>
+                <Navbar.Brand as={Link} to="/" className='logo'>Superlaw</Navbar.Brand>
             </div>
             <div className='right'>
                 {isLoggedIn &&

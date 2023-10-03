@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using SuperLaw.Services.DTO;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 
@@ -153,6 +155,14 @@ namespace SuperLaw.Api.Controllers
                 IsCompleted = isCompletedStr.ToString() == "true",
             };
 
+            var hasSchedule = formCollection.TryGetValue("schedule", out var scheduleStr);
+
+            if (hasSchedule)
+            {
+                var schedule = JsonConvert.DeserializeObject<ScheduleDto>(scheduleStr.ToString());
+                profileInput.Schedule = schedule;
+            }
+
             var userId = GetCurrentUserId();
 
             await _profileService.CreateProfileAsync(userId, profileInput);
@@ -257,6 +267,14 @@ namespace SuperLaw.Api.Controllers
                 IsJunior = isJuniorStr.ToString() == "true",
                 IsCompleted = isCompletedStr.ToString() == "true",
             };
+
+            var hasSchedule = formCollection.TryGetValue("schedule", out var scheduleStr);
+
+            if (hasSchedule)
+            {
+                var schedule = JsonConvert.DeserializeObject<ScheduleDto>(scheduleStr.ToString());
+                profileInput.Schedule = schedule;
+            }
 
             var userId = GetCurrentUserId();
 

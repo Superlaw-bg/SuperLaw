@@ -1,17 +1,17 @@
 @import "../../../style-constants.scss";
 
 .form-wrapper-create-profile {
-    width: 40%;
+    width: 70%;
     margin: 0 auto;
   }
 
   .create-profile-form {
-    margin: 100px 0px;
+    margin: 2rem 0px;
     color: $primary-color;
 
     .register-heading {
       text-align: center;
-      margin-bottom: 10%;
+      margin-bottom: 5%;
     }
 
     .form-group {
@@ -24,7 +24,6 @@
 
     .picture {
         text-align: center;
-        margin-bottom: 100px;
     }
 
     .selection {
@@ -34,6 +33,92 @@
         flex: 0 0 100%;
       }
     }
+
+    .schedule {
+      display: flex;
+      flex-wrap: wrap;
+
+      .header {
+          margin: 0 auto;
+          margin-bottom: 10px;
+      }
+
+      .day {
+          flex: 0 0 100%;
+          display: flex;
+          flex-wrap: nowrap;
+
+          .error{
+            flex: 0 0 100%;
+            font-size: 1rem;
+            margin: 0;
+          }
+
+          .day-name {
+              flex: 0 0 20%;
+
+              p{
+                margin-bottom: 0px;
+              }
+          }
+
+          .time-slots {
+              flex: 0 0 70%;
+              display: flex;
+              flex-wrap: wrap;
+
+              .time-slot{
+                  flex: 0 0 20%;
+                  margin-bottom: 0px;
+                  text-align: center;
+                  margin-bottom: 3px;
+                  border: 1px solid $primary-color;
+                  border-radius: 10px;
+                  margin-bottom: 1rem;
+                  margin-right: 1rem;
+
+                  p {
+                    margin-bottom: 0px;
+
+                    .delete {
+                      color: black;
+                      &:hover{
+                        cursor: pointer;
+                      }
+                    }
+                  }
+              }
+              .select-range{
+                padding: 0px 5px;
+                border: 1px solid $primary-color;
+                border-radius: 10px;
+                color: $primary-color;
+
+                input {
+                  border: none;
+                }
+
+                .from{
+                  margin-right: 5px;
+                }
+
+                .add {
+                  color: black;
+                  &:hover{
+                    cursor: pointer;
+                  }
+                }
+              }
+              
+          }
+
+      }
+
+      hr {
+          color: black;
+          width: 100%;
+      }
+    }   
 
     .checkboxes {
       margin-top: 40px;
@@ -80,4 +165,31 @@
     .form-wrapper-create-profile {
         width: 80%;
     }
+}
+
+@media (max-width: 1000px) {
+  .form-wrapper-create-profile {
+      .create-profile-form {
+          
+          .schedule {
+              
+              .day {
+                  flex-wrap: wrap;
+                  .day-name {
+                      flex: 0 0 100%;
+                      margin-bottom: 10px;
+                  }
+
+                  .time-slots {
+                      flex: 0 0 100%;
+
+                      p {
+                          flex: none;
+                          margin: 0px 5px;
+                      }
+                  }
+              }
+          }
+      }
+  }
 }
