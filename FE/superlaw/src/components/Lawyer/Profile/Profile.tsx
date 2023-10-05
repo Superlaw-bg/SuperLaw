@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import './Profile.scss';
 import { useParams } from "react-router-dom";
 import profileService from "../../../services/profileService";
@@ -10,6 +10,9 @@ import 'react-calendar/dist/Calendar.css';
 import moment from"moment";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
 import TimeSlotInput from "../../../models/inputs/TimeSlotInput";
+import BookMeetingInput from "../../../models/inputs/BookMeetingInput";
+import meetingService from "../../../services/meetingService";
+import toastService from "../../../services/toastService";
 
 const Profile = () => {
     const params = useParams();
@@ -20,10 +23,6 @@ const Profile = () => {
 
     const todayDate = moment().toDate();
     const maxDate = moment().add(1, 'M').toDate();
-
-    const [selectedDate, setSelectedDate] = useState<Value>(null);
-    const [timeSlotOptions, setTimeSlotOptions] = useState<TimeSlotInput[]>([]);
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlotInput>();
 
     const [profile, setProfile] = useState<LawyerProfile>({
         id: -1,
@@ -47,6 +46,21 @@ const Profile = () => {
         isJunior: false,
         isCompleted: false
       });
+
+    const [timeSlotOptions, setTimeSlotOptions] = useState<TimeSlotInput[]>([]);
+    
+    const [bookMeetingForm, setBookMeetingForm] = useState<BookMeetingInput>({
+      date: null,
+      timeslot: {
+        from: '',
+        to: ''
+      },
+      categoryId: 0,
+      regionId: 0,
+      info: ''
+    });
+
+    const [errorMessage, setErrorMessage] = useState("");
       
     useEffect(() => {
         const fetchProfile = async (id: number) => {
@@ -62,7 +76,8 @@ const Profile = () => {
         console.log(profile);
       }, []);
 
-    const onDateSelect = (date: any) => {
+    const onDateSelect = (dateValue:  Value) => {
+      const date = dateValue as Date;
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 
       let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
@@ -70,8 +85,14 @@ const Profile = () => {
       if (timeSlotsSelectedElem) {
         timeSlotsSelectedElem.classList.remove("selected");
       }
-      
-      setSelectedDate(date);
+
+      setBookMeetingForm({
+        date: date,
+        timeslot: {from: '', to: ''},
+        categoryId: 0,
+        regionId: 0,
+        info: ''
+      });
       setTimeSlotOptions(timeSlots);
     }
 
@@ -84,7 +105,11 @@ const Profile = () => {
 
       const slotDiv = event.target.parentElement;
       slotDiv.classList.add("selected");
-      setSelectedTimeSlot(slot);
+     
+      setBookMeetingForm({
+        ...bookMeetingForm,
+        timeslot: slot
+      });
     }  
 
     const isDayDisabled: TileDisabledFunc = ({ activeStartDate, date, view }: TileArgs) => {
@@ -95,6 +120,54 @@ const Profile = () => {
       }
 
       return true;
+    }
+
+    const onInput = (e: any) => {
+      const inputName = e.target.name;
+      const value = e.target.value;
+  
+      setBookMeetingForm({
+        ...bookMeetingForm,
+        [inputName]: value,
+      });
+    };
+
+    const onSubmit = async (event: FormEvent) => {
+      event.preventDefault();
+    
+
+      if (bookMeetingForm.date === null) {
+        setErrorMessage('Моля, изберете дата');
+        return;
+      }
+
+      if (bookMeetingForm.timeslot.from === '' || bookMeetingForm.timeslot.to === '') {
+        setErrorMessage('Моля, изберете часови диапазон');
+        return;
+      }
+
+      setErrorMessage('');
+
+      const res = await meetingService.createMeeting(
+        {
+          ...bookMeetingForm,
+          profileId: Number(params.id)
+        }
+      );
+
+      if(!res.isError){
+        toastService.showSuccess("Успешно запазихте час за консултация.");
+
+        setBookMeetingForm({
+          date: null,
+          timeslot: {from: '', to: ''},
+          categoryId: 0,
+          regionId: 0,
+          info: ''
+        });
+  
+        window.scrollTo(0, 0);
+      }
     }
 
     return (
@@ -147,7 +220,7 @@ const Profile = () => {
           <div className="book-calendar">
             <Calendar 
               onChange={onDateSelect}
-              value={selectedDate}
+              value={bookMeetingForm.date}
               defaultView="month"
               minDetail="month"
               maxDetail="month"
@@ -157,7 +230,7 @@ const Profile = () => {
               maxDate={maxDate}
               tileDisabled={isDayDisabled}
             />
-             {selectedDate &&
+             {bookMeetingForm.date &&
               <div className="time-slots">
                 {timeSlotOptions.map((timeSlot, ind) => 
                   <div className='time-slot' key={ind} onClick={(e) => onSlotSelect(e, timeSlot)}>
@@ -167,11 +240,11 @@ const Profile = () => {
               </div>
                 
              }
-             {selectedTimeSlot && 
-              <form className="book-form">
+             {bookMeetingForm.timeslot.from !== '' && 
+              <form className="book-form" onSubmit={onSubmit}>
                 <div className="form-group selection">
                   <label htmlFor="category">Категория</label>
-                  <select className="form-select" name="category">
+                  <select className="form-select" id="category" name="categoryId" onChange={(e) => onInput(e)}>
                     <option selected disabled defaultValue="none">
                       Моля, изберете категория
                     </option>
@@ -182,7 +255,7 @@ const Profile = () => {
                 </div>
                 <div className="form-group selection">
                   <label htmlFor="region">Град</label>
-                  <select className="form-select" name="category">
+                  <select className="form-select" id="region" name="regionId" onChange={(e) => onInput(e)}>
                     <option selected disabled defaultValue="none">
                       Моля, изберете град
                     </option>
@@ -193,10 +266,15 @@ const Profile = () => {
                 </div>
                   <div className="form-group">
                     <label htmlFor="info">Повече информация</label>
-                    <textarea id="info" className="form-control" name="info" placeholder='Информация относно казуса' rows={4}/>
+                    <textarea id="info" className="form-control" name="info" placeholder='Информация относно казуса' rows={4} onChange={(e) => onInput(e)}/>
                   </div>
+
+                  <p className='error'>
+                    {errorMessage}
+                  </p>
+
                   <div className="btn-wrapper">
-                    <Button className="book-btn" variant='primary'>Запази час</Button>
+                    <Button className="book-btn" variant='primary' type="submit">Запази час</Button>
                   </div>
               </form>
              }

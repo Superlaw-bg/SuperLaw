@@ -11,7 +11,8 @@ const apiRoutes = {
     ownProfile: 'Profile/Own',
     profile: 'Profile/Get',
     ownProfileDataForEdit: 'Profile/OwnDataForEdit',
-    allProfiles: 'Profile/GetAll'
+    allProfiles: 'Profile/GetAll',
+    createMeeting: 'Meeting/Create'
 };
 
 export default apiRoutes;
