@@ -376,11 +376,17 @@ namespace SuperLaw.Services
             return result;
         }
 
-        public List<LawyerProfileDto> GetAll(string userId, GetAllProfilesInput input)
+        public List<LawyerProfileDto> GetAll(string? userId, GetAllProfilesInput input)
         {
-            var profiles = _context.LawyerProfiles
-                .Where(x => x.IsCompleted)
-                .Where(x => x.UserId != userId)
+            var profileQuery = _context.LawyerProfiles
+                .Where(x => x.IsCompleted);
+
+            if (userId != null)
+            {
+                profileQuery = profileQuery.Where(x => x.UserId != userId);
+            }
+
+            var profiles = profileQuery
                 .Include(x => x.User)
                 .Include(x => x.JudicialRegions)
                 .ThenInclude(x => x.Region)

@@ -9,14 +9,9 @@ namespace SuperLaw.Api.Controllers
     [Authorize(AuthenticationSchemes = "Bearer")]
     public class ApiController : ControllerBase
     {
-        protected string GetCurrentUserId()
+        protected string? GetCurrentUserId()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
 
             return userId;
         }
