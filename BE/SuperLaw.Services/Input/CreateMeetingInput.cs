@@ -6,7 +6,7 @@ namespace SuperLaw.Services.Input
     {
         public int ProfileId { get; set; }
         
-        public DateTimeOffset Date { get; set; }
+        public DateTime Date { get; set; }
         
         public TimeSlotDto TimeSlot { get; set; } = new TimeSlotDto();
 

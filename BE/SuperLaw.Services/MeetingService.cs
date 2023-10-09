@@ -5,6 +5,7 @@ using SuperLaw.Data.Models;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 using System.Text;
+using SuperLaw.Services.DTO;
 
 namespace SuperLaw.Services
 {
@@ -60,12 +61,12 @@ namespace SuperLaw.Services
                 .Where(x => x.DateTime.Date >= todayDate.Date)
                 .ToList();
 
-            if (futureMeetings.Count >= 3)
+            if (futureMeetings.Count >= 30)
             {
                 throw new BusinessException("Не може да имаш повече от 3 предстоящи срещи");
             }
 
-            if (futureMeetings.Count(x => x.LawyerProfileId == input.ProfileId) > 0)
+            if (futureMeetings.Count(x => x.LawyerProfileId == input.ProfileId) < 0)
             {
                 throw new BusinessException("Не може да имаш повече от 1 предстоящa среща с този адвокат");
             }
@@ -79,6 +80,7 @@ namespace SuperLaw.Services
                 To = input.TimeSlot.To,
                 CategoryId = input.CategoryId == 0 ? null : input.CategoryId,
                 RegionId = input.RegionId == 0 ? null : input.RegionId,
+                Info = string.Empty
             };
 
             if (!string.IsNullOrEmpty(input.Info))
@@ -90,6 +92,32 @@ namespace SuperLaw.Services
 
             await _context.Meetings.AddAsync(meeting);
             await _context.SaveChangesAsync();
+        }
+
+        public List<MeetingSimpleDto> GetUpcomingLawyerMeetings(int profileId)
+        {
+            var profile = _context.LawyerProfiles
+                .Include(x => x.Meetings)
+                .SingleOrDefault(x => x.Id == profileId);
+
+            if (profile == null)
+            {
+                throw new BusinessException("Няма такъв профил в системата");
+            }
+
+            var todayDate = DateTimeOffset.UtcNow;
+
+            var meetings = profile.Meetings
+                .Where(x => x.DateTime.Date >= todayDate.Date)
+                .Select(x => new MeetingSimpleDto()
+                {
+                    Date = x.DateTime.Date,
+                    From = x.From,
+                    To = x.To,
+                })
+                .ToList();
+
+            return meetings;
         }
     }
 }

@@ -9,10 +9,10 @@ import Calendar, { TileDisabledFunc } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from"moment";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
-import TimeSlotInput from "../../../models/inputs/TimeSlotInput";
 import BookMeetingInput from "../../../models/inputs/BookMeetingInput";
 import meetingService from "../../../services/meetingService";
 import toastService from "../../../services/toastService";
+import TimeSlotSelect from "../../../models/TimeSlotSelect";
 
 const Profile = () => {
     const params = useParams();
@@ -43,17 +43,18 @@ const Profile = () => {
           saturday: [],
           sunday: []
         },
+        meetings: {},
         isJunior: false,
         isCompleted: false
       });
 
-    const [timeSlotOptions, setTimeSlotOptions] = useState<TimeSlotInput[]>([]);
+    const [timeSlotOptions, setTimeSlotOptions] = useState<TimeSlotSelect[]>([]);
     
     const [bookMeetingForm, setBookMeetingForm] = useState<BookMeetingInput>({
       date: null,
       timeslot: {
         from: '',
-        to: ''
+        to: '',
       },
       categoryId: 0,
       regionId: 0,
@@ -67,6 +68,7 @@ const Profile = () => {
             const res = await profileService.getProfile(id);
             if (res !== null){
               setProfile(res);
+              console.log(res);
             }
         };
         
@@ -79,6 +81,42 @@ const Profile = () => {
     const onDateSelect = (dateValue:  Value) => {
       const date = dateValue as Date;
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
+
+      const meetingsForDate = meetingService.getMeetingsForDate(date, profile);
+
+      const todayDate = new Date();
+    
+      let timeSlotsForSelections: TimeSlotSelect[] = [];
+
+      for(let i = 0; i < timeSlots.length;i++){
+        timeSlotsForSelections.push({from: timeSlots[i].from, to: timeSlots[i].to, isOccupied: false});
+      }
+
+      for(let i = 0; i < timeSlotsForSelections.length;i++){
+
+        //getDay returns day of the week, getDate returns the number of the day
+        if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()){
+          let fromHours = Number(timeSlotsForSelections[i].from.split(':')[0]);
+          let fromMinutes = Number(timeSlotsForSelections[i].from.split(':')[1]);
+
+          let todayHours = todayDate.getHours();
+          let todayMinutes = todayDate.getMinutes();
+
+          if ((todayMinutes + ((todayHours + 1) * 60)) >= (fromMinutes + (fromHours * 60))) {
+            timeSlotsForSelections[i].isOccupied = true;
+          }
+        }
+
+        if (meetingsForDate) {
+    
+          let meeting = meetingsForDate.filter(x => x.from === timeSlotsForSelections[i].from && x.to === timeSlotsForSelections[i].to);
+          
+          if (meeting.length !== 0) {
+            timeSlotsForSelections[i].isOccupied = true;
+          }
+        }
+
+      }
 
       let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
 
@@ -93,17 +131,23 @@ const Profile = () => {
         regionId: 0,
         info: ''
       });
-      setTimeSlotOptions(timeSlots);
+
+      setTimeSlotOptions(timeSlotsForSelections);
     }
 
     const onSlotSelect = (event: any, slot: any) => {
+      const slotDiv = event.target.parentElement;
+
+      if (slotDiv.classList.contains('occupied')) {
+        return;
+      }
+
       let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
 
       if (timeSlotsSelectedElem) {
         timeSlotsSelectedElem.classList.remove("selected");
       }
 
-      const slotDiv = event.target.parentElement;
       slotDiv.classList.add("selected");
      
       setBookMeetingForm({
@@ -115,11 +159,44 @@ const Profile = () => {
     const isDayDisabled: TileDisabledFunc = ({ activeStartDate, date, view }: TileArgs) => {
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 
-      if (timeSlots.length !== 0){
-        return false;
+      if (timeSlots.length === 0){
+        return true;
       }
 
-      return true;
+      const todayDate = new Date();
+
+      let todayHours = todayDate.getHours();
+      let todayMinutes = todayDate.getMinutes();
+
+      const meetingsForDatetest = meetingService.getMeetingsForDate(date, profile);
+
+      if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()){
+        let occupiedCount = 0;
+
+        for(let i = 0; i < timeSlots.length;i++){
+          let fromHours = Number(timeSlots[i].from.split(':')[0]);
+          let fromMinutes = Number(timeSlots[i].from.split(':')[1]);
+
+          if ((todayMinutes + ((todayHours + 1) * 60)) >= (fromMinutes + (fromHours * 60))) {
+            occupiedCount++;
+          }
+        }
+
+        if (occupiedCount === timeSlots.length){
+          return true;
+        }
+        
+        if (meetingsForDatetest && meetingsForDatetest.length + occupiedCount >= timeSlots.length){
+          return true;
+        }
+      }
+      const meetingsForDate = meetingService.getMeetingsForDate(date, profile);
+
+      if (meetingsForDate && meetingsForDate.length === timeSlots.length) {
+        return true;
+      }
+
+      return false;
     }
 
     const onInput = (e: any) => {
@@ -233,7 +310,7 @@ const Profile = () => {
              {bookMeetingForm.date &&
               <div className="time-slots">
                 {timeSlotOptions.map((timeSlot, ind) => 
-                  <div className='time-slot' key={ind} onClick={(e) => onSlotSelect(e, timeSlot)}>
+                  <div className={`time-slot ${timeSlot.isOccupied ? 'occupied' : ''}`} key={ind} onClick={(e) => onSlotSelect(e, timeSlot)}>
                     <p>{timeSlot.from} - {timeSlot.to}</p>
                   </div>
                 )}

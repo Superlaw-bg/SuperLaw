@@ -78,6 +78,18 @@
                         background-color: $primary-color;
                         color: $secondary-color;
                     }
+
+                    &.occupied {
+                        color: gray;
+                        border: 1px solid gray;
+
+                        &:hover{
+                            cursor: auto;
+                            background-color: white;
+                            color: gray;
+                        }
+                    }
+                
                 }
             }
 

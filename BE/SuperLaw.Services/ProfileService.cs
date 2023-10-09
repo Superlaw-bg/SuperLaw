@@ -287,6 +287,7 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .Include(x => x.Meetings)
                 .SingleOrDefaultAsync(x => x.Id == id && x.IsCompleted);
 
             if (userLawyerProfile == null)
@@ -331,6 +332,8 @@ namespace SuperLaw.Services
             };
 
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
+
+            SetMeetingsProfileDto(userLawyerProfile.Meetings.ToList(), result);
 
             return result;
         }
@@ -586,6 +589,37 @@ namespace SuperLaw.Services
                     dto.Schedule.Sunday.Add(timeSlotDto);
                 }
             }
+        }
+
+        private void SetMeetingsProfileDto(List<Meeting> meetings, LawyerProfileBaseDto dto)
+        {
+            var todayDate = DateTime.UtcNow.Date;
+
+            meetings = meetings
+                .Where(x => x.DateTime.Date >= todayDate.Date)
+                .ToList();
+
+            var meetingDtos = meetings.Select(x => new MeetingSimpleDto()
+            {
+                Date = x.DateTime.Date,
+                From = x.From,
+                To = x.To,
+            }).ToList();
+
+
+            var res = new Dictionary<DateTime, List<MeetingSimpleDto>>();
+
+            foreach (var meetingDto in meetingDtos)
+            {
+                if (!res.ContainsKey(meetingDto.Date))
+                {
+                    res[meetingDto.Date] = new List<MeetingSimpleDto>();
+                }
+
+                res[meetingDto.Date].Add(meetingDto);
+            }
+
+            dto.Meetings = res;
         }
     }
 }
