@@ -82,41 +82,8 @@ const Profile = () => {
       const date = dateValue as Date;
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 
-      const meetingsForDate = meetingService.getMeetingsForDate(date, profile);
-
-      const todayDate = new Date();
+      let timeSlotsForSelection = meetingService.getTimeSlotsForSelectionForDate(profile, timeSlots, date);
     
-      let timeSlotsForSelections: TimeSlotSelect[] = [];
-
-      for(let i = 0; i < timeSlots.length;i++){
-        timeSlotsForSelections.push({from: timeSlots[i].from, to: timeSlots[i].to, isOccupied: false});
-      }
-
-      for(let i = 0; i < timeSlotsForSelections.length;i++){
-
-        //getDay returns day of the week, getDate returns the number of the day
-        if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()){
-          let fromHours = Number(timeSlotsForSelections[i].from.split(':')[0]);
-          let fromMinutes = Number(timeSlotsForSelections[i].from.split(':')[1]);
-
-          let todayHours = todayDate.getHours();
-          let todayMinutes = todayDate.getMinutes();
-
-          if ((todayMinutes + ((todayHours + 1) * 60)) >= (fromMinutes + (fromHours * 60))) {
-            timeSlotsForSelections[i].isOccupied = true;
-          }
-        }
-
-        if (meetingsForDate) {
-    
-          let meeting = meetingsForDate.filter(x => x.from === timeSlotsForSelections[i].from && x.to === timeSlotsForSelections[i].to);
-          
-          if (meeting.length !== 0) {
-            timeSlotsForSelections[i].isOccupied = true;
-          }
-        }
-
-      }
 
       let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
 
@@ -132,7 +99,7 @@ const Profile = () => {
         info: ''
       });
 
-      setTimeSlotOptions(timeSlotsForSelections);
+      setTimeSlotOptions(timeSlotsForSelection);
     }
 
     const onSlotSelect = (event: any, slot: any) => {
@@ -159,44 +126,7 @@ const Profile = () => {
     const isDayDisabled: TileDisabledFunc = ({ activeStartDate, date, view }: TileArgs) => {
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 
-      if (timeSlots.length === 0){
-        return true;
-      }
-
-      const todayDate = new Date();
-
-      let todayHours = todayDate.getHours();
-      let todayMinutes = todayDate.getMinutes();
-
-      const meetingsForDatetest = meetingService.getMeetingsForDate(date, profile);
-
-      if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()){
-        let occupiedCount = 0;
-
-        for(let i = 0; i < timeSlots.length;i++){
-          let fromHours = Number(timeSlots[i].from.split(':')[0]);
-          let fromMinutes = Number(timeSlots[i].from.split(':')[1]);
-
-          if ((todayMinutes + ((todayHours + 1) * 60)) >= (fromMinutes + (fromHours * 60))) {
-            occupiedCount++;
-          }
-        }
-
-        if (occupiedCount === timeSlots.length){
-          return true;
-        }
-        
-        if (meetingsForDatetest && meetingsForDatetest.length + occupiedCount >= timeSlots.length){
-          return true;
-        }
-      }
-      const meetingsForDate = meetingService.getMeetingsForDate(date, profile);
-
-      if (meetingsForDate && meetingsForDate.length === timeSlots.length) {
-        return true;
-      }
-
-      return false;
+      return meetingService.isDayForMeetingsDisabled(date, timeSlots, profile);
     }
 
     const onInput = (e: any) => {

@@ -61,12 +61,12 @@ namespace SuperLaw.Services
                 .Where(x => x.DateTime.Date >= todayDate.Date)
                 .ToList();
 
-            if (futureMeetings.Count >= 30)
+            if (futureMeetings.Count >= 3)
             {
                 throw new BusinessException("Не може да имаш повече от 3 предстоящи срещи");
             }
 
-            if (futureMeetings.Count(x => x.LawyerProfileId == input.ProfileId) < 0)
+            if (futureMeetings.Count(x => x.LawyerProfileId == input.ProfileId) > 0)
             {
                 throw new BusinessException("Не може да имаш повече от 1 предстоящa среща с този адвокат");
             }
