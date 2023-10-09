@@ -12,6 +12,16 @@
 
         public DateTimeOffset DateTime { get; set; } 
 
+        public string From { get; set; }
+
+        public string To { get; set; }
+
+        public string Info { get; set; }
+
+        public int? CategoryId { get; set; }
+
+        public int? RegionId { get; set; }
+
         public bool IsUserFlagged { get; set; }
 
         public string ReasonForFlagging { get; set; } = string.Empty;

@@ -283,6 +283,7 @@ namespace SuperLaw.Api.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpGet(nameof(GetAll))]
         public IActionResult GetAll([FromQuery]GetAllProfilesInput input)
         {

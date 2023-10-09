@@ -28,6 +28,7 @@ const OwnProfile = () => {
       saturday: [],
       sunday: []
     },
+    meetings: {},
     isJunior: false,
     isCompleted: false
   });
@@ -36,7 +37,6 @@ const OwnProfile = () => {
     const fetchProfile = async () => {
         const res = await profileService.getOwnProfile();
         if (res !== null){
-          console.log(res);
           setProfile(res);
         }
     };
