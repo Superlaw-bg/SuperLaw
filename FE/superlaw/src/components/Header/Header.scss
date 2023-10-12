@@ -1,6 +1,6 @@
 @import '../../style-constants.scss';
 
-.nav{
+.superlaw-nav{
     background-color: $primary-color;
     padding: 0px 3%;
     padding-bottom: 1rem;
@@ -59,7 +59,7 @@
 }
 
 @media (max-width: 1000px) {
-    .nav{
+    .superlaw-nav{
         flex-wrap: wrap;
 
         .nav-toggle {
@@ -134,7 +134,7 @@
 
     }
 
-    .nav>input:checked + .right .nav-items label .open{
+    .superlaw-nav>input:checked + .right .nav-items label .open{
         display: none;
     }
 }

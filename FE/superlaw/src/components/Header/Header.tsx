@@ -40,7 +40,7 @@ const Header = () => {
     };
 
     return(
-        <Navbar className='nav d-flex justify-content-between'>
+        <Navbar className='superlaw-nav nav d-flex justify-content-between'>
             <div className='left'>
                 <Navbar.Brand as={Link} to="/" className='logo'>Superlaw</Navbar.Brand>
             </div>
