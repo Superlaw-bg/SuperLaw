@@ -35,17 +35,30 @@ const Header = () => {
         }
     };
 
+    const navigateToMeetings = () => {
+        navigate('/my-meetings');
+    };
+
     return(
         <Navbar className='nav d-flex justify-content-between'>
             <div className='left'>
                 <Navbar.Brand as={Link} to="/" className='logo'>Superlaw</Navbar.Brand>
             </div>
+            <input type="checkbox" name="toggle" id="toggle" className="nav-toggle"/>
             <div className='right'>
                 {isLoggedIn &&
-                    <div>
-                        <a className='email' onClick={navigateToProfile}>{email}</a>
-                        <Nav.Item>
-                            <Nav.Link className="logout nav-link" onClick={logout}>Изход</Nav.Link>
+                    <div className='nav-items'>
+                        <label htmlFor="toggle">
+                            <span className="close">X Затвори </span><span className ="open">Меню</span>
+                        </label>
+                        <Nav.Item as="li">
+                            <Nav.Link onClick={navigateToProfile}>{email}</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item as="li">
+                            <Nav.Link onClick={navigateToMeetings}>Моите консултации</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item as="li">
+                            <Nav.Link onClick={logout}>Изход</Nav.Link>
                         </Nav.Item>
                     </div>
                 }

@@ -4,18 +4,49 @@
     background-color: $primary-color;
     padding: 0px 3%;
     padding-bottom: 1rem;
+
+    .nav-toggle {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     .left{
         .logo{
             color: $white;
             font-size: 2rem;
+            margin: 0;
         }    
     }
 
     .right{
-        flex: 0 0 20%;
+        flex: 0 0 70%;
         display: flex;
+        justify-content: right;
+
+        label {
+            display: none;
+            margin: 0 auto;
+
+            span {
+                color: $secondary-color;
+            }
+        }
+
+        .nav-items{
+            display: flex;
+
+            .nav-link {
+                color: $secondary-color;
+                text-decoration: none;
+                font-size: 1.2rem;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
     
-        .login, .logout{
+        .login{
             margin: 0 auto;
             width: 100px;
             background-color: $secondary-color;
@@ -24,15 +55,86 @@
             border-radius: 10%;
             font-size: 1.2rem;
         }
+    }
+}
 
-        .email{
-            color: white;
-            text-decoration: none;
+@media (max-width: 1000px) {
+    .nav{
+        flex-wrap: wrap;
 
-            &:hover{
-                text-decoration: underline;
-                cursor: pointer;
+        .nav-toggle {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .left {
+            flex: 1 1 100%;
+            margin-right: 0;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+        .right {
+            justify-content: center;
+            flex-wrap: wrap;
+            flex: 1 1 100%;
+
+            label {
+                display: block;
+                text-align: center;
+
+                &:hover{
+                    cursor: pointer;
+                    text-decoration: underline;
+                    text-decoration-color: $secondary-color;
+                }
+            }
+
+            .nav-items{
+                flex: 1 1 100%;
+                flex-wrap: wrap;
+
+                .nav-link {
+                    margin-bottom: 0.8rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    flex: 1 1 100%;
+                    padding: 0;
+                }
             }
         }
+    }
+
+    .nav-toggle + .right .nav-items .nav-item{
+        display: none;
+    }
+
+    .nav-toggle + .right .nav-items label .open{
+        display: inline;
+        font-weight: bold;
+        margin: 0 auto;
+    }
+
+    .nav-toggle + .right .nav-items label .close{
+        display: none;
+    }
+
+    .nav-toggle:checked + .right .nav-items label .close{
+        display: inline;
+        font-weight: bold;
+        margin: 0 auto;
+    }
+
+    .nav-toggle:checked + .right .nav-items .nav-item{
+        display: inline;
+        display: flex;
+        align-items: center;
+        flex: 1 1 100%;
+
+    }
+
+    .nav>input:checked + .right .nav-items label .open{
+        display: none;
     }
 }
