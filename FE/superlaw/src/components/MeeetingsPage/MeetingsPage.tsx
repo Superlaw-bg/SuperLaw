@@ -1,7 +1,7 @@
 import { Tab, Tabs } from "react-bootstrap";
-import "./UserMeetingsPage.scss";
+import "./MeetingsPage.scss";
 
-const UserMeetingsPage = () => {
+const MeetingsPage = () => {
   return (
     <div className="meetings-page">
         <h2>Моите консултации</h2>
@@ -62,4 +62,4 @@ const UserMeetingsPage = () => {
   );
 };
 
-export default UserMeetingsPage;
+export default MeetingsPage;

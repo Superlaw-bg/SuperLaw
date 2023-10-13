@@ -36,7 +36,7 @@ const Header = () => {
     };
 
     const navigateToMeetings = () => {
-        navigate('/my-meetings');
+        navigate('/meetings');
     };
 
     return(
