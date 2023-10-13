@@ -59,12 +59,9 @@
 
                     &:hover {
                         text-decoration: underline;
+                        cursor: pointer;
                     }
                 }
-            }
-
-            textarea {
-                width: 100%;
             }
         }
     }
