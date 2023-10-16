@@ -7,6 +7,7 @@ using SuperLaw.Services.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using SuperLaw.Services.DTO;
+using System.Threading;
 
 namespace SuperLaw.Services
 {
@@ -52,7 +53,7 @@ namespace SuperLaw.Services
             var todayDate = DateTimeOffset.UtcNow;
 
             var lawyerMeetings = profile.Meetings
-                .Where(x => x.DateTime.Date >= todayDate.Date)
+                .Where(x => x.DateTime >= todayDate)
                 .ToList();
 
             if (lawyerMeetings.Count(x => x.DateTime.Date == input.Date.Date && x.From == input.TimeSlot.From && x.To == input.TimeSlot.To) > 0)
@@ -60,25 +61,34 @@ namespace SuperLaw.Services
                 throw new BusinessException("Адвокатът вече е зает за конкретния час");
             }
 
-            var futureMeetings = user.Meetings
-                .Where(x => x.DateTime.Date >= todayDate.Date)
+            var userMeetings = user.Meetings
+                .Where(x => x.DateTime >= todayDate)
                 .ToList();
 
-            if (futureMeetings.Count >= 3)
+            if (userMeetings.Count >= 3)
             {
                 throw new BusinessException("Не може да имаш повече от 3 предстоящи срещи");
             }
 
-            if (futureMeetings.Count(x => x.LawyerProfileId == input.ProfileId) > 0)
+            if (userMeetings.Count(x => x.LawyerProfileId == input.ProfileId) > 0)
             {
                 throw new BusinessException("Не може да имаш повече от 1 предстоящa среща с този адвокат");
             }
+
+            var toHours = int.Parse(input.TimeSlot.To.Split(':')[0]);
+            var toMinutes = int.Parse(input.TimeSlot.To.Split(':')[1]);
+            var meetingDateEndWithHourInUtc = input.Date.Date.AddHours(toHours).AddMinutes(toMinutes);
+
+            //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+          
+            meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - easternZone.GetUtcOffset(DateTime.UtcNow).Hours);
 
             var meeting = new Meeting()
             {
                 LawyerProfileId = profile.Id,
                 ClientId = user.Id,
-                DateTime = input.Date,
+                DateTime = meetingDateEndWithHourInUtc,
                 From = input.TimeSlot.From,
                 To = input.TimeSlot.To,
                 CategoryId = input.CategoryId == 0 ? null : input.CategoryId,
@@ -111,7 +121,7 @@ namespace SuperLaw.Services
             var todayDate = DateTimeOffset.UtcNow;
 
             var meetings = profile.Meetings
-                .Where(x => x.DateTime.Date >= todayDate.Date)
+                .Where(x => x.DateTime >= todayDate)
                 .Select(x => new MeetingSimpleDto()
                 {
                     Date = x.DateTime.Date,
@@ -145,25 +155,16 @@ namespace SuperLaw.Services
             var regions = _context.JudicialRegions.ToList();
 
             var todayDateTime = DateTime.UtcNow;
-            var todayOnlyDate = new DateOnly(todayDateTime.Year, todayDateTime.Month, todayDateTime.Day);
 
             var userRole = await _userManager.GetRolesAsync(user);
 
             if (userRole.Contains("User"))
             {
-                await SetUsersMeetings(user, categories, regions, todayOnlyDate, result, todayDateTime);
+                await SetMeetingsForUser(user, categories, regions, result, todayDateTime);
             }
             else
             {
-                var profile = _context.LawyerProfiles
-                    .Include(x => x.Meetings)
-                    .ThenInclude(x => x.Client)
-                    .SingleOrDefault(x => x.UserId == userId);
-
-                if (profile is { Meetings.Count: > 0 })
-                {
-                    await SetLawyersMeetings(profile, categories, regions, todayOnlyDate, result, todayDateTime);
-                }
+                await SetMeetingsForLawyer(userId, result, categories, regions, todayDateTime);
             }
 
             result.Past = result.Past.OrderByDescending(x => x.DateTime).ToList();
@@ -172,8 +173,41 @@ namespace SuperLaw.Services
             return result;
         }
 
-        private async Task SetUsersMeetings(User user, List<LegalCategory> categories, List<JudicialRegion> regions, DateOnly todayOnlyDate,
-            MeetingsDto result, DateTime todayDateTime)
+        private async Task SetMeetingsForLawyer(string userId, MeetingsDto result, List<LegalCategory> categories, List<JudicialRegion> regions, DateTime todayDateTime)
+        {
+            var profile = _context.LawyerProfiles
+                .Include(x => x.Meetings)
+                .ThenInclude(x => x.Client)
+                .SingleOrDefault(x => x.UserId == userId);
+
+            if (profile != null)
+            {
+                foreach (var meeting in profile.Meetings)
+                {
+                    var dto = new MeetingDto()
+                    {
+                        Id = meeting.Id,
+                        ProfileId = 0,
+                        IsUserTheLawyer = true,
+                        Name = $"{meeting.Client.FirstName} {meeting.Client.LastName}",
+                        Date = meeting.DateTime.ToString("dd.MM.yyyy"),
+                        DateTime = meeting.DateTime,
+                        From = meeting.From,
+                        To = meeting.To,
+                        CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
+                        RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
+                        Info = null
+                    };
+
+                    await SetDecryptedInfoToDto(meeting, dto);
+
+                    SetDtoInMeetingsResult(result, todayDateTime, meeting, dto);
+                }
+            }
+        }
+
+        private async Task SetMeetingsForUser(User user, List<LegalCategory> categories, List<JudicialRegion> regions, MeetingsDto result,
+            DateTime todayDateTime)
         {
             foreach (var meeting in user.Meetings)
             {
@@ -192,89 +226,31 @@ namespace SuperLaw.Services
                     Info = null
                 };
 
-                if (!string.IsNullOrEmpty(meeting.Info))
-                {
-                    var decryptedInfo = await _stringEncryptService.DecryptAsync(Encoding.Unicode.GetBytes(meeting.Info));
+                await SetDecryptedInfoToDto(meeting, dto);
 
-                    meeting.Info = decryptedInfo;
-                }
-
-                var meetingOnlyDate = new DateOnly(meeting.DateTime.Year, meeting.DateTime.Month, meeting.DateTime.Day);
-
-                if (meetingOnlyDate > todayOnlyDate)
-                {
-                    result.Upcoming.Add(dto);
-                }
-                else if (meetingOnlyDate < todayOnlyDate)
-                {
-                    result.Past.Add(dto);
-                }
-                else if (meetingOnlyDate == todayOnlyDate)
-                {
-                    var hours = int.Parse(meeting.To.Split(':')[0]);
-
-                    if (hours > todayDateTime.Hour)
-                    {
-                        result.Upcoming.Add(dto);
-                    }
-                    else
-                    {
-                        result.Past.Add(dto);
-                    }
-                }
+                SetDtoInMeetingsResult(result, todayDateTime, meeting, dto);
             }
         }
 
-        private async Task SetLawyersMeetings(LawyerProfile profile, List<LegalCategory> categories, List<JudicialRegion> regions, DateOnly todayOnlyDate,
-           MeetingsDto result, DateTime todayDateTime)
+        private static void SetDtoInMeetingsResult(MeetingsDto result, DateTime todayDateTime, Meeting meeting, MeetingDto dto)
         {
-            foreach (var meeting in profile.Meetings)
+            if (todayDateTime >= meeting.DateTime)
             {
-                var dto = new MeetingDto()
-                {
-                    Id = meeting.Id,
-                    ProfileId = 0,
-                    IsUserTheLawyer = true,
-                    Name = $"{meeting.Client.FirstName} {meeting.Client.LastName}",
-                    Date = meeting.DateTime.ToString("dd.MM.yyyy"),
-                    DateTime = meeting.DateTime,
-                    From = meeting.From,
-                    To = meeting.To,
-                    CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
-                    RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
-                    Info = null
-                };
+                result.Past.Add(dto);
+            }
+            else
+            {
+                result.Upcoming.Add(dto);
+            }
+        }
 
-                if (!string.IsNullOrEmpty(meeting.Info))
-                {
-                    var decryptedInfo = await _stringEncryptService.DecryptAsync(Encoding.Unicode.GetBytes(meeting.Info));
+        private async Task SetDecryptedInfoToDto(Meeting meeting, MeetingDto dto)
+        {
+            if (!string.IsNullOrEmpty(meeting.Info))
+            {
+                var decryptedInfo = await _stringEncryptService.DecryptAsync(Encoding.Unicode.GetBytes(meeting.Info));
 
-                    meeting.Info = decryptedInfo;
-                }
-
-                var meetingOnlyDate = new DateOnly(meeting.DateTime.Year, meeting.DateTime.Month, meeting.DateTime.Day);
-
-                if (meetingOnlyDate > todayOnlyDate)
-                {
-                    result.Upcoming.Add(dto);
-                }
-                else if (meetingOnlyDate < todayOnlyDate)
-                {
-                    result.Past.Add(dto);
-                }
-                else if (meetingOnlyDate == todayOnlyDate)
-                {
-                    var hours = int.Parse(meeting.To.Split(':')[0]);
-
-                    if (hours > todayDateTime.Hour)
-                    {
-                        result.Upcoming.Add(dto);
-                    }
-                    else
-                    {
-                        result.Past.Add(dto);
-                    }
-                }
+                dto.Info = decryptedInfo;
             }
         }
     }
