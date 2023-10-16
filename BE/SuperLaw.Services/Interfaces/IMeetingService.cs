@@ -8,5 +8,7 @@ namespace SuperLaw.Services.Interfaces
         Task CreateMeetingAsync(string userId, CreateMeetingInput input);
 
         List<MeetingSimpleDto> GetUpcomingLawyerMeetings(int profileId);
+
+        Task<MeetingsDto> GetAllForUserAsync(string userId);
     }
 }

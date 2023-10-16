@@ -3,81 +3,21 @@ import "./MeetingsPage.scss";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MeetingsPageData from "../../models/MeetingsPageData";
+import meetingService from "../../services/meetingService";
 
 const MeetingsPage = () => {
   const navigate = useNavigate();
-  
-  const initialMeetings = {
-    past: [
-      {
-        id: 1,
-        profileId: 3,
-        isUserTheLawyer: false,
-        name: 'Пешо Иванов Симов',
-        date: '08.10.2023',
-        from: '10:00',
-        to: '12:00',
-        categoryName: 'Митническо право',
-        regionName: 'София',
-        info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel risus consequat, vulputate ante et, malesuada lacus. Morbi mattis sit amet mi ac auctor. Ut orci sapien, facilisis et elit et, faucibus tincidunt tortor. Cras scelerisque eleifend ligula, faucibus dapibus ex ultricies quis. Nullam eget consequat sem. Phasellus diam dui, luctus non porttitor at, ornare a elit. Sed interdum leo et sollicitudin viverra. Nam ac mi eu ex feugiat dictum. Nunc eu sodales lacus, vitae sagittis leo. Sed sed mauris pulvinar ligula consequat lobortis. Proin a pharetra nunc. In viverra aliquet euismod. Integer tincidunt imperdiet ipsum, laoreet dapibus mauris sagittis id. Cras quis consequat lorem, at bibendum ligula.'
-      },
-      {
-        id: 3,
-        profileId: 0,
-        isUserTheLawyer: false,
-        name: 'Пиянката',
-        date: '09.10.2023',
-        from: '10:00',
-        to: '12:00',
-        categoryName: 'Митническо право',
-        regionName: 'София',
-        info: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vel risus consequat, vulputate ante et, malesuada lacus. Morbi mattis sit amet mi ac auctor. Ut orci sapien, facilisis et elit et, faucibus tincidunt tortor. Cras scelerisque eleifend ligula, faucibus dapibus ex ultricies quis. Nullam eget consequat sem. Phasellus diam dui, luctus non porttitor at, ornare a elit. Sed interdum leo et sollicitudin viverra. Nam ac mi eu ex feugiat dictum. Nunc eu sodales lacus, vitae sagittis leo. Sed sed mauris pulvinar ligula consequat lobortis. Proin a pharetra nunc. In viverra aliquet euismod. Integer tincidunt imperdiet ipsum, laoreet dapibus mauris sagittis id. Cras quis consequat lorem, at bibendum ligula.'
-      },
-      {
-        id: 2,
-        profileId: 0,
-        isUserTheLawyer: true,
-        name: 'Гошо Глухия',
-        date: '10.10.2023',
-        from: '10:00',
-        to: '12:00',
-        categoryName: '',
-        regionName: '',
-        info: 'Нещо не чувам с едното ухо'
-      }
-    ],
-    upcoming: [
-      {
-        id: 3,
-        profileId: 0,
-        isUserTheLawyer: true,
-        name: 'Пешо Крика',
-        date: '18.10.2023',
-        from: '10:00',
-        to: '12:00',
-        categoryName: 'Митническо право',
-        regionName: 'София',
-        info: ''
-      },
-      {
-        id: 4,
-        profileId: 0,
-        isUserTheLawyer: true,
-        name: 'Гошо Глухия',
-        date: '20.10.2023',
-        from: '10:00',
-        to: '12:00',
-        categoryName: 'Категория 1',
-        regionName: 'село Глухотрън',
-        info: 'Нещо не чувам с едното ухо'
-      }
-    ]
-  };
 
   const [meetings, setMeetings] = useState<MeetingsPageData>();
 
   useEffect(() => {
-    setMeetings(initialMeetings);
+    const fetchMeetings = async () => {
+      const res = await meetingService.getAllForCurrentUser();
+
+      setMeetings(res);
+    };
+
+    fetchMeetings();
   }, []);
 
   const navigateToProfile = (profileId: number) => {
@@ -102,10 +42,10 @@ const MeetingsPage = () => {
                      }
                     <p>Дата: <span>{meeting.date}</span></p>
                     <p>От: <span>{meeting.from}</span> До: <span>{meeting.to}</span></p>
-                    {meeting.categoryName !== '' && <p>Категория: <span>{meeting.categoryName}</span></p>}
-                    {meeting.regionName !== '' && <p>Район: <span>{meeting.regionName}</span></p>}
-                    {meeting.info !== '' && <p>Повече инфо: </p>}
-                    {meeting.info !== '' && <p>{meeting.info}</p>}
+                    {meeting.categoryName && <p>Категория: <span>{meeting.categoryName}</span></p>}
+                    {meeting.regionName && <p>Район: <span>{meeting.regionName}</span></p>}
+                    {meeting.info && <p>Повече инфо: </p>}
+                    {meeting.info && <p>{meeting.info}</p>}
                     {!meeting.isUserTheLawyer && <Button className="primary-btn">Оцени</Button> }
                   </div>
                 ))}
@@ -125,10 +65,10 @@ const MeetingsPage = () => {
                      }
                     <p>Дата: <span>{meeting.date}</span></p>
                     <p>От: <span>{meeting.from}</span> До: <span>{meeting.to}</span></p>
-                    {meeting.categoryName !== '' && <p>Категория: <span>{meeting.categoryName}</span></p>}
-                    {meeting.regionName !== '' && <p>Район: <span>{meeting.regionName}</span></p>}
-                    {meeting.info !== '' && <p>Повече инфо: </p>}
-                    {meeting.info !== '' && <p>{meeting.info}</p>}
+                    {meeting.categoryName  && <p>Категория: <span>{meeting.categoryName}</span></p>}
+                    {meeting.regionName && <p>Район: <span>{meeting.regionName}</span></p>}
+                    {meeting.info && <p>Повече инфо: </p>}
+                    {meeting.info && <p>{meeting.info}</p>}
                   </div>
                 ))}           
           </div>

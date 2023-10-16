@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SuperLaw.Services;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 
@@ -37,6 +38,24 @@ namespace SuperLaw.Api.Controllers
 
             await _meetingService.CreateMeetingAsync(userId, input);
             return Ok();
+        }
+
+        [HttpGet(nameof(GetAllForUser))]
+        public async Task<IActionResult> GetAllForUser()
+        {
+            var userId = GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Невалиден потребител"
+                });
+            }
+
+            var result = await _meetingService.GetAllForUserAsync(userId);
+
+            return Ok(result);
         }
     }
 }

@@ -5,6 +5,7 @@ using SuperLaw.Data.Models;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using SuperLaw.Services.DTO;
 
 namespace SuperLaw.Services
@@ -12,12 +13,14 @@ namespace SuperLaw.Services
     public class MeetingService : IMeetingService
     {
         private readonly SuperLawDbContext _context;
+        private readonly UserManager<User> _userManager;
         private readonly IStringEncryptService _stringEncryptService;
 
-        public MeetingService(SuperLawDbContext context, IStringEncryptService stringEncryptService)
+        public MeetingService(SuperLawDbContext context, IStringEncryptService stringEncryptService, UserManager<User> userManager)
         {
             _context = context;
             _stringEncryptService = stringEncryptService;
+            _userManager = userManager;
         }
 
         public async Task CreateMeetingAsync(string userId, CreateMeetingInput input)
@@ -118,6 +121,161 @@ namespace SuperLaw.Services
                 .ToList();
 
             return meetings;
+        }
+
+        public async Task<MeetingsDto> GetAllForUserAsync(string userId)
+        {
+            var users = _context.Users
+                .Where(x => x.Id == userId)
+                .Include(x => x.Meetings)
+                .ThenInclude(x => x.LawyerProfile)
+                .ThenInclude(x => x.User)
+                .ToList();
+
+            if (users == null || users.Count < 1)
+            {
+                throw new BusinessException("Няма такъв потребител в системата");
+            }
+
+            var result = new MeetingsDto();
+
+            var user = users[0];
+
+            var categories = _context.LegalCategories.ToList();
+            var regions = _context.JudicialRegions.ToList();
+
+            var todayDateTime = DateTime.UtcNow;
+            var todayOnlyDate = new DateOnly(todayDateTime.Year, todayDateTime.Month, todayDateTime.Day);
+
+            var userRole = await _userManager.GetRolesAsync(user);
+
+            if (userRole.Contains("User"))
+            {
+                await SetUsersMeetings(user, categories, regions, todayOnlyDate, result, todayDateTime);
+            }
+            else
+            {
+                var profile = _context.LawyerProfiles
+                    .Include(x => x.Meetings)
+                    .ThenInclude(x => x.Client)
+                    .SingleOrDefault(x => x.UserId == userId);
+
+                if (profile is { Meetings.Count: > 0 })
+                {
+                    await SetLawyersMeetings(profile, categories, regions, todayOnlyDate, result, todayDateTime);
+                }
+            }
+
+            result.Past = result.Past.OrderByDescending(x => x.DateTime).ToList();
+            result.Upcoming = result.Upcoming.OrderBy(x => x.DateTime).ToList();
+
+            return result;
+        }
+
+        private async Task SetUsersMeetings(User user, List<LegalCategory> categories, List<JudicialRegion> regions, DateOnly todayOnlyDate,
+            MeetingsDto result, DateTime todayDateTime)
+        {
+            foreach (var meeting in user.Meetings)
+            {
+                var dto = new MeetingDto()
+                {
+                    Id = meeting.Id,
+                    ProfileId = meeting.LawyerProfileId,
+                    IsUserTheLawyer = false,
+                    Name = $"{meeting.LawyerProfile.User.FirstName} {meeting.LawyerProfile.User.LastName}",
+                    Date = meeting.DateTime.ToString("dd.MM.yyyy"),
+                    DateTime = meeting.DateTime,
+                    From = meeting.From,
+                    To = meeting.To,
+                    CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
+                    RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
+                    Info = null
+                };
+
+                if (!string.IsNullOrEmpty(meeting.Info))
+                {
+                    var decryptedInfo = await _stringEncryptService.DecryptAsync(Encoding.Unicode.GetBytes(meeting.Info));
+
+                    meeting.Info = decryptedInfo;
+                }
+
+                var meetingOnlyDate = new DateOnly(meeting.DateTime.Year, meeting.DateTime.Month, meeting.DateTime.Day);
+
+                if (meetingOnlyDate > todayOnlyDate)
+                {
+                    result.Upcoming.Add(dto);
+                }
+                else if (meetingOnlyDate < todayOnlyDate)
+                {
+                    result.Past.Add(dto);
+                }
+                else if (meetingOnlyDate == todayOnlyDate)
+                {
+                    var hours = int.Parse(meeting.To.Split(':')[0]);
+
+                    if (hours > todayDateTime.Hour)
+                    {
+                        result.Upcoming.Add(dto);
+                    }
+                    else
+                    {
+                        result.Past.Add(dto);
+                    }
+                }
+            }
+        }
+
+        private async Task SetLawyersMeetings(LawyerProfile profile, List<LegalCategory> categories, List<JudicialRegion> regions, DateOnly todayOnlyDate,
+           MeetingsDto result, DateTime todayDateTime)
+        {
+            foreach (var meeting in profile.Meetings)
+            {
+                var dto = new MeetingDto()
+                {
+                    Id = meeting.Id,
+                    ProfileId = 0,
+                    IsUserTheLawyer = true,
+                    Name = $"{meeting.Client.FirstName} {meeting.Client.LastName}",
+                    Date = meeting.DateTime.ToString("dd.MM.yyyy"),
+                    DateTime = meeting.DateTime,
+                    From = meeting.From,
+                    To = meeting.To,
+                    CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
+                    RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
+                    Info = null
+                };
+
+                if (!string.IsNullOrEmpty(meeting.Info))
+                {
+                    var decryptedInfo = await _stringEncryptService.DecryptAsync(Encoding.Unicode.GetBytes(meeting.Info));
+
+                    meeting.Info = decryptedInfo;
+                }
+
+                var meetingOnlyDate = new DateOnly(meeting.DateTime.Year, meeting.DateTime.Month, meeting.DateTime.Day);
+
+                if (meetingOnlyDate > todayOnlyDate)
+                {
+                    result.Upcoming.Add(dto);
+                }
+                else if (meetingOnlyDate < todayOnlyDate)
+                {
+                    result.Past.Add(dto);
+                }
+                else if (meetingOnlyDate == todayOnlyDate)
+                {
+                    var hours = int.Parse(meeting.To.Split(':')[0]);
+
+                    if (hours > todayDateTime.Hour)
+                    {
+                        result.Upcoming.Add(dto);
+                    }
+                    else
+                    {
+                        result.Past.Add(dto);
+                    }
+                }
+            }
         }
     }
 }
