@@ -19,6 +19,7 @@ import FindPage from './components/FindPage';
 import OwnProfile from './components/Lawyer/OwnProfile/OwnProfile';
 import isAuth from './hooks/isAuth';
 import Profile from './components/Lawyer/Profile';
+import MeeetingsPage from './components/MeeetingsPage';
 
 const App: React.FC = () => (
   <>
@@ -37,6 +38,7 @@ const App: React.FC = () => (
               <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
               <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
               <Route path='/find' Component={FindPage}/>
+              <Route path='/meetings' Component={isAuth(MeeetingsPage)}/>
           </Routes>
           <Footer/>
       </Router>
