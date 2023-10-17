@@ -77,6 +77,13 @@ namespace SuperLaw.Services
                 throw new BusinessException("Регистриран е вече такъв потребител");
             }
 
+            var lawyerWithSameLawyerNumber = _userManager.Users.FirstOrDefault(x => x.LawyerIdNumber == input.LawyerIdNumber);
+
+            if (lawyerWithSameLawyerNumber != null)
+            {
+                throw new BusinessException("Регистриран е адвокат с този личен номер");
+            }
+
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
