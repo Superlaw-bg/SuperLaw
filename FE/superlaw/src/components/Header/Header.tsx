@@ -6,7 +6,7 @@ import './Header.scss';
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
-import { Lawyer } from '../../constants/roles';
+import { Lawyer, User as UserRole } from '../../constants/roles';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -30,8 +30,6 @@ const Header = () => {
     const navigateToProfile = () => {
         if (role === Lawyer) {
             navigate('/profile');
-        } else {
-            navigate('/');
         }
     };
 
@@ -52,7 +50,7 @@ const Header = () => {
                             <span className="close">X Затвори </span><span className ="open">Меню</span>
                         </label>
                         <Nav.Item as="li">
-                            <Nav.Link onClick={navigateToProfile}>{email}</Nav.Link>
+                            <Nav.Link className={role === UserRole ? 'non-styled' : ''} onClick={navigateToProfile}>{email}</Nav.Link>
                         </Nav.Item>
                         <Nav.Item as="li">
                             <Nav.Link onClick={navigateToMeetings}>Моите консултации</Nav.Link>
