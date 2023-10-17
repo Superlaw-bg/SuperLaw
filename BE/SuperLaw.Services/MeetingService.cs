@@ -216,7 +216,7 @@ namespace SuperLaw.Services
                     Id = meeting.Id,
                     ProfileId = meeting.LawyerProfileId,
                     IsUserTheLawyer = false,
-                    Name = $"{meeting.LawyerProfile.User.FirstName} {meeting.LawyerProfile.User.LastName}",
+                    Name = $"{meeting.LawyerProfile.User.FirstName} {meeting.LawyerProfile.User.Surname} {meeting.LawyerProfile.User.LastName}",
                     Date = meeting.DateTime.ToString("dd.MM.yyyy"),
                     DateTime = meeting.DateTime,
                     From = meeting.From,

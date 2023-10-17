@@ -54,7 +54,6 @@ namespace SuperLaw.Services
             user = new User()
             {
                 FirstName = input.FirstName,
-                Surname = input.Surname,
                 LastName = input.LastName,
                 Phone = input.Phone,
                 Email = input.Email,

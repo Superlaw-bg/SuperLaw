@@ -19,7 +19,6 @@ const Register = () => {
 
   const [registerForm, setRegisterForm] = useState<RegisterUserInput>({
     firstName: "",
-    surname: "",
     lastName: "",
     cityId: 0,
     phone: "",
@@ -53,11 +52,6 @@ const Register = () => {
   const isDataValid = () => {
     if (registerForm.firstName === ''){
       setErrorMessage("Името е задължително");
-      return false;
-    }
-
-    if (registerForm.surname === ''){
-      setErrorMessage("Презимето е задължително");
       return false;
     }
 
@@ -138,11 +132,6 @@ const Register = () => {
             <div className="form-group">
               <label htmlFor="firstName">Име</label>
               <input id="firstName" type="text" className="form-control"  name="firstName" onChange={(e) => onInput(e)} />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="second-name">Презиме</label>
-              <input id="second-name" type="text" className="form-control" name="surname" onChange={(e) => onInput(e)} />
             </div>
 
             <div className="form-group">
