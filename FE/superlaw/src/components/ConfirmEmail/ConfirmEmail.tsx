@@ -30,10 +30,14 @@ const ConfirmEmail = () => {
                 role: res.data.role,
                 isLoggedIn: true
               };
-            
+              
               dispatchRegister(user);
-            
-              navigate('../profile');
+              
+              if (user.role === Lawyer) {
+                navigate('/profile');
+              } else {
+                navigate('/');
+              }
             }
         };
         
