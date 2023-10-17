@@ -71,10 +71,10 @@ const Register = () => {
       return false;
     }
 
-    const phoneRegex = /[a-zA-Z]/g;
+    const phoneRegex = /[a-zA-Zа-яА-Я]/g;
           
-    if (registerForm.phone === '' || phoneRegex.test(registerForm.phone)){
-      setErrorMessage("Телефонът е невалиден");
+    if (registerForm.phone === '' || phoneRegex.test(registerForm.phone) || registerForm.phone.length !== 9){
+      setErrorMessage("Телефонът трябва да е 9 цифри");
       return false;
     }
 

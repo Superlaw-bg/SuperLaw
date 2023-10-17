@@ -72,8 +72,8 @@ const RegisterLawyer = () => {
       return false;
     }
 
-    if (registerForm.phone === '' || phoneAndLawyerIdRegex.test(registerForm.phone)){
-      setErrorMessage("Телефонът е невалиден");
+    if (registerForm.phone === '' || phoneAndLawyerIdRegex.test(registerForm.phone) || registerForm.phone.length !== 9){
+      setErrorMessage("Телефонът трябва да е 9 цифри");
       return false;
     }
 
