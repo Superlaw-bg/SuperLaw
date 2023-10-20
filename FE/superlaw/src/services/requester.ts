@@ -63,7 +63,7 @@ const makeRequest = (url: string, method: string, hasFormData: boolean, body: an
 const responseHandler = async (res: any) => {
     if (!res.ok) {
         if (res.status === 401) {
-            toastService.showError("Трябва да се влезете в акаунта си отново");
+            toastService.showError("Изтекла Ви е сесията, моля влезте в акаунта си отново");
         }
 
         if (res.status === 400){

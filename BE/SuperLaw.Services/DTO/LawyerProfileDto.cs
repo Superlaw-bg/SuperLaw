@@ -23,5 +23,7 @@
         public bool IsJunior { get; set; }
 
         public bool IsCompleted { get; set; }
+
+        public int CityId { get; set; }
     }
 }

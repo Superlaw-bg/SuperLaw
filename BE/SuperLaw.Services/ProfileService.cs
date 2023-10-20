@@ -414,7 +414,8 @@ namespace SuperLaw.Services
                     {
                         Id = r.RegionId,
                         Name = r.Region.Name,
-                    }).ToList()
+                    }).ToList(),
+                    CityId = x.User.CityId,
                 })
                 .ToList();
 
@@ -445,25 +446,9 @@ namespace SuperLaw.Services
                 }
             }
 
-            if (!string.IsNullOrEmpty(input.Regions))
+            if (input.CityId != null && input.CityId != 0)
             {
-                var regionIds = input.Regions
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList();
-
-                foreach (var profile in profiles.ToList())
-                {
-                    var profileRegions = profile.Regions.Select(x => x.Id).ToList();
-
-                    var commonRegions = profileRegions.Intersect(regionIds).ToList();
-
-                    //Only removes profile if there are no region matches and the profile doesn't have 'whole country' option
-                    if (commonRegions.Count == 0 && profile.Regions.SingleOrDefault(x => x.Name == "Цялата страна") == null)
-                    {
-                        profiles.Remove(profile);
-                    }
-                }
+                profiles = profiles.Where(x => x.CityId == input.CityId).ToList();
             }
 
             return profiles
