@@ -1,7 +1,7 @@
 @import '../../../style-constants.scss';
 
 .profile-info {
-    padding: 10rem 4rem;
+    padding: 4rem 4rem;
     padding-bottom: 200px;
 
     color: $primary-color;
@@ -42,10 +42,14 @@
 
     .additional-info{
         margin-top: 50px;
+        display: flex;
+
+        .left{
+            flex: 0 0 40%;
+        }
 
         .book-calendar {
-            width: 50%;
-            margin: 0 auto;
+            flex: 0 0 60%;
 
             .react-calendar {
                 margin: 0 auto;
@@ -140,8 +144,14 @@
 @media (max-width: 1000px) {
     .profile-info {
         .additional-info {
+            display: flex;
+            flex-wrap: wrap;
+
+            .left {
+                flex: 0 0 100%;
+            }
             .book-calendar{
-                width: 80%;
+                flex: 0 0 100%;
 
                 .time-slots{
                     width: 100%;
