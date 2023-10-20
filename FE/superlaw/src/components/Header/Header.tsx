@@ -27,6 +27,14 @@ const Header = () => {
         navigate('/');
     };
 
+    const navigateToHome = () => {
+        if (role !== Lawyer) {
+            navigate('/');
+        } else {
+            navigate('/profile');
+        }
+    };
+
     const navigateToProfile = () => {
         if (role === Lawyer) {
             navigate('/profile');
@@ -40,7 +48,7 @@ const Header = () => {
     return(
         <Navbar className='superlaw-nav nav d-flex justify-content-between'>
             <div className='left'>
-                <Navbar.Brand as={Link} to="/" className='logo'>Superlaw</Navbar.Brand>
+                <Navbar.Brand onClick={navigateToHome} className='logo'>Superlaw</Navbar.Brand>
             </div>
             <input type="checkbox" name="toggle" id="toggle" className="nav-toggle"/>
             <div className='right'>

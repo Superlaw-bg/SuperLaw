@@ -20,6 +20,7 @@ import OwnProfile from './components/Lawyer/OwnProfile/OwnProfile';
 import isAuth from './hooks/isAuth';
 import Profile from './components/Lawyer/Profile';
 import MeeetingsPage from './components/MeeetingsPage';
+import isNormalUser from './hooks/isNormalUser';
 
 const App: React.FC = () => (
   <>
@@ -27,7 +28,7 @@ const App: React.FC = () => (
       <Router>
           <Header/>
           <Routes>
-              <Route path='/' Component={HomePage}/>
+              <Route path='/' Component={isNormalUser(HomePage)}/>
               <Route path='/login' Component={isGuest(Login)}/>
               <Route path='/register' Component={isGuest(RegisterUser)}/>
               <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
