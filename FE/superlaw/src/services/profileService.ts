@@ -37,11 +37,11 @@ const getProfile: (id: number) => Promise<LawyerProfile | null> = async (id) => 
     return res;
 }
 
-const getAll: (name: string | null, categories: number[], regions: number[]) => Promise<LawyerProfile[]> = async (name, categories, regions) => {
+const getAll: (name: string | null, categories: number[], cityId: number) => Promise<LawyerProfile[]> = async (name, categories, cityId) => {
     let path = apiRoutes.allProfiles;
     
-    if ((name !== null && name !== '') || categories.length !== 0 || regions.length !== 0) {
-        path = `${apiRoutes.allProfiles}?name=${name === null ? '' : name}&categories=${categories.join()}&regions=${regions.join()}`;
+    if ((name !== null && name !== '') || categories.length !== 0 || cityId !== 0) {
+        path = `${apiRoutes.allProfiles}?name=${name === null ? '' : name}&categories=${categories.join()}&cityId=${cityId}`;
     }
    
     const res = await requester.get(path);

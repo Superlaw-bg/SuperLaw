@@ -208,8 +208,8 @@ const EditProfile = () => {
       return false;
     }
 
-    if (Number.isNaN(profile.hourlyRate) || profile.hourlyRate < 10 || profile.hourlyRate > 500){
-      setErrorMessage("Часовата ставка трябва да е число между 10 и 500");
+    if (Number.isNaN(profile.hourlyRate) || profile.hourlyRate < 100 || profile.hourlyRate > 500){
+      setErrorMessage("Часовата ставка трябва да е число между 100 и 500");
       return false;
     }
 

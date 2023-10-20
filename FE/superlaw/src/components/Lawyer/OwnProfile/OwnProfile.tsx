@@ -54,7 +54,7 @@ const OwnProfile = () => {
 
   return (
     <div>
-       { (!profile.id || profile.id === -1) && 
+       { profile && (!profile.id || profile.id === -1) && 
         <div className='create-profile-info'>
         <div className='wrapper'>
           <div className='text'>
@@ -73,7 +73,7 @@ const OwnProfile = () => {
       </div>
        }
 
-       { profile.id && profile.id !== -1 &&
+       { profile && profile.id && profile.id !== -1 &&
           <div className='own-profile-info'>
           <div className='header'>
             <div className='profile-image'>

@@ -6,7 +6,7 @@ import './Header.scss';
 import { useStoreActions, useStoreState } from '../../store/hooks';
 import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
-import { Lawyer } from '../../constants/roles';
+import { Lawyer, User as UserRole } from '../../constants/roles';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -27,11 +27,17 @@ const Header = () => {
         navigate('/');
     };
 
+    const navigateToHome = () => {
+        if (role !== Lawyer) {
+            navigate('/');
+        } else {
+            navigate('/profile');
+        }
+    };
+
     const navigateToProfile = () => {
         if (role === Lawyer) {
             navigate('/profile');
-        } else {
-            navigate('/');
         }
     };
 
@@ -42,7 +48,7 @@ const Header = () => {
     return(
         <Navbar className='superlaw-nav nav d-flex justify-content-between'>
             <div className='left'>
-                <Navbar.Brand as={Link} to="/" className='logo'>Superlaw</Navbar.Brand>
+                <Navbar.Brand onClick={navigateToHome} className='logo'>Superlaw</Navbar.Brand>
             </div>
             <input type="checkbox" name="toggle" id="toggle" className="nav-toggle"/>
             <div className='right'>
@@ -52,7 +58,7 @@ const Header = () => {
                             <span className="close">X Затвори </span><span className ="open">Меню</span>
                         </label>
                         <Nav.Item as="li">
-                            <Nav.Link onClick={navigateToProfile}>{email}</Nav.Link>
+                            <Nav.Link className={role === UserRole ? 'non-styled' : ''} onClick={navigateToProfile}>{email}</Nav.Link>
                         </Nav.Item>
                         <Nav.Item as="li">
                             <Nav.Link onClick={navigateToMeetings}>Моите консултации</Nav.Link>

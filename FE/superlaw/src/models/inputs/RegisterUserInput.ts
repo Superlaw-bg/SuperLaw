@@ -1,6 +1,5 @@
 interface RegisterUserInput {
     firstName: string,
-    surname: string,
     lastName: string,
     email: string,
     phone: string,

@@ -20,14 +20,17 @@ import OwnProfile from './components/Lawyer/OwnProfile/OwnProfile';
 import isAuth from './hooks/isAuth';
 import Profile from './components/Lawyer/Profile';
 import MeeetingsPage from './components/MeeetingsPage';
+import isNotLawyer from './hooks/isNotLawyer';
+import ScrollToTop from './components/ScrollToTop';
 
 const App: React.FC = () => (
   <>
     <Toaster/>
       <Router>
+          <ScrollToTop/>
           <Header/>
           <Routes>
-              <Route path='/' Component={HomePage}/>
+              <Route path='/' Component={isNotLawyer(HomePage)}/>
               <Route path='/login' Component={isGuest(Login)}/>
               <Route path='/register' Component={isGuest(RegisterUser)}/>
               <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
@@ -37,7 +40,7 @@ const App: React.FC = () => (
               <Route path='/profile/:id' Component={isAuth(Profile)}/>
               <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
               <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
-              <Route path='/find' Component={FindPage}/>
+              <Route path='/find' Component={isNotLawyer(FindPage)}/>
               <Route path='/meetings' Component={isAuth(MeeetingsPage)}/>
           </Routes>
           <Footer/>

@@ -72,8 +72,8 @@ const RegisterLawyer = () => {
       return false;
     }
 
-    if (registerForm.phone === '' || phoneAndLawyerIdRegex.test(registerForm.phone)){
-      setErrorMessage("Телефонът е невалиден");
+    if (registerForm.phone === '' || phoneAndLawyerIdRegex.test(registerForm.phone) || registerForm.phone.length !== 9){
+      setErrorMessage("Телефонът трябва да е 9 цифри");
       return false;
     }
 
@@ -131,7 +131,7 @@ const RegisterLawyer = () => {
       <div className="reg-lawyer-row">
       <div className="form-wrapper-reg">
         <form className="register-law-form" onSubmit={(e) => onRegister(e)}>
-          <h1 className="register-heading">Регистрирай се</h1>
+          <h1 className="register-heading">Регистрирай се като адвокат</h1>
           <div className="form-group">
             <label htmlFor="name">Име</label>
             <input id="name" type="text" className="form-control" name="firstName" onChange={(e) => onInput(e)}/>

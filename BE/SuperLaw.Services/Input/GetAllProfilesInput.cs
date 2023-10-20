@@ -6,6 +6,6 @@
 
         public string? Categories { get; set; }
 
-        public string? Regions { get; set; }
+        public int? CityId { get; set; }
     }
 }

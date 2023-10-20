@@ -209,21 +209,23 @@ const Profile = () => {
           </div>
         </div>
         <div className='additional-info'>
-          <div className='sect phone'>
-            <p className='bold'>Телефон:</p>
-            <p>{profile.phone}</p>    
-          </div>
+          <div className="left">
+            <div className='sect phone'>
+              <p className='bold'>Телефон:</p>
+              <p>{profile.phone}</p>    
+            </div>
 
-          <div className='sect address'>
-            <p className='bold'>Адрес:</p>
-            <p>{profile.address}</p>    
-          </div>
+            <div className='sect address'>
+              <p className='bold'>Адрес:</p>
+              <p>{profile.address}</p>    
+            </div>
 
-          <div className='sect description'>
-            <p className='bold'>Информация:</p>
-            <p>{profile.description}</p>    
+            <div className='sect description'>
+              <p className='bold'>Информация:</p>
+              <p>{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}</p>    
+            </div>
           </div>
-
+         
           <div className="book-calendar">
             <Calendar 
               onChange={onDateSelect}

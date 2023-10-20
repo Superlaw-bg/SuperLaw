@@ -32,6 +32,7 @@ namespace SuperLaw.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "User, Admin")]
         [HttpGet]
         [Route("Get/{id:int}")]
         public async Task<IActionResult> Get([FromRoute]int id)

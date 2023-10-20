@@ -54,7 +54,6 @@ namespace SuperLaw.Services
             user = new User()
             {
                 FirstName = input.FirstName,
-                Surname = input.Surname,
                 LastName = input.LastName,
                 Phone = input.Phone,
                 Email = input.Email,
@@ -76,6 +75,13 @@ namespace SuperLaw.Services
             if (user != null)
             {
                 throw new BusinessException("Регистриран е вече такъв потребител");
+            }
+
+            var lawyerWithSameLawyerNumber = _userManager.Users.FirstOrDefault(x => x.LawyerIdNumber == input.LawyerIdNumber);
+
+            if (lawyerWithSameLawyerNumber != null)
+            {
+                throw new BusinessException("Регистриран е адвокат с този личен номер");
             }
 
             var city = _simpleDataService.GetCity(input.CityId);

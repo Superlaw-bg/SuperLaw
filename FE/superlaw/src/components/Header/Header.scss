@@ -15,6 +15,10 @@
             color: $white;
             font-size: 2rem;
             margin: 0;
+
+            &:hover {
+                cursor: pointer;
+            }
         }    
     }
 
@@ -38,10 +42,20 @@
             .nav-link {
                 color: $secondary-color;
                 text-decoration: none;
-                font-size: 1.2rem;
+                font-size: 1rem;
 
                 &:hover {
                     text-decoration: underline;
+                }
+            }
+
+            .non-styled {
+                color: white;
+                font-size: 1.1rem;
+
+                &:hover{
+                    text-decoration: none;
+                    cursor: default;
                 }
             }
         }

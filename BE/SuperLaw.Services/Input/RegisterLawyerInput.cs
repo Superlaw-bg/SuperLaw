@@ -17,6 +17,8 @@ namespace SuperLaw.Services.Input
         public string Email { get; set; }
 
         [Phone]
+        [MinLength(9)]
+        [MaxLength(9)]
         public string Phone { get; set; }
 
         [Required]

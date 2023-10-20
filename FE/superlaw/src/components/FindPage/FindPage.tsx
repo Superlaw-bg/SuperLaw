@@ -2,22 +2,23 @@ import "./FindPage.scss";
 import Select, { ActionMeta } from "react-select";
 import { FormEvent, useEffect, useState } from "react";
 import legalCategoriesService from "../../services/legalCategoriesService";
-import judicialRegionsService from "../../services/judicialRegionsService";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
 import profileService from "../../services/profileService";
 import LawyerProfile from "../../models/LawyerProfile";
 import { useNavigate } from "react-router-dom";
+import cityService from "../../services/cityService";
+import SimpleData from "../../models/SimpleData";
 
 const FindPage = () => {
   const navigate = useNavigate();
   const [allCategories, setCategories] = useState([]);
-  const [allRegions, setRegions] = useState([]);
+  const [allCities, setCities] = useState<SimpleData[]>([]);
 
   const [searchForm, setSearchForm] = useState({
     name: "",
     categories: [],
-    regions: [],
+    cityId: 0,
   });
 
   const [profiles, setProfiles] = useState<LawyerProfile[]>([]);
@@ -27,13 +28,6 @@ const FindPage = () => {
     actionMeta: ActionMeta<never>
   ): void => {
     setSearchForm({ ...searchForm, categories: newValue });
-  };
-
-  const onRegionSelect = (
-    newValue: any,
-    actionMeta: ActionMeta<never>
-  ): void => {
-    setSearchForm({ ...searchForm, regions: newValue });
   };
 
   useEffect(() => {
@@ -52,29 +46,20 @@ const FindPage = () => {
       setCategories(categoriesRes);
     };
 
-    const fetchRegions = async () => {
-      const res = await judicialRegionsService.getRegions();
+    const fetchCities = async () => {
+      const res = await cityService.getCities();
 
-      let regionsRes: any = [];
-
-      res.forEach((x) => {
-        regionsRes.push({
-          value: x.id,
-          label: x.name,
-        });
-      });
-
-      setRegions(regionsRes);
+      setCities(res);
     };
 
     const fetchProfiles = async () => {
-      const res = await profileService.getAll(null, [], []);
+      const res = await profileService.getAll(null, [], 0);
 
       setProfiles(res);
     };
 
     fetchCategories();
-    fetchRegions();
+    fetchCities();
     fetchProfiles();
   }, []);
 
@@ -92,9 +77,8 @@ const FindPage = () => {
     event.preventDefault();
 
     const categories = searchForm.categories.map((c: any) => c.value);
-    const regions = searchForm.regions.map((r: any) => r.value);
     console.log(searchForm);
-    const res = await profileService.getAll(searchForm.name, categories, regions);
+    const res = await profileService.getAll(searchForm.name, categories, searchForm.cityId);
 
     setProfiles(res);
   }
@@ -165,16 +149,15 @@ const FindPage = () => {
         </div>
 
         <div className="form-group selection">
-          <label htmlFor="legalCategory">Градове</label>
-          <Select
-            isMulti
-            name="regions"
-            options={allRegions}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={searchForm.regions}
-            onChange={onRegionSelect}
-          />
+          <label htmlFor="cityId">Град</label>
+          <select className="form-select" name="cityId" id="cityId" onChange={(e) => onInput(e)}>
+                <option selected value={0}>
+                  Изберете град
+                </option>
+                {allCities.map((city) => 
+                  <option key={city.id} value={city.id}>{city.name}</option>
+                )}
+          </select>
         </div>
 
         <Button className="search-btn" type="submit" variant="primary">
