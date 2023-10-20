@@ -21,11 +21,13 @@ import isAuth from './hooks/isAuth';
 import Profile from './components/Lawyer/Profile';
 import MeeetingsPage from './components/MeeetingsPage';
 import isNotLawyer from './hooks/isNotLawyer';
+import ScrollToTop from './components/ScrollToTop';
 
 const App: React.FC = () => (
   <>
     <Toaster/>
       <Router>
+          <ScrollToTop/>
           <Header/>
           <Routes>
               <Route path='/' Component={isNotLawyer(HomePage)}/>
