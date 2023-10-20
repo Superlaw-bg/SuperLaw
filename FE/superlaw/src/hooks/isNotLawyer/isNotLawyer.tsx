@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useStoreState } from '../../store/hooks';
 import { Lawyer } from '../../constants/roles';
 
-const isNormalUser = (Component: React.FC) => {
+const isNotLawyer = (Component: React.FC) => {
     const Wrapper = () => {
         const navigate = useNavigate();
         const { role } = useStoreState(state => state.auth.user);
@@ -22,4 +22,4 @@ const isNormalUser = (Component: React.FC) => {
     return Wrapper;
 }
 
-export default isNormalUser;
+export default isNotLawyer;

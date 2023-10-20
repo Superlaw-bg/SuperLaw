@@ -63,12 +63,7 @@ const Login = () => {
       }
     
       dispatchLogin(user);
-      debugger;
-      if (user.role === Lawyer) {
-        navigate('/profile');
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     }
   };
   
