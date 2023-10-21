@@ -1,4 +1,6 @@
-﻿namespace SuperLaw.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SuperLaw.Data.Models
 {
     public class Meeting
     {
@@ -21,6 +23,9 @@
         public int? CategoryId { get; set; }
 
         public int? RegionId { get; set; }
+
+        [Range(0, 5)]
+        public decimal Rating { get; set; }
 
         public bool IsUserFlagged { get; set; }
 

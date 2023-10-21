@@ -1,4 +1,6 @@
-﻿namespace SuperLaw.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SuperLaw.Data.Models
 {
     public class LawyerProfile
     {
@@ -14,6 +16,9 @@
         public decimal HourlyRate { get; set; }
 
         public string Address { get; set; } = string.Empty;
+
+        [Range(0, 5)]
+        public decimal Rating { get; set; }
 
         public bool IsJunior { get; set; }
 
