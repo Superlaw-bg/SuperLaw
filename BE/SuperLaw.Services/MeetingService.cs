@@ -148,7 +148,7 @@ namespace SuperLaw.Services
 
             meeting.Rating = input.Rating;
 
-            await _context.SaveChangesAsync();
+            _context.Meetings.Update(meeting);
 
             var lawyerProfile = _context.LawyerProfiles
                 .Where(x => x.Id == meeting.LawyerProfileId)
@@ -166,6 +166,7 @@ namespace SuperLaw.Services
 
             lawyerProfile.Rating = ratingSum / meetings.Count;
 
+            _context.LawyerProfiles.Update(lawyerProfile);
             await _context.SaveChangesAsync();
         }
 

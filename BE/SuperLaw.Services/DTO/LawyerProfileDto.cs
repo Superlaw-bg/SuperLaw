@@ -20,6 +20,8 @@
 
         public List<SimpleDto> Regions { get; set; } = new List<SimpleDto>();
 
+        public decimal Rating { get; set; }
+
         public bool IsJunior { get; set; }
 
         public bool IsCompleted { get; set; }

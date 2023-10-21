@@ -269,6 +269,7 @@ namespace SuperLaw.Services
                     })
                     .OrderBy(x => x.Name)
                     .ToList(),
+                Rating = userLawyerProfile.Rating,
                 Schedule = new ScheduleDto(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
@@ -327,6 +328,7 @@ namespace SuperLaw.Services
                     })
                     .OrderBy(x => x.Name)
                     .ToList(),
+                Rating = userLawyerProfile.Rating,
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
@@ -415,6 +417,7 @@ namespace SuperLaw.Services
                         Id = r.RegionId,
                         Name = r.Region.Name,
                     }).ToList(),
+                    Rating = x.Rating,
                     CityId = x.User.CityId,
                 })
                 .ToList();
