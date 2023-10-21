@@ -286,6 +286,7 @@ namespace SuperLaw.Services
                     To = meeting.To,
                     CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
                     RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
+                    Rating = meeting.Rating,
                     Info = null
                 };
 

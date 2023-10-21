@@ -8,7 +8,8 @@ interface Meeting {
     to: string,
     categoryName: string,
     regionName: string,
-    info: string
+    info: string,
+    rating: number
 }
 
 export default Meeting;

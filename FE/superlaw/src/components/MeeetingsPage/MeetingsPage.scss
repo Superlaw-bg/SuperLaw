@@ -62,6 +62,14 @@
                         cursor: pointer;
                     }
                 }
+
+                &.rating {
+                    font-size: 1.5rem;
+
+                    i{
+                        color: yellow;
+                    }
+                }
             }
         }
     }
