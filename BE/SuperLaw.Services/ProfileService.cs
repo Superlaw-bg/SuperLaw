@@ -455,7 +455,8 @@ namespace SuperLaw.Services
             }
 
             return profiles
-                .OrderBy(x => x.FullName)
+                .OrderByDescending(x => x.Rating)
+                .ThenBy(x => x.FullName)
                 .ToList();
         }
 

@@ -83,6 +83,26 @@ const FindPage = () => {
     setProfiles(res);
   }
 
+  const orderByRatingAsc = () => {
+    setProfiles(profiles.slice().sort((a: any, b: any) => {
+        if (a.rating < b.rating)
+            return -1;
+        if (a.rating > b.rating)
+            return 1;
+        return 0;
+    }));
+  };
+
+  const orderByRatingDesc = () => {
+    setProfiles(profiles.slice().sort((a: any, b: any) => {
+        if (a.rating < b.rating)
+            return 1; 
+        if (a.rating > b.rating)
+            return -1;
+        return 0;
+    }));
+  };
+
   const orderByNameAsc = () => {
     setProfiles(profiles.slice().sort((a: any, b: any) => {
         if (a.fullName < b.fullName)
@@ -168,6 +188,8 @@ const FindPage = () => {
         <h2>Профили</h2>
         <div className="sort">
           <span>Подреди по: </span>
+          <span className="sorter" onClick={orderByRatingAsc}>Оценка ↑</span>
+          <span className="sorter" onClick={orderByRatingDesc}>Оценка ↓</span>
           <span className="sorter" onClick={orderByNameAsc}>Име ↑</span>
           <span className="sorter" onClick={orderByNameDesc}>Име ↓</span>
           <span className="sorter" onClick={orderByHourlyRateAsc}>Ставка ↑</span>
