@@ -19,6 +19,7 @@ const OwnProfile = () => {
     address: '',
     categories: [],
     regions: [],
+    rating: 0,
     schedule: {
       monday: [],
       tuesday: [],
@@ -84,6 +85,11 @@ const OwnProfile = () => {
                   <h3>{profile.fullName}</h3>
                   <p>{profile.isJunior ? 'Младши адвокат' : 'Адвокат'}</p>
                </div>
+
+                <div className='sect rating'>
+                  {profile.rating === 0 && <p className='bold'>Нямаш оценка</p>}
+                  {profile.rating !== 0 && <p className="bold"><i className="fa-solid fa-star"></i> {profile.rating} / 5</p> }
+                </div>
 
                 <div className='sect categories'>
                   <p className='bold'>Категории: </p>

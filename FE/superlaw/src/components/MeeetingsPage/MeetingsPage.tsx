@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import MeetingsPageData from "../../models/MeetingsPageData";
 import meetingService from "../../services/meetingService";
 import RateModal from "./RateModal";
+import toastService from "../../services/toastService";
 
 const MeetingsPage = () => {
   const navigate = useNavigate();
@@ -33,18 +34,27 @@ const MeetingsPage = () => {
   }
 
   const closeRateModal = () => {
-    console.log('iska da zatwoei');
     setSelectedMeeting(0);
     setShowRateModal(false);
   }
 
-  const onRateConfirmCallback = (rating: number) => {
-    let selMeeting = meetings.past.filter(x => x.id == selectedMeeting)[0];
-    selMeeting.rating = rating;
-    
-    setMeetings(meetings);
+  const onRateConfirmCallbackAsync = async (rating: number) => {
 
-    closeRateModal();
+    const res = await meetingService.rateMeeting({
+      rating,
+      meetingId: selectedMeeting
+    });
+
+    if(!res.isError){
+      toastService.showSuccess("Успешно оценихте консултацията");
+
+      let selMeeting = meetings.past.filter(x => x.id == selectedMeeting)[0];
+      selMeeting.rating = rating;
+    
+      setMeetings(meetings);
+
+      closeRateModal();
+    }
   }
 
   return (
@@ -70,7 +80,7 @@ const MeetingsPage = () => {
                     {meeting.info && <p>Повече инфо: </p>}
                     {meeting.info && <p>{meeting.info}</p>}
                     {!meeting.isUserTheLawyer && meeting.rating === 0 && <Button className="primary-btn" onClick={() => openRateModal(meeting.id)}>Оцени</Button> }
-                    {!meeting.isUserTheLawyer && meeting.rating !== 0 && <p className="rating"><i className="fa-solid fa-star"></i> {meeting.rating}/5</p>  }
+                    {!meeting.isUserTheLawyer && meeting.rating !== 0 && <p className="rating"><i className="fa-solid fa-star"></i> {meeting.rating} / 5</p>  }
                   </div>
                 ))}
             </div>
@@ -101,7 +111,7 @@ const MeetingsPage = () => {
 
       <RateModal
         meetingId={selectedMeeting}
-        onRateConfirmCallback={onRateConfirmCallback}
+        onRateConfirmCallbackAsync={onRateConfirmCallbackAsync}
         show={showRateModal}
         onHide={closeRateModal}
       />

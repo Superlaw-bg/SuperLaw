@@ -6,16 +6,13 @@ import StarRating from "../StarRating";
 const RateModal = (props: any) => {  
 
     const [rating, setRating] = useState(0);
-    console.log(props);
 
     const getRating = (rating: number) => {
         setRating(rating);
     }
 
-    const rate = () => {
-        console.log('rate is pressed');
-        console.log(props.meetingId);
-        props.onRateConfirmCallback(rating);
+    const rate = async () => {
+        await props.onRateConfirmCallbackAsync(rating);
     }
 
     return (
@@ -34,7 +31,7 @@ const RateModal = (props: any) => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={rate} className="primary-btn">Дай оценка</Button>
+            <Button onClick={async ()=> await rate()} className="primary-btn">Дай оценка</Button>
           </Modal.Footer>
         </Modal>
       );
