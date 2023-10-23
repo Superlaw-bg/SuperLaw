@@ -30,5 +30,7 @@ namespace SuperLaw.Services.DTO
         public string? RegionName { get; set; }
 
         public string? Info { get; set; }
+
+        public decimal Rating { get; set; }
     }
 }

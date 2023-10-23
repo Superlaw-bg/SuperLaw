@@ -4,11 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MeetingsPageData from "../../models/MeetingsPageData";
 import meetingService from "../../services/meetingService";
+import RateModal from "./RateModal";
+import toastService from "../../services/toastService";
 
 const MeetingsPage = () => {
   const navigate = useNavigate();
 
-  const [meetings, setMeetings] = useState<MeetingsPageData>();
+  const [meetings, setMeetings] = useState<MeetingsPageData>({past: [], upcoming: []});
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [selectedMeeting, setSelectedMeeting] = useState(0);
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -23,6 +27,35 @@ const MeetingsPage = () => {
   const navigateToProfile = (profileId: number) => {
     navigate(`/profile/${profileId}`);
   };
+
+  const openRateModal = (meetingId: number) => {
+    setSelectedMeeting(meetingId);
+    setShowRateModal(true);
+  }
+
+  const closeRateModal = () => {
+    setSelectedMeeting(0);
+    setShowRateModal(false);
+  }
+
+  const onRateConfirmCallbackAsync = async (rating: number) => {
+
+    const res = await meetingService.rateMeeting({
+      rating,
+      meetingId: selectedMeeting
+    });
+
+    if(!res.isError){
+      toastService.showSuccess("Успешно оценихте консултацията");
+
+      let selMeeting = meetings.past.filter(x => x.id == selectedMeeting)[0];
+      selMeeting.rating = rating;
+    
+      setMeetings(meetings);
+
+      closeRateModal();
+    }
+  }
 
   return (
     <div className="meetings-page">
@@ -46,7 +79,8 @@ const MeetingsPage = () => {
                     {meeting.regionName && <p>Район: <span>{meeting.regionName}</span></p>}
                     {meeting.info && <p>Повече инфо: </p>}
                     {meeting.info && <p>{meeting.info}</p>}
-                    {!meeting.isUserTheLawyer && <Button className="primary-btn">Оцени</Button> }
+                    {!meeting.isUserTheLawyer && meeting.rating === 0 && <Button className="primary-btn" onClick={() => openRateModal(meeting.id)}>Оцени</Button> }
+                    {!meeting.isUserTheLawyer && meeting.rating !== 0 && <p className="rating"><i className="fa-solid fa-star"></i> {meeting.rating} / 5</p>  }
                   </div>
                 ))}
             </div>
@@ -74,6 +108,13 @@ const MeetingsPage = () => {
           </div>
         </Tab>
       </Tabs>
+
+      <RateModal
+        meetingId={selectedMeeting}
+        onRateConfirmCallbackAsync={onRateConfirmCallbackAsync}
+        show={showRateModal}
+        onHide={closeRateModal}
+      />
     </div>
   );
 };

@@ -34,6 +34,8 @@ const Profile = () => {
         address: '',
         categories: [],
         regions: [],
+        rating: 0,
+        city: '',
         schedule: {
           monday: [],
           tuesday: [],
@@ -189,6 +191,11 @@ const Profile = () => {
                 <p>{profile.isJunior ? 'Младши адвокат' : 'Адвокат'}</p>
              </div>
 
+             <div className='sect rating'>
+                {profile.rating === 0 && <p className='bold'>Няма оценка</p>}
+                {profile.rating !== 0 && <p className="bold"><i className="fa-solid fa-star"></i> {profile.rating} / 5</p> }
+              </div>
+
               <div className='sect categories'>
                 <p className='bold'>Категории: </p>
                 {profile.categories.map((cat, ind) => 
@@ -213,6 +220,11 @@ const Profile = () => {
             <div className='sect phone'>
               <p className='bold'>Телефон:</p>
               <p>{profile.phone}</p>    
+            </div>
+
+            <div className='sect city'>
+              <p className='bold'>Град:</p>
+              <p>{profile.city}</p>    
             </div>
 
             <div className='sect address'>

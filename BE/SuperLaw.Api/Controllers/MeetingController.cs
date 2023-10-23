@@ -15,6 +15,7 @@ namespace SuperLaw.Api.Controllers
             _meetingService = meetingService;
         }
 
+        [Authorize(Roles = "User, Admin")]
         [HttpPost(nameof(Create))]
         public async Task<IActionResult> Create([FromBody] CreateMeetingInput input)
         {
@@ -37,6 +38,24 @@ namespace SuperLaw.Api.Controllers
             }
 
             await _meetingService.CreateMeetingAsync(userId, input);
+            return Ok();
+        }
+
+        [Authorize(Roles = "User, Admin")]
+        [HttpPost(nameof(Rate))]
+        public async Task<IActionResult> Rate([FromBody] RateMeetingInput input)
+        {
+            var userId = GetCurrentUserId();
+
+            if (userId == null)
+            {
+                return BadRequest(new ErrorDetails()
+                {
+                    Message = "Невалиден потребител"
+                });
+            }
+
+            await _meetingService.RateMeetingAsync(userId, input);
             return Ok();
         }
 

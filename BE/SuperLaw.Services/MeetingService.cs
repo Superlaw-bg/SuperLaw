@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using SuperLaw.Services.DTO;
 using System.Threading;
 using System.Drawing;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace SuperLaw.Services
 {
@@ -112,6 +113,60 @@ namespace SuperLaw.Services
             }
 
             await _context.Meetings.AddAsync(meeting);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RateMeetingAsync(string userId, RateMeetingInput input)
+        {
+            var meeting = _context.Meetings
+                .SingleOrDefault(x => x.Id == input.MeetingId);
+
+            if (meeting == null)
+            {
+                throw new BusinessException("Невалидна консултация");
+            }
+
+            if (meeting.ClientId != userId)
+            {
+                throw new BusinessException("Не може да оцениш тази консултация");
+            }
+
+            if (meeting.Rating != 0)
+            {
+                throw new BusinessException("Kонсултацията вече е с оценка");
+            }
+
+            if (meeting.DateTime >= DateTimeOffset.UtcNow)
+            {
+                throw new BusinessException("Консултацията все още не е приключила");
+            }
+
+            if (input.Rating is < 1 or > 5)
+            {
+                throw new BusinessException("Невалиден Рейтинг");
+            }
+
+            meeting.Rating = input.Rating;
+
+            _context.Meetings.Update(meeting);
+
+            var lawyerProfile = _context.LawyerProfiles
+                .Where(x => x.Id == meeting.LawyerProfileId)
+                .Include(x => x.Meetings)
+                .SingleOrDefault();
+
+            if (lawyerProfile == null)
+            {
+                throw new BusinessException("Невалиден адвокатски профил");
+            }
+
+            var meetings = lawyerProfile.Meetings.Where(x => x.Rating != 0).ToList();
+
+            var ratingSum = meetings.Select(x => x.Rating).Sum();
+
+            lawyerProfile.Rating = ratingSum / meetings.Count;
+
+            _context.LawyerProfiles.Update(lawyerProfile);
             await _context.SaveChangesAsync();
         }
 
@@ -231,6 +286,7 @@ namespace SuperLaw.Services
                     To = meeting.To,
                     CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
                     RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
+                    Rating = meeting.Rating,
                     Info = null
                 };
 

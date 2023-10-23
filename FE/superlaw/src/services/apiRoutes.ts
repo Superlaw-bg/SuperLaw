@@ -13,6 +13,7 @@ const apiRoutes = {
     ownProfileDataForEdit: 'Profile/OwnDataForEdit',
     allProfiles: 'Profile/GetAll',
     createMeeting: 'Meeting/Create',
+    rateMeeting: 'Meeting/Rate',
     meetingsForUser: 'Meeting/GetAllForUser'
 };
 

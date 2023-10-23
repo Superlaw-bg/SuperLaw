@@ -5,9 +5,16 @@ import LawyerProfile from '../models/LawyerProfile';
 import TimeSlotInput from '../models/inputs/TimeSlotInput';
 import TimeSlotSelect from '../models/TimeSlotSelect';
 import MeetingsPageData from '../models/MeetingsPageData';
+import RateMeetingInput from '../models/inputs/RateMeetingInput';
 
 const createMeeting: (input: any) => Promise<Result> = async (input) => {
     const res = await requester.post(apiRoutes.createMeeting, input);
+
+    return res;
+}
+
+const rateMeeting: (input: RateMeetingInput) => Promise<Result> = async (input) => {
+    const res = await requester.post(apiRoutes.rateMeeting, input);
 
     return res;
 }
@@ -119,6 +126,7 @@ const getTimeSlotsForSelectionForDate = (profile: LawyerProfile, timeSlots: Time
 
 const meetingService = {
     createMeeting,
+    rateMeeting,
     getAllForCurrentUser,
     getMeetingsForDate,
     isDayForMeetingsDisabled,

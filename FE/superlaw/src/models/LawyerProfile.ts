@@ -11,6 +11,8 @@ interface LawyerProfile {
     phone: string,
     address: string,
     categories: SimpleData[],
+    rating: number,
+    city: string,
     regions: SimpleData[],
     schedule: ScheduleInput,
     meetings: { [date: string]: SimpleMeeting[]},
