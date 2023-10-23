@@ -225,6 +225,8 @@ namespace SuperLaw.Services
         public async Task<LawyerProfileDto?> GetOwnProfileAsync(string userId)
         {
             var userLawyerProfile = await _context.LawyerProfiles
+                .Include(x => x.User)
+                .ThenInclude(x => x.City)
                 .Include(x => x.JudicialRegions)
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
@@ -270,6 +272,7 @@ namespace SuperLaw.Services
                     .OrderBy(x => x.Name)
                     .ToList(),
                 Rating = Math.Round(userLawyerProfile.Rating, 1),
+                City = userLawyerProfile.User.City.Name,
                 Schedule = new ScheduleDto(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
@@ -283,6 +286,8 @@ namespace SuperLaw.Services
         public async Task<LawyerProfileDto?> GetProfileByIdAsync(int id)
         {
             var userLawyerProfile = await _context.LawyerProfiles
+                .Include(x => x.User)
+                .ThenInclude(x => x.City)
                 .Include(x => x.JudicialRegions)
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
@@ -329,6 +334,7 @@ namespace SuperLaw.Services
                     .OrderBy(x => x.Name)
                     .ToList(),
                 Rating = Math.Round(userLawyerProfile.Rating, 1),
+                City = userLawyerProfile.User.City.Name,
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
@@ -393,6 +399,7 @@ namespace SuperLaw.Services
 
             var profiles = profileQuery
                 .Include(x => x.User)
+                .ThenInclude(x => x.City)
                 .Include(x => x.JudicialRegions)
                 .ThenInclude(x => x.Region)
                 .Include(x => x.LegalCategories)
@@ -419,6 +426,7 @@ namespace SuperLaw.Services
                     }).ToList(),
                     Rating = Math.Round(x.Rating, 1),
                     CityId = x.User.CityId,
+                    City = x.User.City.Name,
                 })
                 .ToList();
 

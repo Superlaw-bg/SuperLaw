@@ -211,6 +211,10 @@ const FindPage = () => {
                   <p>{profile.isJunior ? "Младши адвокат" : "Адвокат"}</p>
                 </div>
 
+                <div className='sect city'>
+                  <p className='bold'>{profile.city}</p>    
+                </div>
+
                 <div className='sect rating'>
                   {profile.rating === 0 && <p className='bold'>Няма оценка</p>}
                   {profile.rating !== 0 && <p className="bold"><i className="fa-solid fa-star"></i> {profile.rating} / 5</p> }

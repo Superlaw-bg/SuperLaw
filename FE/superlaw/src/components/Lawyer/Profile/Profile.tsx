@@ -35,6 +35,7 @@ const Profile = () => {
         categories: [],
         regions: [],
         rating: 0,
+        city: '',
         schedule: {
           monday: [],
           tuesday: [],
@@ -219,6 +220,11 @@ const Profile = () => {
             <div className='sect phone'>
               <p className='bold'>Телефон:</p>
               <p>{profile.phone}</p>    
+            </div>
+
+            <div className='sect city'>
+              <p className='bold'>Град:</p>
+              <p>{profile.city}</p>    
             </div>
 
             <div className='sect address'>

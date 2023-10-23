@@ -16,6 +16,7 @@ const OwnProfile = () => {
     description: '',
     hourlyRate: 0,
     phone: '',
+    city: '',
     address: '',
     categories: [],
     regions: [],
@@ -114,6 +115,11 @@ const OwnProfile = () => {
             <div className='sect phone'>
               <p className='bold'>Телефон:</p>
               <p>{profile.phone}</p>    
+            </div>
+
+            <div className='sect city'>
+              <p className='bold'>Град:</p>
+              <p>{profile.city}</p>    
             </div>
 
             <div className='sect address'>
