@@ -38,29 +38,12 @@
       display: flex;
       flex-wrap: wrap;
 
-      .header {
-          margin: 0 auto;
-          margin-bottom: 10px;
+      label {
+        flex: 0 0 100%;
       }
 
       .day {
-          flex: 0 0 100%;
-          display: flex;
-          flex-wrap: nowrap;
-
-          .error{
-            flex: 0 0 100%;
-            font-size: 1rem;
-            margin: 0;
-          }
-
-          .day-name {
-              flex: 0 0 20%;
-
-              p{
-                margin-bottom: 0px;
-              }
-          }
+          
 
           .time-slots {
               flex: 0 0 70%;

@@ -13,13 +13,10 @@ import BookMeetingInput from "../../../models/inputs/BookMeetingInput";
 import meetingService from "../../../services/meetingService";
 import toastService from "../../../services/toastService";
 import TimeSlotSelect from "../../../models/TimeSlotSelect";
+import CalendarDateValue from "../../../models/CalendarDateValue";
 
 const Profile = () => {
     const params = useParams();
-
-    type ValuePiece = Date | null;
-
-    type Value = ValuePiece | [ValuePiece, ValuePiece];
 
     const todayDate = moment().toDate();
     const maxDate = moment().add(1, 'M').toDate();
@@ -80,7 +77,7 @@ const Profile = () => {
         console.log(profile);
       }, []);
 
-    const onDateSelect = (dateValue:  Value) => {
+    const onDateSelect = (dateValue:  CalendarDateValue) => {
       const date = dateValue as Date;
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 

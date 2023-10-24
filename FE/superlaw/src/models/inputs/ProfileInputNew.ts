@@ -2,16 +2,16 @@ import CreateScheduleInput from "./CreateScheduleInput";
 import ScheduleInput from "./ScheduleInput";
 
 //TODO: DELETE this and rename ProfileInputNew to ProfileInput
-interface ProfileInput {
+interface ProfileInputNew {
     image: Blob | string,
     description: string,
     hourlyRate: number,
     address: string,
     categories: [],
     regions: [],
-    schedule: ScheduleInput,
+    schedule: CreateScheduleInput[],
     isJunior: boolean,
     isCompleted: boolean
 }
 
-export default ProfileInput;
+export default ProfileInputNew;

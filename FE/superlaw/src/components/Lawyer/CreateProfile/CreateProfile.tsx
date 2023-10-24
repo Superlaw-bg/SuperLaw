@@ -9,45 +9,34 @@ import profileService from '../../../services/profileService';
 import legalCategoriesService from '../../../services/legalCategoriesService';
 import judicialRegionsService from '../../../services/judicialRegionsService';
 import { useNavigate } from 'react-router-dom';
-import ProfileInput from '../../../models/inputs/ProfileInput';
-import Days from '../../../constants/daysOfWeek';
+import ProfileInputNew from '../../../models/inputs/ProfileInputNew';
+import Calendar, { TileDisabledFunc } from 'react-calendar';
+import moment from 'moment';
+import CalendarDateValue from '../../../models/CalendarDateValue';
+import { TileArgs } from 'react-calendar/dist/cjs/shared/types';
+import CreateScheduleInput from '../../../models/inputs/CreateScheduleInput';
 
 const CreateProfile = () => {
   const navigate = useNavigate();
 
+  const todayDate = moment().toDate();
+  const maxDate = moment().add(2, 'M').toDate();
+
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
-  const [profile, setProfile] = useState<ProfileInput>({
+  const [profile, setProfile] = useState<ProfileInputNew>({
     image: '',
     description: "",
     hourlyRate: 0,
     address: "",
     categories: [],
     regions: [],
-    schedule: {
-      monday: [],
-      tuesday: [],
-      wednesday: [],
-      thursday: [],
-      friday: [],
-      saturday: [],
-      sunday: []
-    },
+    schedule: [],
     isJunior: false,
     isCompleted: false,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [scheduleErrorMessages, setScheduleErrorMessages] = useState({
-    monday: '',
-    tuesday: '',
-    wednesday: '',
-    thursday: '',
-    friday: '',
-    saturday: '',
-    sunday: ''
-  });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -113,8 +102,8 @@ const CreateProfile = () => {
   const onRegionSelect = (newValue: any, actionMeta: ActionMeta<never>): void  => {
     setProfile({...profile, regions: newValue});
   }; 
-
-  const onTimeSlotDelete = (dayOfWeek: string, index: number) => {
+  
+  /*const onTimeSlotDelete = (dayOfWeek: string, index: number) => {
 
     let schedule = profileService.getScheduleForDayStr(dayOfWeek, profile.schedule);
 
@@ -127,9 +116,9 @@ const CreateProfile = () => {
         [dayOfWeek]: schedule
       }
     });
-  }
+  }*/
 
-  const onTimeSlotAdd = (event: any, dayOfWeek: string) => {
+  const onTimeSlotAdd = (event: any) => {
     const from = event.target.parentElement.getElementsByClassName('from')[0].value;
     const to = event.target.parentElement.getElementsByClassName('to')[0].value;
 
@@ -140,39 +129,31 @@ const CreateProfile = () => {
     const err = profileService.validateTimeSlot(from, to);
 
     if (err) {
-      setScheduleErrorMessages({
-        ...scheduleErrorMessages,
-        [dayOfWeek]: err
-      });
+      setSelectedDayScheduleErrorMessages(err);
       return;
     }
-    
-    let scheduleForDay = profileService.getScheduleForDayStr(dayOfWeek, profile.schedule);
 
-    const errMsg = profileService.validateTimeSlotsInDay(from, to, scheduleForDay);
+    const errMsg = profileService.validateTimeSlotsInDay(from, to, selectedDaySlots.timeslots);
 
     if (errMsg) {
-      setScheduleErrorMessages({
-        ...scheduleErrorMessages,
-        [dayOfWeek]: errMsg
-      });
+      setSelectedDayScheduleErrorMessages(errMsg);
       return;
     }
 
-    scheduleForDay.push({from: from, to: to});
-
-    setProfile({
-      ...profile,
-      schedule: {
-        ...profile.schedule,
-        [dayOfWeek]: scheduleForDay
-      }
+    setSelectedDaySlots({
+      date: selectedDaySlots.date,
+      timeslots: [
+        ...selectedDaySlots.timeslots,
+        {
+          from: from,
+          to: to
+        }
+      ]
     });
 
-    setScheduleErrorMessages({
-      ...scheduleErrorMessages,
-      [dayOfWeek]: ''
-    });
+    console.log(selectedDaySlots);
+
+    setSelectedDayScheduleErrorMessages('');
   }
 
   const onCheckbox = (e: any) => {
@@ -244,6 +225,59 @@ const CreateProfile = () => {
 
   };
 
+  const [selectedDaySlots, setSelectedDaySlots] = useState<CreateScheduleInput>({
+    date: new Date(),
+    timeslots: [],
+  });
+
+  useEffect(() => {
+    console.log(profile);
+  }, [profile]);
+  const [selectedDayScheduleErrorMessages, setSelectedDayScheduleErrorMessages] = useState('');
+
+  const onDateSelect = (dateValue:  CalendarDateValue) => {
+
+    let profileScheduleWithoutSelected = [...profile.schedule].filter(x => x.date.setHours(0, 0, 0, 0) !== selectedDaySlots.date.setHours(0, 0, 0, 0));
+    
+    //Set in the profile the defined slots for the previous selected day
+    setProfile({
+      image: profile.image,
+      description: profile.description,
+      hourlyRate: profile.hourlyRate,
+      address: profile.address,
+      categories: profile.categories,
+      regions: profile.regions,
+      schedule: [
+        ...profileScheduleWithoutSelected,
+        selectedDaySlots
+      ],
+      isJunior: profile.isJunior,
+      isCompleted: profile.isCompleted,
+    });
+
+    const date = dateValue as Date;
+
+    let scheduleDay = profile.schedule.filter(x => x.date.setHours(0, 0, 0, 0) === date.setHours(0, 0, 0, 0))[0];
+
+    const defaultDay = {
+      date: date,
+      timeslots: []
+    };
+
+    if (!scheduleDay) {
+      scheduleDay = defaultDay;
+    }
+
+    console.log('schedule for the day');
+    console.log(scheduleDay)
+    setSelectedDaySlots(scheduleDay);
+  }
+
+  const isDayDisabled: TileDisabledFunc = ({ activeStartDate, date, view }: TileArgs) => {
+   
+    return false;
+  }
+
   return (
     <div className="form-wrapper-create-profile">
         <form className="create-profile-form" onSubmit={onCreate}>
@@ -296,167 +330,38 @@ const CreateProfile = () => {
 
           <div className='form-group schedule'>
             <label htmlFor="schedule">График</label>
-            <div className='day monday'>
-                  <div className='day-name'>
-                    <p className='bold'>Понеделник</p>
+            <Calendar 
+              onChange={onDateSelect}
+              value={selectedDaySlots?.date}
+              defaultView="month"
+              minDetail="month"
+              maxDetail="month"
+              next2Label={null}
+              prev2Label={null}
+              minDate={todayDate}
+              maxDate={maxDate}
+              tileDisabled={isDayDisabled}
+            />
+             {selectedDaySlots &&
+              <div className="time-slots">
+                {selectedDaySlots.timeslots.map((timeSlot, ind) => 
+                  <div className={`time-slot`} key={ind}>
+                    <p>{timeSlot.from} - {timeSlot.to}</p>
                   </div>
-                  <div className='time-slots'>
-                    {profile.schedule.monday && profile.schedule.monday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Monday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from' />
-                      <span>До: </span>
-                      <input type="time" className='to' />
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Monday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.monday && 
-                      <p className='error'>{scheduleErrorMessages.monday}</p>
-                    }
-                  </div>
+                )}
+
+                <div className='select-range'>
+                  <span>От: </span>
+                  <input type="time" className='from'/>
+                  <span>До: </span>
+                  <input type="time" className='to' />
+                  <span className='add' onClick={onTimeSlotAdd}>✓</span>
                 </div>
-                <hr />
-                <div className='day tuesday'>
-                  <div className='day-name'>
-                    <p className='bold'>Вторник</p>
-                  </div>
-                  <div className='time-slots'>
-                  {profile.schedule.tuesday && profile.schedule.tuesday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Tuesday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from' />
-                      <span>До: </span>
-                      <input type="time" className='to'/>
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Tuesday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.tuesday && 
-                      <p className='error'>{scheduleErrorMessages.tuesday}</p>
-                    }
-                  </div>
-                </div>
-                <hr />
-                <div className='day wednesday'>
-                  <div className='day-name'>
-                    <p className='bold'>Сряда</p>
-                  </div>
-                  <div className='time-slots'>
-                  {profile.schedule.wednesday && profile.schedule.wednesday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Wednesday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from'/>
-                      <span>До: </span>
-                      <input type="time" className='to' />
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Wednesday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.wednesday && 
-                      <p className='error'>{scheduleErrorMessages.wednesday}</p>
-                    }
-                  </div>
-                </div>
-                <hr />
-                <div className='day thursday'>
-                  <div className='day-name'>
-                    <p className='bold'>Четвъртък</p>
-                  </div>
-                  <div className='time-slots'>
-                  {profile.schedule.thursday && profile.schedule.thursday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Thursday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from'/>
-                      <span>До: </span>
-                      <input type="time" className='to'/>
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Thursday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.thursday && 
-                      <p className='error'>{scheduleErrorMessages.thursday}</p>
-                    }
-                  </div>
-                </div>
-                <hr />
-                <div className='day friday'>
-                  <div className='day-name'>
-                    <p className='bold'>Петък</p>
-                  </div>
-                  <div className='time-slots'>
-                  {profile.schedule.friday && profile.schedule.friday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Friday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from'/>
-                      <span>До: </span>
-                      <input type="time" className='to'/>
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Friday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.friday && 
-                      <p className='error'>{scheduleErrorMessages.friday}</p>
-                    }
-                  </div>
-                </div>
-                <hr />
-                <div className='day saturday'>
-                  <div className='day-name'>
-                    <p className='bold'>Събота</p>
-                  </div>
-                  <div className='time-slots'>
-                  {profile.schedule.saturday && profile.schedule.saturday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Saturday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from' />
-                      <span>До: </span>
-                      <input type="time" className='to'/>
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Saturday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.saturday && 
-                      <p className='error'>{scheduleErrorMessages.saturday}</p>
-                    }
-                  </div>
-                </div>
-                <hr />
-                <div className='day sunday'>
-                  <div className='day-name'>
-                    <p className='bold'>Неделя</p>
-                  </div>
-                  <div className='time-slots'>
-                  {profile.schedule.sunday && profile.schedule.sunday.map((timeSlot, ind) => 
-                      <div className='time-slot' key={ind}>
-                        <p>{timeSlot.from} - {timeSlot.to} <span className='delete' onClick={() => onTimeSlotDelete(Days.Sunday, ind)}>X</span></p>
-                      </div>
-                    )}
-                    <div className='select-range'>
-                      <span>От: </span>
-                      <input type="time" className='from'/>
-                      <span>До: </span>
-                      <input type="time" className='to'/>
-                      <span className='add' onClick={(e) => onTimeSlotAdd(e, Days.Sunday)}>✓</span>
-                    </div>
-                    {scheduleErrorMessages.sunday && 
-                      <p className='error'>{scheduleErrorMessages.sunday}</p>
-                    }
-                  </div>
-                </div>
-                <hr />
+                {selectedDayScheduleErrorMessages !== '' && 
+                  <p className='error'>{selectedDayScheduleErrorMessages}</p>
+                }
+              </div>
+             }
           </div>
 
           <div className="form-group checkboxes">
