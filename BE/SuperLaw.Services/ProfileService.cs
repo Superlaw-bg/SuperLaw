@@ -20,7 +20,7 @@ namespace SuperLaw.Services
             _uploadService = uploadService;
         }
 
-        public async Task CreateProfileAsync(string userId, CreateProfileInput input)
+        public async Task CreateProfileAsync(string userId, CreateProfileInputNew input)
         {
             var userLawyerProfile = _context.LawyerProfiles.SingleOrDefault(x => x.UserId == userId);
 
@@ -50,7 +50,7 @@ namespace SuperLaw.Services
                 imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
             }
 
-            var timeSlots = GetProfileTimeSlots(input);
+            var timeSlots = GetProfileTimeSlotsNew(input);
 
             var profile = new LawyerProfile()
             {
@@ -138,12 +138,66 @@ namespace SuperLaw.Services
                     var timeSlot = new TimeSlot()
                     {
                         From = new TimeSpan(fromHours, fromMinutes, 0),
-                        To = new TimeSpan(toHours, toMinutes, 0),
-                        DayOfWeek = dayOfWeek
+                        To = new TimeSpan(toHours, toMinutes, 0)
                     };
 
                     timeSlots.Add(timeSlot);
                 }
+            }
+
+            return timeSlots;
+        }
+
+        private List<TimeSlot> GetProfileTimeSlotsNew(CreateProfileInputNew input)
+        {
+            var timeSlots = new List<TimeSlot>();
+
+            //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+            var utcOffsetInHours = easternZone.GetUtcOffset(DateTime.UtcNow).Hours;
+
+            foreach (var scheduleForDay in input.Schedule)
+            {
+                var i = 0;
+                foreach (var timeSlotDto in scheduleForDay.TimeSlots)
+                {
+                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
+                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
+
+                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
+                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
+
+                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, null);
+
+                    var otherTimeSlots = scheduleForDay.TimeSlots.Where((x, index) => index != i).ToList();
+
+                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, null);
+
+                    //from fe it is selected for example 19.10 midnight but comming to be as 18.10 21:00
+                    //But if today date is selected then it comes correctly
+                    //because of time change in the end of october also it is possible the time to come as 22
+
+                    if (scheduleForDay.Date.Hour == 21 || scheduleForDay.Date.Hour == 22)
+                    {
+                        scheduleForDay.Date = scheduleForDay.Date.AddDays(1);
+                    }
+
+                    var meetingDateEndWithHourInUtc = scheduleForDay.Date.Date.AddHours(toHours).AddMinutes(toMinutes);
+
+                    meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - utcOffsetInHours);
+
+                    var timeSlot = new TimeSlot()
+                    {
+                        From = new TimeSpan(fromHours, fromMinutes, 0),
+                        To = new TimeSpan(toHours, toMinutes, 0),
+                        Date = meetingDateEndWithHourInUtc
+                    };
+
+                    timeSlots.Add(timeSlot);
+
+                    i++;
+                }
+               
             }
 
             return timeSlots;
@@ -468,7 +522,7 @@ namespace SuperLaw.Services
                 .ToList();
         }
 
-        private void ValidateTimeSlot(int fromHours, int fromMinutes, int toHours, int toMinutes, DayEnum day) 
+        private void ValidateTimeSlot(int fromHours, int fromMinutes, int toHours, int toMinutes, DayEnum? day) 
         {
             var todayDate = DateTime.Now;
 
@@ -507,7 +561,7 @@ namespace SuperLaw.Services
             }
         }
 
-        private void ValidateTimeSlotsInDay(int fromHours, int fromMinutes, int toHours, int toMinutes, List<TimeSlotDto> timeSlots, DayEnum day)
+        private void ValidateTimeSlotsInDay(int fromHours, int fromMinutes, int toHours, int toMinutes, List<TimeSlotDto> timeSlots, DayEnum? day)
         {
             var todayDate = DateTime.Now;
 
@@ -556,7 +610,7 @@ namespace SuperLaw.Services
                     From = fromStr,
                     To = toStr
                 };
-
+                /*
                 if (timeSlot.DayOfWeek == DayEnum.Monday)
                 {
                     dto.Schedule.Monday.Add(timeSlotDto);
@@ -584,7 +638,7 @@ namespace SuperLaw.Services
                 else if (timeSlot.DayOfWeek == DayEnum.Sunday)
                 {
                     dto.Schedule.Sunday.Add(timeSlotDto);
-                }
+                }*/
             }
         }
 

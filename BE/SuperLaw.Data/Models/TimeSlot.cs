@@ -1,6 +1,4 @@
-﻿using SuperLaw.Data.Models.Enums;
-
-namespace SuperLaw.Data.Models
+﻿namespace SuperLaw.Data.Models
 {
     public class TimeSlot
     {
@@ -9,7 +7,7 @@ namespace SuperLaw.Data.Models
         public int ProfileId { get; set; }
         public LawyerProfile Profile { get; set; }
 
-        public DayEnum DayOfWeek { get; set; }
+        public DateTime Date { get; set; }
 
         public TimeSpan From { get; set; }
 

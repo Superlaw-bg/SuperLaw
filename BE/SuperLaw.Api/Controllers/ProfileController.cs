@@ -136,7 +136,7 @@ namespace SuperLaw.Api.Controllers
                 });
             }
 
-            var profileInput = new CreateProfileInput()
+            var profileInput = new CreateProfileInputNew()
             {
                 Image = image,
                 Description = description.ToString(),
@@ -160,7 +160,7 @@ namespace SuperLaw.Api.Controllers
 
             if (hasSchedule)
             {
-                var schedule = JsonConvert.DeserializeObject<ScheduleDto>(scheduleStr.ToString());
+                var schedule = JsonConvert.DeserializeObject<List<ScheduleDtoNew>>(scheduleStr.ToString());
                 profileInput.Schedule = schedule;
             }
 

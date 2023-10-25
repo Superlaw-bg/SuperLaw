@@ -42,65 +42,65 @@
         flex: 0 0 100%;
       }
 
-      .day {
-          
+      .react-calendar {
+        flex: 0 0 50%;
+        max-height: 350px;
+      }
 
-          .time-slots {
-              flex: 0 0 70%;
-              display: flex;
-              flex-wrap: wrap;
+      .time-slots {
+        flex: 0 0 30%;
+        padding-left: 1rem;
 
-              .time-slot{
-                  flex: 0 0 20%;
-                  margin-bottom: 0px;
-                  text-align: center;
-                  margin-bottom: 3px;
-                  border: 1px solid $primary-color;
-                  border-radius: 10px;
-                  margin-bottom: 1rem;
-                  margin-right: 1rem;
+        .time-slot{
+            margin-bottom: 0px;
+            text-align: center;
+            margin-bottom: 3px;
+            border: 1px solid $primary-color;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            margin-right: 1rem;
 
-                  p {
-                    margin-bottom: 0px;
+            p {
+              margin-bottom: 0px;
 
-                    .delete {
-                      color: black;
-                      &:hover{
-                        cursor: pointer;
-                      }
-                    }
-                  }
-              }
-              .select-range{
-                padding: 0px 5px;
-                border: 1px solid $primary-color;
-                border-radius: 10px;
-                color: $primary-color;
-
-                input {
-                  border: none;
-                }
-
-                .from{
-                  margin-right: 5px;
-                }
-
-                .add {
-                  color: black;
-                  &:hover{
-                    cursor: pointer;
-                  }
+              .delete {
+                display: inline-block;
+                float: right;
+                margin-right: 10px;
+                color: black;
+                &:hover{
+                  cursor: pointer;
                 }
               }
-              
+            }
+        }
+        .select-range{
+          padding: 0px 5px;
+          border: 1px solid $primary-color;
+          border-radius: 10px;
+          color: $primary-color;
+          text-align: center;
+
+          input {
+            border: none;
           }
 
-      }
+          .from{
+            margin-right: 5px;
+          }
 
-      hr {
-          color: black;
-          width: 100%;
-      }
+          .add {
+            display: inline-block;
+            float: right;
+            margin-right: 10px;
+            color: black;
+            &:hover{
+              cursor: pointer;
+            }
+          }
+        }
+        
+    }
     }   
 
     .checkboxes {
@@ -155,24 +155,21 @@
       .create-profile-form {
           
           .schedule {
-              
-              .day {
-                  flex-wrap: wrap;
-                  .day-name {
-                      flex: 0 0 100%;
-                      margin-bottom: 10px;
-                  }
 
-                  .time-slots {
-                      flex: 0 0 100%;
+            .react-calendar{
+              flex: 0 0 100%;
+            }
+            .time-slots {
+              margin-top: 2rem;
+              flex: 0 0 100%;
 
-                      p {
-                          flex: none;
-                          margin: 0px 5px;
-                      }
-                  }
-              }
+                p {
+                    flex: none;
+                    margin: 0px 5px;
+                }
+            }
           }
+
       }
   }
 }
