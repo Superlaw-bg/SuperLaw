@@ -134,6 +134,28 @@ const Profile = () => {
       if(scheduleDay.timeSlots.length === 0){
         return true;
       }
+
+      const todayDate = new Date();
+
+      let todayHours = todayDate.getHours();
+      let todayMinutes = todayDate.getMinutes();
+
+      if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()) {
+        let occupiedCount = 0;
+
+        for (let i = 0; i < scheduleDay.timeSlots.length; i++) {
+            let fromHours = Number(scheduleDay.timeSlots[i].from.split(':')[0]);
+            let fromMinutes = Number(scheduleDay.timeSlots[i].from.split(':')[1]);
+
+            if ((todayMinutes + ((todayHours + 1) * 60)) >= (fromMinutes + (fromHours * 60))) {
+                occupiedCount++;
+            }
+        }
+
+        if (occupiedCount === scheduleDay.timeSlots.length) {
+            return true;
+        }
+      }
   
       return false;
     }

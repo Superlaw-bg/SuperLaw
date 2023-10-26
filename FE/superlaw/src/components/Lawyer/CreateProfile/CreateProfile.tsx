@@ -163,6 +163,7 @@ const CreateProfile = () => {
       timeSlots: [
         ...selectedDaySlots.timeSlots,
         {
+          id: 0,
           from: from,
           to: to,
         },

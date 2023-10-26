@@ -118,6 +118,7 @@ namespace SuperLaw.Services
 
                     var timeSlot = new TimeSlot()
                     {
+                        Id = timeSlotDto.Id,
                         From = new TimeSpan(fromHours, fromMinutes, 0),
                         To = new TimeSpan(toHours, toMinutes, 0),
                         Date = meetingDateEndWithHourInUtc
@@ -193,8 +194,17 @@ namespace SuperLaw.Services
                 profile.CompletedOn = DateTime.UtcNow;
             }
 
+            //TODO: Edit time slots so: All with id=0 to be added, all with existing id in db to be updated(to be ignored) and all from db with id that are not
+            // in the new time slots to be deleted and all the past to be also ignored
+
+            var existingTimeSlotsIds = _context.TimeSlots
+                .Where(x => x.ProfileId == profile.Id)
+                .Select(x => x.Id)
+                .ToList();
+
             var allProfileTimeSlots = _context.TimeSlots
                 .Where(x => x.ProfileId == profile.Id)
+                .Select(x => x.Id)
                 .ToList();
 
             var pastTimeSlots = _context.TimeSlots
@@ -204,6 +214,13 @@ namespace SuperLaw.Services
             _context.TimeSlots.RemoveRange(allProfileTimeSlots);
 
             var timeSlots = GetProfileTimeSlots(input);
+
+            var toRemove = existingTimeSlotsIds.Contains()
+
+            foreach (var timeSlot in timeSlots)
+            {
+                
+            }
 
             foreach (var timeSlot in pastTimeSlots)
             {
