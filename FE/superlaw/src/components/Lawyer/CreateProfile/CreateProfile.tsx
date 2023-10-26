@@ -9,11 +9,11 @@ import profileService from "../../../services/profileService";
 import legalCategoriesService from "../../../services/legalCategoriesService";
 import judicialRegionsService from "../../../services/judicialRegionsService";
 import { useNavigate } from "react-router-dom";
-import ProfileInputNew from "../../../models/inputs/ProfileInputNew";
 import Calendar, { TileDisabledFunc } from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
+import ProfileInput from "../../../models/inputs/ProfileInput";
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const CreateProfile = () => {
 
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
-  const [profile, setProfile] = useState<ProfileInputNew>({
+  const [profile, setProfile] = useState<ProfileInput>({
     image: "",
     description: "",
     hourlyRate: 0,

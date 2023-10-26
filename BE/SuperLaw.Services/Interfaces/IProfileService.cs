@@ -5,7 +5,7 @@ namespace SuperLaw.Services.Interfaces
 {
     public interface IProfileService
     {
-        Task CreateProfileAsync(string userId, CreateProfileInputNew input);
+        Task CreateProfileAsync(string userId, CreateProfileInput input);
 
         Task EditProfileAsync(string userId, CreateProfileInput input);
 

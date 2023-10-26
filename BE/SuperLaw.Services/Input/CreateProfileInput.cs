@@ -12,7 +12,7 @@ namespace SuperLaw.Services.Input
         public List<int> Categories { get; set; }
         public List<int> Regions { get; set; }
 
-        public ScheduleDto Schedule { get; set; }
+        public List<ScheduleDtoNew> Schedule { get; set; } = new List<ScheduleDtoNew>();
 
         public bool IsJunior { get; set; }
         public bool IsCompleted { get; set; }

@@ -33,15 +33,7 @@ const Profile = () => {
         regions: [],
         rating: 0,
         city: '',
-        schedule: {
-          monday: [],
-          tuesday: [],
-          wednesday: [],
-          thursday: [],
-          friday: [],
-          saturday: [],
-          sunday: []
-        },
+        schedule: [],
         meetings: {},
         isJunior: false,
         isCompleted: false
@@ -78,7 +70,7 @@ const Profile = () => {
       }, []);
 
     const onDateSelect = (dateValue:  CalendarDateValue) => {
-      const date = dateValue as Date;
+      /*const date = dateValue as Date;
       const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 
       let timeSlotsForSelection = meetingService.getTimeSlotsForSelectionForDate(profile, timeSlots, date);
@@ -98,7 +90,7 @@ const Profile = () => {
         info: ''
       });
 
-      setTimeSlotOptions(timeSlotsForSelection);
+      setTimeSlotOptions(timeSlotsForSelection);*/
     }
 
     const onSlotSelect = (event: any, slot: any) => {
@@ -123,9 +115,10 @@ const Profile = () => {
     }  
 
     const isDayDisabled: TileDisabledFunc = ({ activeStartDate, date, view }: TileArgs) => {
-      const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
+      //const timeSlots = profileService.getScheduleForDay(date.getDay(), profile.schedule);
 
-      return meetingService.isDayForMeetingsDisabled(date, timeSlots, profile);
+      //return meetingService.isDayForMeetingsDisabled(date, timeSlots, profile);
+      return false;
     }
 
     const onInput = (e: any) => {

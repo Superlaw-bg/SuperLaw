@@ -1,5 +1,4 @@
 import CreateScheduleInput from "./ScheduleDayInput";
-import ScheduleInput from "./ScheduleInput";
 
 //TODO: DELETE this and rename ProfileInputNew to ProfileInput
 interface ProfileInput {
@@ -9,7 +8,7 @@ interface ProfileInput {
     address: string,
     categories: [],
     regions: [],
-    schedule: ScheduleInput,
+    schedule: CreateScheduleInput[],
     isJunior: boolean,
     isCompleted: boolean
 }

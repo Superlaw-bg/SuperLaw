@@ -20,7 +20,7 @@ namespace SuperLaw.Services
             _uploadService = uploadService;
         }
 
-        public async Task CreateProfileAsync(string userId, CreateProfileInputNew input)
+        public async Task CreateProfileAsync(string userId, CreateProfileInput input)
         {
             var userLawyerProfile = _context.LawyerProfiles.SingleOrDefault(x => x.UserId == userId);
 
@@ -50,7 +50,7 @@ namespace SuperLaw.Services
                 imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
             }
 
-            var timeSlots = GetProfileTimeSlotsNew(input);
+            var timeSlots = GetProfileTimeSlots(input);
 
             var profile = new LawyerProfile()
             {
@@ -79,76 +79,6 @@ namespace SuperLaw.Services
         }
 
         private List<TimeSlot> GetProfileTimeSlots(CreateProfileInput input)
-        {
-            var timeSlots = new List<TimeSlot>();
-
-            for (var i = 1; i <= 7; i++)
-            {
-                var timeSlotsForTheDay = input.Schedule.Monday;
-                var dayOfWeek = DayEnum.Monday;
-
-                switch (i)
-                {
-                    case 1:
-                        timeSlotsForTheDay = input.Schedule.Monday;
-                        dayOfWeek = DayEnum.Monday;
-                        break;
-                    case 2:
-                        timeSlotsForTheDay = input.Schedule.Tuesday;
-                        dayOfWeek = DayEnum.Tuesday;
-                        break;
-                    case 3:
-                        timeSlotsForTheDay = input.Schedule.Wednesday;
-                        dayOfWeek = DayEnum.Wednesday;
-                        break;
-                    case 4:
-                        timeSlotsForTheDay = input.Schedule.Thursday;
-                        dayOfWeek = DayEnum.Thursday;
-                        break;
-                    case 5:
-                        timeSlotsForTheDay = input.Schedule.Friday;
-                        dayOfWeek = DayEnum.Friday;
-                        break;
-                    case 6:
-                        timeSlotsForTheDay = input.Schedule.Saturday;
-                        dayOfWeek = DayEnum.Saturday;
-                        break;
-                    case 7:
-                        timeSlotsForTheDay = input.Schedule.Sunday;
-                        dayOfWeek = DayEnum.Sunday;
-                        break;
-                }
-
-                for (var j = 0; j < timeSlotsForTheDay.ToList().Count; j++)
-                {
-                    var timeSlotDto = timeSlotsForTheDay[j];
-
-                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
-                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
-
-                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
-                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
-
-                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, dayOfWeek);
-
-                    var otherTimeSlots = timeSlotsForTheDay.Where((x, index) => index != j).ToList();
-
-                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, dayOfWeek);
-
-                    var timeSlot = new TimeSlot()
-                    {
-                        From = new TimeSpan(fromHours, fromMinutes, 0),
-                        To = new TimeSpan(toHours, toMinutes, 0)
-                    };
-
-                    timeSlots.Add(timeSlot);
-                }
-            }
-
-            return timeSlots;
-        }
-
-        private List<TimeSlot> GetProfileTimeSlotsNew(CreateProfileInputNew input)
         {
             var timeSlots = new List<TimeSlot>();
 
@@ -263,13 +193,28 @@ namespace SuperLaw.Services
                 profile.CompletedOn = DateTime.UtcNow;
             }
 
-            var profileTimeSlots = _context.TimeSlots
+            var allProfileTimeSlots = _context.TimeSlots
                 .Where(x => x.ProfileId == profile.Id)
                 .ToList();
+
+            var pastTimeSlots = _context.TimeSlots
+                .Where(x => x.ProfileId == profile.Id && x.Date.Date < DateTime.UtcNow.Date)
+                .ToList();
             
-            _context.TimeSlots.RemoveRange(profileTimeSlots);
+            _context.TimeSlots.RemoveRange(allProfileTimeSlots);
 
             var timeSlots = GetProfileTimeSlots(input);
+
+            foreach (var timeSlot in pastTimeSlots)
+            {
+                timeSlots.Add(new TimeSlot()
+                {
+                    Date = timeSlot.Date,
+                    From = timeSlot.From,
+                    To = timeSlot.To,
+                });
+            }
+
             profile.TimeSlots = timeSlots;
 
             _context.LawyerProfiles.Update(profile);
@@ -331,7 +276,7 @@ namespace SuperLaw.Services
                 IsJunior = userLawyerProfile.IsJunior,
             };
 
-            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result, true);
 
             return result;
         }
@@ -587,11 +532,16 @@ namespace SuperLaw.Services
             }
         }
 
-        private void SetScheduleForProfileDto(List<TimeSlot> timeSlots, LawyerProfileBaseDto dto)
+        private void SetScheduleForProfileDto(List<TimeSlot> timeSlots, LawyerProfileBaseDto dto, bool withPastTimeSlots = false)
         {
-            var validTimeSlots = timeSlots
-                .Where(x => x.Date.Date >= DateTime.UtcNow.Date)
-                .ToList();
+            var validTimeSlots = timeSlots;
+
+            if (!withPastTimeSlots)
+            {
+                validTimeSlots = timeSlots
+                    .Where(x => x.Date.Date >= DateTime.UtcNow.Date)
+                    .ToList();
+            }
 
             foreach (var timeSlot in validTimeSlots)
             {

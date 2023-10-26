@@ -7,14 +7,12 @@ import noProfilePic from "../../../assets/no-profile-picture-256.png";
 import LawyerProfileNew from "../../../models/LawyerProfileNew";
 import Calendar, { TileDisabledFunc } from "react-calendar";
 import moment from "moment";
-import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import TimeSlotInput from "../../../models/inputs/TimeSlotInput";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
-import meetingService from "../../../services/meetingService";
 
 const OwnProfile = () => {
-  const todayDate = moment().toDate();
+  const minDate = moment().startOf('year').toDate();
   const maxDate = moment().add(2, "M").toDate();
   
   const navigate = useNavigate();
@@ -42,7 +40,7 @@ const OwnProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const res = await profileService.getOwnProfile();
-      console.log(res);
+     
       if (res !== null) {
         setProfile(res);
       }
@@ -213,7 +211,7 @@ const OwnProfile = () => {
                 maxDetail="month"
                 next2Label={null}
                 prev2Label={null}
-                minDate={todayDate}
+                minDate={minDate}
                 maxDate={maxDate}
                 tileDisabled={isDayDisabled}
               />
