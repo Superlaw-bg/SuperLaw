@@ -194,45 +194,26 @@ namespace SuperLaw.Services
                 profile.CompletedOn = DateTime.UtcNow;
             }
 
-            //TODO: Edit time slots so: All with id=0 to be added, all with existing id in db to be updated(to be ignored) and all from db with id that are not
-            // in the new time slots to be deleted and all the past to be also ignored
-
-            var existingTimeSlotsIds = _context.TimeSlots
-                .Where(x => x.ProfileId == profile.Id)
-                .Select(x => x.Id)
-                .ToList();
-
-            var allProfileTimeSlots = _context.TimeSlots
-                .Where(x => x.ProfileId == profile.Id)
-                .Select(x => x.Id)
-                .ToList();
-
-            var pastTimeSlots = _context.TimeSlots
-                .Where(x => x.ProfileId == profile.Id && x.Date.Date < DateTime.UtcNow.Date)
-                .ToList();
-            
-            _context.TimeSlots.RemoveRange(allProfileTimeSlots);
-
             var timeSlots = GetProfileTimeSlots(input);
 
-            var toRemove = existingTimeSlotsIds.Contains()
+            var timeSlotIds = timeSlots.Select(x => x.Id).ToList();
 
-            foreach (var timeSlot in timeSlots)
-            {
-                
-            }
+            var toAdd = timeSlots
+                .Where(x => x.Id == 0)
+                .ToList();
 
-            foreach (var timeSlot in pastTimeSlots)
+            foreach (var timeSlot in profile.TimeSlots.ToList())
             {
-                timeSlots.Add(new TimeSlot()
+                if (!timeSlotIds.Contains(timeSlot.Id))
                 {
-                    Date = timeSlot.Date,
-                    From = timeSlot.From,
-                    To = timeSlot.To,
-                });
+                    _context.TimeSlots.Remove(timeSlot);
+                }
             }
 
-            profile.TimeSlots = timeSlots;
+            foreach (var timeSlot in toAdd)
+            {
+                profile.TimeSlots.Add(timeSlot);
+            }
 
             _context.LawyerProfiles.Update(profile);
             await _context.SaveChangesAsync();
@@ -355,8 +336,6 @@ namespace SuperLaw.Services
             };
            
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
-
-            SetMeetingsProfileDto(userLawyerProfile.Meetings.ToList(), result);
 
             return result;
         }

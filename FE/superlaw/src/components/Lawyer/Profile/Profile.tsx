@@ -85,6 +85,28 @@ const Profile = () => {
         scheduleDay = defaultDay;
       }
 
+      //Make all slots from today unavailable
+      if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()) {
+       
+        for (let i = 0; i < scheduleDay.timeSlots.length; i++) {
+          let slot = scheduleDay.timeSlots[i];
+          
+          //getDay returns day of the week, getDate returns the number of the day
+          let fromHours = Number(scheduleDay.timeSlots[i].from.split(':')[0]);
+          let fromMinutes = Number(scheduleDay.timeSlots[i].from.split(':')[1]);
+  
+          const dateToday = new Date();
+          let todayHours = dateToday.getHours();
+          let todayMinutes = dateToday.getMinutes();
+        
+          if ((todayMinutes + ((todayHours + 1) * 60)) >= (fromMinutes + (fromHours * 60))) {
+            scheduleDay.timeSlots[i].hasMeeting = true;
+          }
+        }
+       
+      }
+      
+
       let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
 
       if (timeSlotsSelectedElem) {
@@ -130,8 +152,6 @@ const Profile = () => {
       if(!scheduleDay || scheduleDay.timeSlots.filter(x => !x.hasMeeting).length === 0){
         return true;
       }
-
-      const todayDate = new Date();
 
       let todayHours = todayDate.getHours();
       let todayMinutes = todayDate.getMinutes();

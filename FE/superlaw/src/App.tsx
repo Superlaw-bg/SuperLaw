@@ -18,7 +18,7 @@ import EditProfile from './components/Lawyer/EditProfile';
 import FindPage from './components/FindPage';
 import OwnProfile from './components/Lawyer/OwnProfile/OwnProfile';
 import isAuth from './hooks/isAuth';
-import Profile from './components/Lawyer/Profile';
+import Profile from './components/Lawyer/Profile/Profile';
 import MeeetingsPage from './components/MeeetingsPage';
 import isNotLawyer from './hooks/isNotLawyer';
 import ScrollToTop from './components/ScrollToTop';
