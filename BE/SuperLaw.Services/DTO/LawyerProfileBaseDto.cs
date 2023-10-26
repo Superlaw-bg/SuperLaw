@@ -2,7 +2,7 @@
 {
     public class LawyerProfileBaseDto
     {
-        public ScheduleDto Schedule { get; set; } = new ScheduleDto();
+        public List<ScheduleDtoNew> Schedule { get; set; } = new();
 
         public Dictionary<DateTime, List<MeetingSimpleDto>> Meetings { get; set; } =
             new Dictionary<DateTime, List<MeetingSimpleDto>>();

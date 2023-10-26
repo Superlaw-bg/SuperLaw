@@ -1,4 +1,4 @@
-import CreateScheduleInput from "./CreateScheduleInput";
+import CreateScheduleInput from "./ScheduleDayInput";
 import ScheduleInput from "./ScheduleInput";
 
 //TODO: DELETE this and rename ProfileInputNew to ProfileInput

@@ -154,11 +154,11 @@ namespace SuperLaw.Services
 
             //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
             TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
-            var utcOffsetInHours = easternZone.GetUtcOffset(DateTime.UtcNow).Hours;
 
             foreach (var scheduleForDay in input.Schedule)
             {
                 var i = 0;
+                var timeSlotDate = scheduleForDay.Date;
                 foreach (var timeSlotDto in scheduleForDay.TimeSlots)
                 {
                     var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
@@ -174,16 +174,16 @@ namespace SuperLaw.Services
                     ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, null);
 
                     //from fe it is selected for example 19.10 midnight but comming to be as 18.10 21:00
-                    //But if today date is selected then it comes correctly
                     //because of time change in the end of october also it is possible the time to come as 22
 
-                    if (scheduleForDay.Date.Hour == 21 || scheduleForDay.Date.Hour == 22)
+                    if (timeSlotDate.Hour == 21 || timeSlotDate.Hour == 22)
                     {
-                        scheduleForDay.Date = scheduleForDay.Date.AddDays(1);
+                        timeSlotDate = timeSlotDate.Date.AddDays(1);
                     }
 
-                    var meetingDateEndWithHourInUtc = scheduleForDay.Date.Date.AddHours(toHours).AddMinutes(toMinutes);
+                    var meetingDateEndWithHourInUtc = timeSlotDate.Date.AddHours(toHours).AddMinutes(toMinutes);
 
+                    var utcOffsetInHours = easternZone.GetUtcOffset(timeSlotDate.Date).Hours;
                     meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - utcOffsetInHours);
 
                     var timeSlot = new TimeSlot()
@@ -327,7 +327,6 @@ namespace SuperLaw.Services
                     .ToList(),
                 Rating = Math.Round(userLawyerProfile.Rating, 1),
                 City = userLawyerProfile.User.City.Name,
-                Schedule = new ScheduleDto(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
@@ -590,7 +589,11 @@ namespace SuperLaw.Services
 
         private void SetScheduleForProfileDto(List<TimeSlot> timeSlots, LawyerProfileBaseDto dto)
         {
-            foreach (var timeSlot in timeSlots)
+            var validTimeSlots = timeSlots
+                .Where(x => x.Date.Date >= DateTime.UtcNow.Date)
+                .ToList();
+
+            foreach (var timeSlot in validTimeSlots)
             {
                 var fromStr = $"{timeSlot.From.Hours}:{timeSlot.From.Minutes}";
                 var toStr = $"{timeSlot.To.Hours}:{timeSlot.To.Minutes}";
@@ -610,35 +613,24 @@ namespace SuperLaw.Services
                     From = fromStr,
                     To = toStr
                 };
-                /*
-                if (timeSlot.DayOfWeek == DayEnum.Monday)
+
+                var scheduleDay = dto.Schedule.SingleOrDefault(x => x.Date.Date == timeSlot.Date.Date);
+
+                if (scheduleDay == null)
                 {
-                    dto.Schedule.Monday.Add(timeSlotDto);
+                    dto.Schedule.Add(new ScheduleDtoNew()
+                    {
+                        Date = timeSlot.Date.Date,
+                        TimeSlots = new List<TimeSlotDto>()
+                        {
+                            timeSlotDto
+                        }
+                    });
                 }
-                else if (timeSlot.DayOfWeek == DayEnum.Tuesday)
+                else
                 {
-                    dto.Schedule.Tuesday.Add(timeSlotDto);
+                    scheduleDay.TimeSlots.Add(timeSlotDto);
                 }
-                else if (timeSlot.DayOfWeek == DayEnum.Wednesday)
-                {
-                    dto.Schedule.Wednesday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Thursday)
-                {
-                    dto.Schedule.Thursday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Friday)
-                {
-                    dto.Schedule.Friday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Saturday)
-                {
-                    dto.Schedule.Saturday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Sunday)
-                {
-                    dto.Schedule.Sunday.Add(timeSlotDto);
-                }*/
             }
         }
 

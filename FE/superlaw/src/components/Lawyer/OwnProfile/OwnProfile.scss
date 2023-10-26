@@ -85,41 +85,35 @@
         .schedule {
             display: flex;
             flex-wrap: wrap;
-
+        
             .header {
-                margin: 0 auto;
-                margin-bottom: 10px;
+              flex: 0 0 100%;
             }
-
-            .day {
-                flex: 0 0 100%;
-                display: flex;
-                flex-wrap: nowrap;
-
-                .day-name {
-                    flex: 0 0 20%;
+        
+            .react-calendar {
+              flex: 0 0 50%;
+              max-height: 350px;
+            }
+        
+            .time-slots {
+              flex: 0 0 30%;
+              padding-left: 1rem;
+        
+              .time-slot {
+                margin-bottom: 0px;
+                text-align: center;
+                margin-bottom: 3px;
+                border: 1px solid $primary-color;
+                border-radius: 10px;
+                margin-bottom: 1rem;
+                margin-right: 1rem;
+        
+                p {
+                  margin-bottom: 0px;
                 }
-
-                .time-slots {
-                    flex: 0 0 70%;
-                    display: flex;
-                    flex-wrap: wrap;
-
-                    p{
-                        flex: 0 0 20%;
-                        margin-bottom: 0px;
-                        text-align: center;
-                        margin-bottom: 3px;
-                    }
-                }
-
+              }
             }
-
-            hr {
-                color: black;
-                width: 100%;
-            }
-        }
+          }
 
         .edit-profile {
             margin-top: 50px;
@@ -165,23 +159,19 @@
         .additional-info {
             
             .schedule {
-                
-                .day {
-                    flex-wrap: wrap;
-                    .day-name {
-                        flex: 0 0 100%;
-                    }
-
-                    .time-slots {
-                        flex: 0 0 100%;
-
-                        p {
-                            flex: none;
-                            margin: 0px 5px;
-                        }
-                    }
+                .react-calendar {
+                  flex: 0 0 100%;
                 }
-            }
+                .time-slots {
+                  margin-top: 2rem;
+                  flex: 0 0 100%;
+        
+                  p {
+                    flex: none;
+                    margin: 0px 5px;
+                  }
+                }
+              }
         }
     }
 }

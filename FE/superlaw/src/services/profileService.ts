@@ -6,6 +6,7 @@ import LawyerProfileForEdit from '../models/LawyerProfileForEdit';
 import ScheduleInput from '../models/inputs/ScheduleInput';
 import Days from '../constants/daysOfWeek';
 import TimeSlotInput from '../models/inputs/TimeSlotInput';
+import LawyerProfileNew from '../models/LawyerProfileNew';
 
 const createProfile: (input: any) => Promise<Result> = async (input) => {
     const res = await requester.postFile(apiRoutes.createProfile, input);
@@ -19,7 +20,7 @@ const editProfile: (input: any) => Promise<Result> = async (input) => {
     return res;
 }
 
-const getOwnProfile: () => Promise<LawyerProfile | null> = async () => {
+const getOwnProfile: () => Promise<LawyerProfileNew | null> = async () => {
     const res = await requester.get(apiRoutes.ownProfile);
     
     return res;

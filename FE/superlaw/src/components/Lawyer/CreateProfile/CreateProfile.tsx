@@ -13,8 +13,7 @@ import ProfileInputNew from "../../../models/inputs/ProfileInputNew";
 import Calendar, { TileDisabledFunc } from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
-import { TileArgs } from "react-calendar/dist/cjs/shared/types";
-import CreateScheduleInput from "../../../models/inputs/CreateScheduleInput";
+import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -38,10 +37,10 @@ const CreateProfile = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [selectedDaySlots, setSelectedDaySlots] = useState<CreateScheduleInput>(
+  const [selectedDaySlots, setSelectedDaySlots] = useState<ScheduleDayInput>(
     {
       date: new Date(),
-      timeslots: [],
+      timeSlots: [],
     }
   );
 
@@ -122,13 +121,13 @@ const CreateProfile = () => {
   };
 
   const onTimeSlotDelete = (index: number) => {
-    let schedule = selectedDaySlots.timeslots;
+    let schedule = selectedDaySlots.timeSlots;
 
     schedule.splice(index, 1);
 
     setSelectedDaySlots({
       date: selectedDaySlots.date,
-      timeslots: selectedDaySlots.timeslots,
+      timeSlots: selectedDaySlots.timeSlots,
     });
   };
 
@@ -151,7 +150,7 @@ const CreateProfile = () => {
     const errMsg = profileService.validateTimeSlotsInDay(
       from,
       to,
-      selectedDaySlots.timeslots
+      selectedDaySlots.timeSlots
     );
 
     if (errMsg) {
@@ -161,8 +160,8 @@ const CreateProfile = () => {
 
     setSelectedDaySlots({
       date: selectedDaySlots.date,
-      timeslots: [
-        ...selectedDaySlots.timeslots,
+      timeSlots: [
+        ...selectedDaySlots.timeSlots,
         {
           from: from,
           to: to,
@@ -175,7 +174,7 @@ const CreateProfile = () => {
 
   const onDateSelect = (dateValue: CalendarDateValue) => {
     //Set in the profile the defined slots for the previous selected day
-    if (selectedDaySlots.timeslots.length !== 0) {
+    if (selectedDaySlots.timeSlots.length !== 0) {
       let profileScheduleWithoutSelected = [...profile.schedule].filter(
         (x) =>
           x.date.setHours(0, 0, 0, 0) !==
@@ -205,7 +204,7 @@ const CreateProfile = () => {
 
     const defaultDay = {
       date: date,
-      timeslots: [],
+      timeSlots: [],
     };
 
     if (!scheduleDay) {
@@ -390,7 +389,7 @@ const CreateProfile = () => {
           />
           {selectedDaySlots && (
             <div className="time-slots">
-              {selectedDaySlots.timeslots.map((timeSlot, ind) => (
+              {selectedDaySlots.timeSlots.map((timeSlot, ind) => (
                 <div className={`time-slot`} key={ind}>
                   <p>
                     {timeSlot.from} - {timeSlot.to}
