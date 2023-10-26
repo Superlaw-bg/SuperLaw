@@ -560,6 +560,7 @@ namespace SuperLaw.Services
 
                 var timeSlotDto = new TimeSlotDto()
                 {
+                    Id = timeSlot.Id,
                     From = fromStr,
                     To = toStr
                 };
@@ -568,7 +569,7 @@ namespace SuperLaw.Services
 
                 if (scheduleDay == null)
                 {
-                    dto.Schedule.Add(new ScheduleDtoNew()
+                    dto.Schedule.Add(new ScheduleDto()
                     {
                         Date = timeSlot.Date.Date,
                         TimeSlots = new List<TimeSlotDto>()

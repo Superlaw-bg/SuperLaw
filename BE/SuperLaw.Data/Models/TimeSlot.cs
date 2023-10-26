@@ -12,5 +12,7 @@
         public TimeSpan From { get; set; }
 
         public TimeSpan To { get; set; }
+
+        public Meeting? Meeting { get; set; }
     }
 }

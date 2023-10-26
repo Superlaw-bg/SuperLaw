@@ -27,6 +27,12 @@ namespace SuperLaw.Data.Models
         [Range(0, 5)]
         public decimal Rating { get; set; }
 
+        public int? TimeSlotId { get; set; }
+
+        public TimeSlot? TimeSlot { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
+
         public bool IsUserFlagged { get; set; }
 
         public string ReasonForFlagging { get; set; } = string.Empty;

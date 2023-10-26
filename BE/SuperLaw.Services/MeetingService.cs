@@ -7,9 +7,6 @@ using SuperLaw.Services.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using SuperLaw.Services.DTO;
-using System.Threading;
-using System.Drawing;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 
 namespace SuperLaw.Services
 {
@@ -61,11 +58,16 @@ namespace SuperLaw.Services
 
             var todayDate = DateTimeOffset.UtcNow;
 
-            var lawyerMeetings = profile.Meetings
-                .Where(x => x.DateTime >= todayDate)
-                .ToList();
+            var timeSlot = _context.TimeSlots.Where(x => x.Id == input.TimeSlot.Id)
+                .Include(x => x.Meeting)
+                .SingleOrDefault();
 
-            if (lawyerMeetings.Count(x => x.DateTime.Date == input.Date.Date && x.From == input.TimeSlot.From && x.To == input.TimeSlot.To) > 0)
+            if (timeSlot == null)
+            {
+                throw new BusinessException("Невалиден диапазон за консултация");
+            }
+
+            if (timeSlot.Meeting != null)
             {
                 throw new BusinessException("Адвокатът вече е зает за конкретния час");
             }
@@ -84,25 +86,17 @@ namespace SuperLaw.Services
                 throw new BusinessException("Не може да имаш повече от 1 предстоящa среща с този адвокат");
             }
 
-            var toHours = int.Parse(input.TimeSlot.To.Split(':')[0]);
-            var toMinutes = int.Parse(input.TimeSlot.To.Split(':')[1]);
-            var meetingDateEndWithHourInUtc = input.Date.Date.AddHours(toHours).AddMinutes(toMinutes);
-
-            //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
-            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
-          
-            meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - easternZone.GetUtcOffset(DateTime.UtcNow).Hours);
-
             var meeting = new Meeting()
             {
                 LawyerProfileId = profile.Id,
                 ClientId = user.Id,
-                DateTime = meetingDateEndWithHourInUtc,
+                TimeSlotId = timeSlot.Id,
+                DateTime = timeSlot.Date,
                 From = input.TimeSlot.From,
                 To = input.TimeSlot.To,
                 CategoryId = input.CategoryId == 0 ? null : input.CategoryId,
-                RegionId = input.RegionId == 0 ? null : input.RegionId,
-                Info = string.Empty
+                Info = string.Empty,
+                CreatedAt = todayDate
             };
 
             if (!string.IsNullOrEmpty(input.Info))

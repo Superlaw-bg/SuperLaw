@@ -4,12 +4,12 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import profileService from "../../../services/profileService";
 import noProfilePic from "../../../assets/no-profile-picture-256.png";
-import LawyerProfileNew from "../../../models/LawyerProfileNew";
 import Calendar, { TileDisabledFunc } from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import TimeSlotInput from "../../../models/inputs/TimeSlotInput";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
+import LawyerProfile from "../../../models/LawyerProfile";
 
 const OwnProfile = () => {
   const minDate = moment().startOf('year').toDate();
@@ -17,7 +17,7 @@ const OwnProfile = () => {
   
   const navigate = useNavigate();
 
-  const [profile, setProfile] = useState<LawyerProfileNew>({
+  const [profile, setProfile] = useState<LawyerProfile>({
     id: -1,
     imgPath: "",
     fullName: "",

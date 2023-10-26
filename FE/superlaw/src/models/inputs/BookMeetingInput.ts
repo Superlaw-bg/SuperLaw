@@ -1,10 +1,9 @@
-import TimeSlotInput from "./TimeSlotInput";
+import TimeSlot from "../TimeSlot";
 
 interface BookMeetingInput {
     date: Date | null,
-    timeslot: TimeSlotInput,
+    timeslot: TimeSlot,
     categoryId: number,
-    regionId: number,
     info: string
 }
 

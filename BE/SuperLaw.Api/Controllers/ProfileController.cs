@@ -160,7 +160,7 @@ namespace SuperLaw.Api.Controllers
 
             if (hasSchedule)
             {
-                var schedule = JsonConvert.DeserializeObject<List<ScheduleDtoNew>>(scheduleStr.ToString());
+                var schedule = JsonConvert.DeserializeObject<List<ScheduleDto>>(scheduleStr.ToString());
                 profileInput.Schedule = schedule;
             }
 
@@ -273,7 +273,7 @@ namespace SuperLaw.Api.Controllers
 
             if (hasSchedule)
             {
-                var schedule = JsonConvert.DeserializeObject<List<ScheduleDtoNew>>(scheduleStr.ToString());
+                var schedule = JsonConvert.DeserializeObject<List<ScheduleDto>>(scheduleStr.ToString());
                 profileInput.Schedule = schedule;
             }
 
