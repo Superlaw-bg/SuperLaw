@@ -47,7 +47,7 @@ const Profile = () => {
         id: -1,
         from: '',
         to: '',
-        isOccupied: false
+        hasMeeting: false
       },
       categoryId: 0,
       info: ''
@@ -93,7 +93,7 @@ const Profile = () => {
 
       setBookMeetingForm({
         date: date,
-        timeslot: {id: -1, from: '', to: '', isOccupied: false},
+        timeslot: {id: -1, from: '', to: '', hasMeeting: false},
         categoryId: 0,
         info: ''
       });
@@ -126,12 +126,8 @@ const Profile = () => {
       let scheduleDay = profile.schedule.filter(
         (x) => new Date(x.date).setHours(0,0,0,0) === date.setHours(0,0,0,0)
       )[0];
-  
-      if (!scheduleDay) {
-        return true;
-      }
-  
-      if(scheduleDay.timeSlots.length === 0){
+
+      if(!scheduleDay || scheduleDay.timeSlots.filter(x => !x.hasMeeting).length === 0){
         return true;
       }
 
@@ -198,7 +194,7 @@ const Profile = () => {
 
         setBookMeetingForm({
           date: null,
-          timeslot: {id: -1, from: '', to: '', isOccupied: false},
+          timeslot: {id: -1, from: '', to: '', hasMeeting: false},
           categoryId: 0,
           info: ''
         });
@@ -262,7 +258,7 @@ const Profile = () => {
 
             <div className='sect description'>
               <p className='bold'>Информация:</p>
-              <p>{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}{profile.description}</p>    
+              <p>{profile.description}</p>    
             </div>
           </div>
          
@@ -282,11 +278,7 @@ const Profile = () => {
              {bookMeetingForm.date &&
               <div className="time-slots">
                 {timeSlotOptions.map((timeSlot) => 
-                  
-                /*<div className={`time-slot ${timeSlot ? 'occupied' : ''}`} key={ind} onClick={(e) => onSlotSelect(e, timeSlot)}>
-                  <p>{timeSlot.from} - {timeSlot.to}</p>
-                </div>*/
-                  <div className='time-slot' key={timeSlot.id} onClick={(e) => onSlotSelect(e, timeSlot)}>
+                  <div className={`time-slot ${timeSlot.hasMeeting ? 'occupied' : ''}`} key={timeSlot.id} onClick={(e) => onSlotSelect(e, timeSlot)}>
                     <p>{timeSlot.from} - {timeSlot.to}</p>
                   </div>
                 )}

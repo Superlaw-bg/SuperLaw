@@ -308,7 +308,7 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
-                .Include(x => x.Meetings)
+                .ThenInclude(x => x.Meeting)
                 .SingleOrDefaultAsync(x => x.Id == id && x.IsCompleted);
 
             if (userLawyerProfile == null)
@@ -353,7 +353,7 @@ namespace SuperLaw.Services
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
-
+           
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
 
             SetMeetingsProfileDto(userLawyerProfile.Meetings.ToList(), result);
@@ -579,7 +579,8 @@ namespace SuperLaw.Services
                 {
                     Id = timeSlot.Id,
                     From = fromStr,
-                    To = toStr
+                    To = toStr,
+                    HasMeeting = timeSlot.Meeting != null
                 };
 
                 var scheduleDay = dto.Schedule.SingleOrDefault(x => x.Date.Date == timeSlot.Date.Date);

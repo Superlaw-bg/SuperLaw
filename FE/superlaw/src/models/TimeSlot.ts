@@ -2,7 +2,7 @@ interface TimeSlot {
     id: number,
     from: string,
     to: string,
-    isOccupied: boolean
+    hasMeeting: boolean
 }
 
 export default TimeSlot;
