@@ -142,6 +142,7 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .ThenInclude(x => x.Meeting)
                 .SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (profile == null)
@@ -202,10 +203,17 @@ namespace SuperLaw.Services
                 .Where(x => x.Id == 0)
                 .ToList();
 
+            var todayDate = DateTime.UtcNow.Date;
+
             foreach (var timeSlot in profile.TimeSlots.ToList())
             {
                 if (!timeSlotIds.Contains(timeSlot.Id))
                 {
+                    if (timeSlot.Meeting != null && timeSlot.Meeting.DateTime.Date >= todayDate)
+                    {
+                        continue;
+                    }
+
                     _context.TimeSlots.Remove(timeSlot);
                 }
             }
