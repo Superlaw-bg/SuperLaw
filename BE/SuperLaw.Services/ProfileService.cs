@@ -573,9 +573,9 @@ namespace SuperLaw.Services
                     HasMeeting = timeSlot.Meeting != null
                 };
 
-                if (timeSlotDto.HasMeeting && timeSlot.Meeting != null && timeSlot.Meeting.Client != null)
+                if (timeSlotDto.HasMeeting && timeSlot.Meeting is {Client: not null})
                 {
-                    timeSlotDto.ClientName = $"{timeSlot.Meeting.Client.FirstName} {timeSlot.Meeting.Client.Surname}";
+                    timeSlotDto.ClientName = $"{timeSlot.Meeting.Client.FirstName} {timeSlot.Meeting.Client.LastName}";
                 }
 
                 var scheduleDay = dto.Schedule.SingleOrDefault(x => x.Date.Date == timeSlot.Date.Date);
