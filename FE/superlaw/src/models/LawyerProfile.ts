@@ -1,6 +1,5 @@
 import ScheduleDay from "./ScheduleDay";
 import SimpleData from "./SimpleData";
-import SimpleMeeting from "./SimpleMeeting";
 
 interface LawyerProfile {
     id: number,
@@ -15,7 +14,6 @@ interface LawyerProfile {
     city: string,
     regions: SimpleData[],
     schedule: ScheduleDay[],
-    meetings: { [date: string]: SimpleMeeting[]},
     isJunior: boolean,
     isCompleted: boolean
 }

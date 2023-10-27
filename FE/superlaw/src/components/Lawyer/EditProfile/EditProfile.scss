@@ -74,6 +74,17 @@
               }
             }
           }
+
+          &.occupied {
+            color: gray;
+            border: 1px solid gray;
+
+            &:hover{
+                cursor: auto;
+                background-color: white;
+                color: gray;
+            }
+          }
         }
         .select-range {
           padding: 0px 5px;

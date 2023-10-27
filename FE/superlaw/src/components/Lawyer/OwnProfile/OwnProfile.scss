@@ -111,6 +111,17 @@
                 p {
                   margin-bottom: 0px;
                 }
+
+                &.occupied {
+                    color: gray;
+                    border: 1px solid gray;
+
+                    &:hover{
+                        cursor: auto;
+                        background-color: white;
+                        color: gray;
+                    }
+                }
               }
             }
           }

@@ -166,6 +166,8 @@ const CreateProfile = () => {
           id: 0,
           from: from,
           to: to,
+          hasMeeting: false,
+          clientName: null,
         },
       ],
     });

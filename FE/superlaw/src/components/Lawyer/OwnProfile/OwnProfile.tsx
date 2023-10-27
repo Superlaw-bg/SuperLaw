@@ -7,9 +7,9 @@ import noProfilePic from "../../../assets/no-profile-picture-256.png";
 import Calendar, { TileDisabledFunc } from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
-import TimeSlotInput from "../../../models/inputs/TimeSlotInput";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
 import LawyerProfile from "../../../models/LawyerProfile";
+import TimeSlot from "../../../models/TimeSlot";
 
 const OwnProfile = () => {
   const minDate = moment().startOf('year').toDate();
@@ -30,17 +30,16 @@ const OwnProfile = () => {
     regions: [],
     rating: 0,
     schedule: [],
-    meetings: {},
     isJunior: false,
     isCompleted: false,
   });
 
-  const [timeSlots, setTimeslots] = useState<TimeSlotInput[]>([]);
+  const [timeSlots, setTimeslots] = useState<TimeSlot[]>([]);
 
   useEffect(() => {
     const fetchProfile = async () => {
       const res = await profileService.getOwnProfile();
-     
+      
       if (res !== null) {
         setProfile(res);
       }
@@ -217,11 +216,16 @@ const OwnProfile = () => {
               />
               {timeSlots && (
                 <div className="time-slots">
-                  {timeSlots.map((timeSlot, ind) => (
-                    <div className={`time-slot`} key={ind}>
+                  {timeSlots.map((timeSlot) => (
+                    <div className={`time-slot ${timeSlot.hasMeeting ? 'occupied' : ''}`} key={timeSlot.id} >
                       <p>
                         {timeSlot.from} - {timeSlot.to}
                       </p>
+                      {timeSlot.hasMeeting && timeSlot.clientName && 
+                        <p>
+                          {timeSlot.clientName}
+                        </p>
+                      }
                     </div>
                   ))}
                 </div>

@@ -80,7 +80,7 @@ const EditProfile = () => {
 
     const fetchProfile = async () => {
       const res = await profileService.getOwnProfileDataForEdit();
-      
+      console.log(res);
       setProfile({
         ...profile,
         description: res.description,
@@ -175,6 +175,8 @@ const EditProfile = () => {
           id: 0,
           from: from,
           to: to,
+          hasMeeting: false,
+          clientName: null
         },
       ],
     });
@@ -374,16 +376,21 @@ const EditProfile = () => {
           {selectedDaySlots && (
             <div className="time-slots">
               {selectedDaySlots.timeSlots.map((timeSlot, ind) => (
-                <div className={`time-slot`} key={ind}>
+                <div className={`time-slot ${timeSlot.hasMeeting ? 'occupied' : ''}`} key={ind}>
                   <p>
                     {timeSlot.from} - {timeSlot.to}
-                    <span
+                    { !timeSlot.hasMeeting && <span
                       className="delete"
                       onClick={() => onTimeSlotDelete(ind)}
                     >
                       X
-                    </span>
+                    </span>}
                   </p>
+                  {timeSlot.hasMeeting && timeSlot.clientName && 
+                        <p>
+                          {timeSlot.clientName}
+                        </p>
+                  }
                 </div>
               ))}
 

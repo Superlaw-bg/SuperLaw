@@ -1,8 +1,9 @@
+import TimeSlot from "../TimeSlot";
 import TimeSlotInput from "./TimeSlotInput";
 
 interface ScheduleDayInput {
     date: Date,
-    timeSlots: TimeSlotInput[],
+    timeSlots: TimeSlot[],
 }
 
 export default ScheduleDayInput;

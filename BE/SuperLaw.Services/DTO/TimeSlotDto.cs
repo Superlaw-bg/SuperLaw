@@ -9,5 +9,7 @@
         public string To { get; set; }
 
         public bool HasMeeting { get; set; }
+
+        public string? ClientName { get; set; }
     }
 }

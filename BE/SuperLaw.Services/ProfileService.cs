@@ -78,62 +78,6 @@ namespace SuperLaw.Services
             await _context.SaveChangesAsync();
         }
 
-        private List<TimeSlot> GetProfileTimeSlots(CreateProfileInput input)
-        {
-            var timeSlots = new List<TimeSlot>();
-
-            //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
-            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
-
-            foreach (var scheduleForDay in input.Schedule)
-            {
-                var i = 0;
-                var timeSlotDate = scheduleForDay.Date;
-                foreach (var timeSlotDto in scheduleForDay.TimeSlots)
-                {
-                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
-                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
-
-                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
-                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
-
-                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, null);
-
-                    var otherTimeSlots = scheduleForDay.TimeSlots.Where((x, index) => index != i).ToList();
-
-                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, null);
-
-                    //from fe it is selected for example 19.10 midnight but comming to be as 18.10 21:00
-                    //because of time change in the end of october also it is possible the time to come as 22
-
-                    if (timeSlotDate.Hour == 21 || timeSlotDate.Hour == 22)
-                    {
-                        timeSlotDate = timeSlotDate.Date.AddDays(1);
-                    }
-
-                    var meetingDateEndWithHourInUtc = timeSlotDate.Date.AddHours(toHours).AddMinutes(toMinutes);
-
-                    var utcOffsetInHours = easternZone.GetUtcOffset(timeSlotDate.Date).Hours;
-                    meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - utcOffsetInHours);
-
-                    var timeSlot = new TimeSlot()
-                    {
-                        Id = timeSlotDto.Id,
-                        From = new TimeSpan(fromHours, fromMinutes, 0),
-                        To = new TimeSpan(toHours, toMinutes, 0),
-                        Date = meetingDateEndWithHourInUtc
-                    };
-
-                    timeSlots.Add(timeSlot);
-
-                    i++;
-                }
-               
-            }
-
-            return timeSlots;
-        }
-
         public async Task EditProfileAsync(string userId, CreateProfileInput input)
         {
             var profile = await _context.LawyerProfiles
@@ -237,6 +181,8 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .ThenInclude(x => x.Meeting)
+                .ThenInclude(x => x.Client)
                 .SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (userLawyerProfile == null)
@@ -356,6 +302,8 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .ThenInclude(x => x.Meeting)
+                .ThenInclude(x => x.Client)
                 .SingleAsync(x => x.UserId == userId);
 
             var result = new LawyerProfileEditDto()
@@ -509,6 +457,61 @@ namespace SuperLaw.Services
             }
         }
 
+        private List<TimeSlot> GetProfileTimeSlots(CreateProfileInput input)
+        {
+            var timeSlots = new List<TimeSlot>();
+
+            //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+
+            foreach (var scheduleForDay in input.Schedule)
+            {
+                var i = 0;
+                var timeSlotDate = scheduleForDay.Date;
+                foreach (var timeSlotDto in scheduleForDay.TimeSlots)
+                {
+                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
+                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
+
+                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
+                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
+
+                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, null);
+
+                    var otherTimeSlots = scheduleForDay.TimeSlots.Where((x, index) => index != i).ToList();
+
+                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, null);
+
+                    //from fe it is selected for example 19.10 midnight but comming to be as 18.10 21:00
+                    //because of time change in the end of october also it is possible the time to come as 22
+
+                    if (timeSlotDate.Hour == 21 || timeSlotDate.Hour == 22)
+                    {
+                        timeSlotDate = timeSlotDate.Date.AddDays(1);
+                    }
+
+                    var meetingDateEndWithHourInUtc = timeSlotDate.Date.AddHours(toHours).AddMinutes(toMinutes);
+
+                    var utcOffsetInHours = easternZone.GetUtcOffset(timeSlotDate.Date).Hours;
+                    meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - utcOffsetInHours);
+
+                    var timeSlot = new TimeSlot()
+                    {
+                        Id = timeSlotDto.Id,
+                        From = new TimeSpan(fromHours, fromMinutes, 0),
+                        To = new TimeSpan(toHours, toMinutes, 0),
+                        Date = meetingDateEndWithHourInUtc
+                    };
+
+                    timeSlots.Add(timeSlot);
+
+                    i++;
+                }
+
+            }
+
+            return timeSlots;
+        }
         private void ValidateTimeSlotsInDay(int fromHours, int fromMinutes, int toHours, int toMinutes, List<TimeSlotDto> timeSlots, DayEnum? day)
         {
             var todayDate = DateTime.Now;
@@ -570,6 +573,11 @@ namespace SuperLaw.Services
                     HasMeeting = timeSlot.Meeting != null
                 };
 
+                if (timeSlotDto.HasMeeting && timeSlot.Meeting != null && timeSlot.Meeting.Client != null)
+                {
+                    timeSlotDto.ClientName = $"{timeSlot.Meeting.Client.FirstName} {timeSlot.Meeting.Client.Surname}";
+                }
+
                 var scheduleDay = dto.Schedule.SingleOrDefault(x => x.Date.Date == timeSlot.Date.Date);
 
                 if (scheduleDay == null)
@@ -588,37 +596,6 @@ namespace SuperLaw.Services
                     scheduleDay.TimeSlots.Add(timeSlotDto);
                 }
             }
-        }
-
-        private void SetMeetingsProfileDto(List<Meeting> meetings, LawyerProfileBaseDto dto)
-        {
-            var todayDate = DateTime.UtcNow.Date;
-
-            meetings = meetings
-                .Where(x => x.DateTime.Date >= todayDate.Date)
-                .ToList();
-
-            var meetingDtos = meetings.Select(x => new MeetingSimpleDto()
-            {
-                Date = x.DateTime.Date,
-                From = x.From,
-                To = x.To,
-            }).ToList();
-
-
-            var res = new Dictionary<DateTime, List<MeetingSimpleDto>>();
-
-            foreach (var meetingDto in meetingDtos)
-            {
-                if (!res.ContainsKey(meetingDto.Date))
-                {
-                    res[meetingDto.Date] = new List<MeetingSimpleDto>();
-                }
-
-                res[meetingDto.Date].Add(meetingDto);
-            }
-
-            dto.Meetings = res;
         }
     }
 }

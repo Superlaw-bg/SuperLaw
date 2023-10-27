@@ -34,7 +34,6 @@ const Profile = () => {
         rating: 0,
         city: '',
         schedule: [],
-        meetings: {},
         isJunior: false,
         isCompleted: false
       });
@@ -47,7 +46,8 @@ const Profile = () => {
         id: -1,
         from: '',
         to: '',
-        hasMeeting: false
+        hasMeeting: false,
+        clientName: null
       },
       categoryId: 0,
       info: ''
@@ -115,7 +115,7 @@ const Profile = () => {
 
       setBookMeetingForm({
         date: date,
-        timeslot: {id: -1, from: '', to: '', hasMeeting: false},
+        timeslot: {id: -1, from: '', to: '', hasMeeting: false, clientName: null},
         categoryId: 0,
         info: ''
       });
@@ -214,7 +214,7 @@ const Profile = () => {
 
         setBookMeetingForm({
           date: null,
-          timeslot: {id: -1, from: '', to: '', hasMeeting: false},
+          timeslot: {id: -1, from: '', to: '', hasMeeting: false, clientName: null},
           categoryId: 0,
           info: ''
         });

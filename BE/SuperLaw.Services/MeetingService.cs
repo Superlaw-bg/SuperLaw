@@ -209,7 +209,6 @@ namespace SuperLaw.Services
             var user = users[0];
 
             var categories = _context.LegalCategories.ToList();
-            var regions = _context.JudicialRegions.ToList();
 
             var todayDateTime = DateTime.UtcNow;
 
@@ -217,11 +216,11 @@ namespace SuperLaw.Services
 
             if (userRole.Contains("User"))
             {
-                await SetMeetingsForUser(user, categories, regions, result, todayDateTime);
+                await SetMeetingsForUser(user, categories, result, todayDateTime);
             }
             else
             {
-                await SetMeetingsForLawyer(userId, result, categories, regions, todayDateTime);
+                await SetMeetingsForLawyer(userId, result, categories, todayDateTime);
             }
 
             result.Past = result.Past.OrderByDescending(x => x.DateTime).ToList();
@@ -230,7 +229,7 @@ namespace SuperLaw.Services
             return result;
         }
 
-        private async Task SetMeetingsForLawyer(string userId, MeetingsDto result, List<LegalCategory> categories, List<JudicialRegion> regions, DateTime todayDateTime)
+        private async Task SetMeetingsForLawyer(string userId, MeetingsDto result, List<LegalCategory> categories, DateTime todayDateTime)
         {
             var profile = _context.LawyerProfiles
                 .Include(x => x.Meetings)
@@ -252,7 +251,6 @@ namespace SuperLaw.Services
                         From = meeting.From,
                         To = meeting.To,
                         CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
-                        RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
                         Info = null
                     };
 
@@ -263,7 +261,7 @@ namespace SuperLaw.Services
             }
         }
 
-        private async Task SetMeetingsForUser(User user, List<LegalCategory> categories, List<JudicialRegion> regions, MeetingsDto result,
+        private async Task SetMeetingsForUser(User user, List<LegalCategory> categories, MeetingsDto result,
             DateTime todayDateTime)
         {
             foreach (var meeting in user.Meetings)
@@ -279,7 +277,6 @@ namespace SuperLaw.Services
                     From = meeting.From,
                     To = meeting.To,
                     CategoryName = categories.SingleOrDefault(x => x.Id == meeting.CategoryId)?.Name,
-                    RegionName = regions.SingleOrDefault(x => x.Id == meeting.RegionId)?.Name,
                     Rating = meeting.Rating,
                     Info = null
                 };
