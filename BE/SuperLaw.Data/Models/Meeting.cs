@@ -22,8 +22,6 @@ namespace SuperLaw.Data.Models
 
         public int? CategoryId { get; set; }
 
-        public int? RegionId { get; set; }
-
         [Range(0, 5)]
         public decimal Rating { get; set; }
 

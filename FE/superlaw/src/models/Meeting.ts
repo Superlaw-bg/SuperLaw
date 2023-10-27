@@ -7,7 +7,6 @@ interface Meeting {
     from: string,
     to: string,
     categoryName: string,
-    regionName: string,
     info: string,
     rating: number
 }
