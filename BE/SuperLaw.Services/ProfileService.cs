@@ -78,77 +78,6 @@ namespace SuperLaw.Services
             await _context.SaveChangesAsync();
         }
 
-        private List<TimeSlot> GetProfileTimeSlots(CreateProfileInput input)
-        {
-            var timeSlots = new List<TimeSlot>();
-
-            for (var i = 1; i <= 7; i++)
-            {
-                var timeSlotsForTheDay = input.Schedule.Monday;
-                var dayOfWeek = DayEnum.Monday;
-
-                switch (i)
-                {
-                    case 1:
-                        timeSlotsForTheDay = input.Schedule.Monday;
-                        dayOfWeek = DayEnum.Monday;
-                        break;
-                    case 2:
-                        timeSlotsForTheDay = input.Schedule.Tuesday;
-                        dayOfWeek = DayEnum.Tuesday;
-                        break;
-                    case 3:
-                        timeSlotsForTheDay = input.Schedule.Wednesday;
-                        dayOfWeek = DayEnum.Wednesday;
-                        break;
-                    case 4:
-                        timeSlotsForTheDay = input.Schedule.Thursday;
-                        dayOfWeek = DayEnum.Thursday;
-                        break;
-                    case 5:
-                        timeSlotsForTheDay = input.Schedule.Friday;
-                        dayOfWeek = DayEnum.Friday;
-                        break;
-                    case 6:
-                        timeSlotsForTheDay = input.Schedule.Saturday;
-                        dayOfWeek = DayEnum.Saturday;
-                        break;
-                    case 7:
-                        timeSlotsForTheDay = input.Schedule.Sunday;
-                        dayOfWeek = DayEnum.Sunday;
-                        break;
-                }
-
-                for (var j = 0; j < timeSlotsForTheDay.ToList().Count; j++)
-                {
-                    var timeSlotDto = timeSlotsForTheDay[j];
-
-                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
-                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
-
-                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
-                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
-
-                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, dayOfWeek);
-
-                    var otherTimeSlots = timeSlotsForTheDay.Where((x, index) => index != j).ToList();
-
-                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, dayOfWeek);
-
-                    var timeSlot = new TimeSlot()
-                    {
-                        From = new TimeSpan(fromHours, fromMinutes, 0),
-                        To = new TimeSpan(toHours, toMinutes, 0),
-                        DayOfWeek = dayOfWeek
-                    };
-
-                    timeSlots.Add(timeSlot);
-                }
-            }
-
-            return timeSlots;
-        }
-
         public async Task EditProfileAsync(string userId, CreateProfileInput input)
         {
             var profile = await _context.LawyerProfiles
@@ -157,6 +86,7 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .ThenInclude(x => x.Meeting)
                 .SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (profile == null)
@@ -209,14 +139,33 @@ namespace SuperLaw.Services
                 profile.CompletedOn = DateTime.UtcNow;
             }
 
-            var profileTimeSlots = _context.TimeSlots
-                .Where(x => x.ProfileId == profile.Id)
-                .ToList();
-            
-            _context.TimeSlots.RemoveRange(profileTimeSlots);
-
             var timeSlots = GetProfileTimeSlots(input);
-            profile.TimeSlots = timeSlots;
+
+            var timeSlotIds = timeSlots.Select(x => x.Id).ToList();
+
+            var toAdd = timeSlots
+                .Where(x => x.Id == 0)
+                .ToList();
+
+            var todayDate = DateTime.UtcNow.Date;
+
+            foreach (var timeSlot in profile.TimeSlots.ToList())
+            {
+                if (!timeSlotIds.Contains(timeSlot.Id))
+                {
+                    if (timeSlot.Meeting != null && timeSlot.Meeting.DateTime.Date >= todayDate)
+                    {
+                        continue;
+                    }
+
+                    _context.TimeSlots.Remove(timeSlot);
+                }
+            }
+
+            foreach (var timeSlot in toAdd)
+            {
+                profile.TimeSlots.Add(timeSlot);
+            }
 
             _context.LawyerProfiles.Update(profile);
             await _context.SaveChangesAsync();
@@ -232,6 +181,8 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .ThenInclude(x => x.Meeting)
+                .ThenInclude(x => x.Client)
                 .SingleOrDefaultAsync(x => x.UserId == userId);
 
             if (userLawyerProfile == null)
@@ -273,12 +224,11 @@ namespace SuperLaw.Services
                     .ToList(),
                 Rating = Math.Round(userLawyerProfile.Rating, 1),
                 City = userLawyerProfile.User.City.Name,
-                Schedule = new ScheduleDto(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
 
-            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
+            SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result, true);
 
             return result;
         }
@@ -293,7 +243,7 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
-                .Include(x => x.Meetings)
+                .ThenInclude(x => x.Meeting)
                 .SingleOrDefaultAsync(x => x.Id == id && x.IsCompleted);
 
             if (userLawyerProfile == null)
@@ -338,10 +288,8 @@ namespace SuperLaw.Services
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
             };
-
+           
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
-
-            SetMeetingsProfileDto(userLawyerProfile.Meetings.ToList(), result);
 
             return result;
         }
@@ -354,6 +302,8 @@ namespace SuperLaw.Services
                 .Include(x => x.LegalCategories)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.TimeSlots)
+                .ThenInclude(x => x.Meeting)
+                .ThenInclude(x => x.Client)
                 .SingleAsync(x => x.UserId == userId);
 
             var result = new LawyerProfileEditDto()
@@ -468,7 +418,7 @@ namespace SuperLaw.Services
                 .ToList();
         }
 
-        private void ValidateTimeSlot(int fromHours, int fromMinutes, int toHours, int toMinutes, DayEnum day) 
+        private void ValidateTimeSlot(int fromHours, int fromMinutes, int toHours, int toMinutes, DayEnum? day) 
         {
             var todayDate = DateTime.Now;
 
@@ -507,7 +457,62 @@ namespace SuperLaw.Services
             }
         }
 
-        private void ValidateTimeSlotsInDay(int fromHours, int fromMinutes, int toHours, int toMinutes, List<TimeSlotDto> timeSlots, DayEnum day)
+        private List<TimeSlot> GetProfileTimeSlots(CreateProfileInput input)
+        {
+            var timeSlots = new List<TimeSlot>();
+
+            //Saving the meeting date with the end hour but in utc in order to more easily decide if the meeting is in the past or not
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("E. Europe Standard Time");
+
+            foreach (var scheduleForDay in input.Schedule)
+            {
+                var i = 0;
+                var timeSlotDate = scheduleForDay.Date;
+                foreach (var timeSlotDto in scheduleForDay.TimeSlots)
+                {
+                    var fromHours = int.Parse(timeSlotDto.From.Split(':')[0]);
+                    var fromMinutes = int.Parse(timeSlotDto.From.Split(':')[1]);
+
+                    var toHours = int.Parse(timeSlotDto.To.Split(':')[0]);
+                    var toMinutes = int.Parse(timeSlotDto.To.Split(':')[1]);
+
+                    ValidateTimeSlot(fromHours, fromMinutes, toHours, toMinutes, null);
+
+                    var otherTimeSlots = scheduleForDay.TimeSlots.Where((x, index) => index != i).ToList();
+
+                    ValidateTimeSlotsInDay(fromHours, fromMinutes, toHours, toMinutes, otherTimeSlots, null);
+
+                    //from fe it is selected for example 19.10 midnight but comming to be as 18.10 21:00
+                    //because of time change in the end of october also it is possible the time to come as 22
+
+                    if (timeSlotDate.Hour == 21 || timeSlotDate.Hour == 22)
+                    {
+                        timeSlotDate = timeSlotDate.Date.AddDays(1);
+                    }
+
+                    var meetingDateEndWithHourInUtc = timeSlotDate.Date.AddHours(toHours).AddMinutes(toMinutes);
+
+                    var utcOffsetInHours = easternZone.GetUtcOffset(timeSlotDate.Date).Hours;
+                    meetingDateEndWithHourInUtc = meetingDateEndWithHourInUtc.AddHours(0 - utcOffsetInHours);
+
+                    var timeSlot = new TimeSlot()
+                    {
+                        Id = timeSlotDto.Id,
+                        From = new TimeSpan(fromHours, fromMinutes, 0),
+                        To = new TimeSpan(toHours, toMinutes, 0),
+                        Date = meetingDateEndWithHourInUtc
+                    };
+
+                    timeSlots.Add(timeSlot);
+
+                    i++;
+                }
+
+            }
+
+            return timeSlots;
+        }
+        private void ValidateTimeSlotsInDay(int fromHours, int fromMinutes, int toHours, int toMinutes, List<TimeSlotDto> timeSlots, DayEnum? day)
         {
             var todayDate = DateTime.Now;
 
@@ -534,9 +539,18 @@ namespace SuperLaw.Services
             }
         }
 
-        private void SetScheduleForProfileDto(List<TimeSlot> timeSlots, LawyerProfileBaseDto dto)
+        private void SetScheduleForProfileDto(List<TimeSlot> timeSlots, LawyerProfileBaseDto dto, bool withPastTimeSlots = false)
         {
-            foreach (var timeSlot in timeSlots)
+            var validTimeSlots = timeSlots;
+
+            if (!withPastTimeSlots)
+            {
+                validTimeSlots = timeSlots
+                    .Where(x => x.Date.Date >= DateTime.UtcNow.Date)
+                    .ToList();
+            }
+
+            foreach (var timeSlot in validTimeSlots)
             {
                 var fromStr = $"{timeSlot.From.Hours}:{timeSlot.From.Minutes}";
                 var toStr = $"{timeSlot.To.Hours}:{timeSlot.To.Minutes}";
@@ -553,70 +567,35 @@ namespace SuperLaw.Services
 
                 var timeSlotDto = new TimeSlotDto()
                 {
+                    Id = timeSlot.Id,
                     From = fromStr,
-                    To = toStr
+                    To = toStr,
+                    HasMeeting = timeSlot.Meeting != null
                 };
 
-                if (timeSlot.DayOfWeek == DayEnum.Monday)
+                if (timeSlotDto.HasMeeting && timeSlot.Meeting != null && timeSlot.Meeting.Client != null)
                 {
-                    dto.Schedule.Monday.Add(timeSlotDto);
+                    timeSlotDto.ClientName = $"{timeSlot.Meeting.Client.FirstName} {timeSlot.Meeting.Client.Surname}";
                 }
-                else if (timeSlot.DayOfWeek == DayEnum.Tuesday)
+
+                var scheduleDay = dto.Schedule.SingleOrDefault(x => x.Date.Date == timeSlot.Date.Date);
+
+                if (scheduleDay == null)
                 {
-                    dto.Schedule.Tuesday.Add(timeSlotDto);
+                    dto.Schedule.Add(new ScheduleDto()
+                    {
+                        Date = timeSlot.Date.Date,
+                        TimeSlots = new List<TimeSlotDto>()
+                        {
+                            timeSlotDto
+                        }
+                    });
                 }
-                else if (timeSlot.DayOfWeek == DayEnum.Wednesday)
+                else
                 {
-                    dto.Schedule.Wednesday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Thursday)
-                {
-                    dto.Schedule.Thursday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Friday)
-                {
-                    dto.Schedule.Friday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Saturday)
-                {
-                    dto.Schedule.Saturday.Add(timeSlotDto);
-                }
-                else if (timeSlot.DayOfWeek == DayEnum.Sunday)
-                {
-                    dto.Schedule.Sunday.Add(timeSlotDto);
+                    scheduleDay.TimeSlots.Add(timeSlotDto);
                 }
             }
-        }
-
-        private void SetMeetingsProfileDto(List<Meeting> meetings, LawyerProfileBaseDto dto)
-        {
-            var todayDate = DateTime.UtcNow.Date;
-
-            meetings = meetings
-                .Where(x => x.DateTime.Date >= todayDate.Date)
-                .ToList();
-
-            var meetingDtos = meetings.Select(x => new MeetingSimpleDto()
-            {
-                Date = x.DateTime.Date,
-                From = x.From,
-                To = x.To,
-            }).ToList();
-
-
-            var res = new Dictionary<DateTime, List<MeetingSimpleDto>>();
-
-            foreach (var meetingDto in meetingDtos)
-            {
-                if (!res.ContainsKey(meetingDto.Date))
-                {
-                    res[meetingDto.Date] = new List<MeetingSimpleDto>();
-                }
-
-                res[meetingDto.Date].Add(meetingDto);
-            }
-
-            dto.Meetings = res;
         }
     }
 }

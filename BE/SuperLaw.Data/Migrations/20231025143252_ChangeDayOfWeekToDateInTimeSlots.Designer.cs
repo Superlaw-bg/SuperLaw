@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuperLaw.Data;
 
@@ -11,9 +12,11 @@ using SuperLaw.Data;
 namespace SuperLaw.Data.Migrations
 {
     [DbContext(typeof(SuperLawDbContext))]
-    partial class SuperLawDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231025143252_ChangeDayOfWeekToDateInTimeSlots")]
+    partial class ChangeDayOfWeekToDateInTimeSlots
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,9 +280,6 @@ namespace SuperLaw.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<DateTimeOffset>("DateTime")
                         .HasColumnType("datetimeoffset");
 
@@ -304,7 +304,7 @@ namespace SuperLaw.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TimeSlotId")
+                    b.Property<int?>("RegionId")
                         .HasColumnType("int");
 
                     b.Property<string>("To")
@@ -316,10 +316,6 @@ namespace SuperLaw.Data.Migrations
                     b.HasIndex("ClientId");
 
                     b.HasIndex("LawyerProfileId");
-
-                    b.HasIndex("TimeSlotId")
-                        .IsUnique()
-                        .HasFilter("[TimeSlotId] IS NOT NULL");
 
                     b.ToTable("Meetings");
                 });
@@ -569,16 +565,9 @@ namespace SuperLaw.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SuperLaw.Data.Models.TimeSlot", "TimeSlot")
-                        .WithOne("Meeting")
-                        .HasForeignKey("SuperLaw.Data.Models.Meeting", "TimeSlotId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("Client");
 
                     b.Navigation("LawyerProfile");
-
-                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("SuperLaw.Data.Models.TimeSlot", b =>
@@ -622,11 +611,6 @@ namespace SuperLaw.Data.Migrations
             modelBuilder.Entity("SuperLaw.Data.Models.LegalCategory", b =>
                 {
                     b.Navigation("Lawyers");
-                });
-
-            modelBuilder.Entity("SuperLaw.Data.Models.TimeSlot", b =>
-                {
-                    b.Navigation("Meeting");
                 });
 
             modelBuilder.Entity("SuperLaw.Data.Models.User", b =>

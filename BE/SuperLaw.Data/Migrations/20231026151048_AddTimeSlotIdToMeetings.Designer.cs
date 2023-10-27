@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SuperLaw.Data;
 
@@ -11,9 +12,11 @@ using SuperLaw.Data;
 namespace SuperLaw.Data.Migrations
 {
     [DbContext(typeof(SuperLawDbContext))]
-    partial class SuperLawDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231026151048_AddTimeSlotIdToMeetings")]
+    partial class AddTimeSlotIdToMeetings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -303,6 +306,9 @@ namespace SuperLaw.Data.Migrations
                     b.Property<string>("ReasonForFlagging")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RegionId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("TimeSlotId")
                         .HasColumnType("int");

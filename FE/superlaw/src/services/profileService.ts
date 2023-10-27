@@ -3,8 +3,6 @@ import apiRoutes from './apiRoutes';
 import Result from '../models/Result';
 import LawyerProfile from '../models/LawyerProfile';
 import LawyerProfileForEdit from '../models/LawyerProfileForEdit';
-import ScheduleInput from '../models/inputs/ScheduleInput';
-import Days from '../constants/daysOfWeek';
 import TimeSlotInput from '../models/inputs/TimeSlotInput';
 
 const createProfile: (input: any) => Promise<Result> = async (input) => {
@@ -47,69 +45,6 @@ const getAll: (name: string | null, categories: number[], cityId: number) => Pro
     const res = await requester.get(path);
     
     return res;
-}
-
-const getScheduleForDayStr = (dayOfWeek: string, schedule: ScheduleInput) => {
-    let scheduleForDay = schedule.monday;
-    
-    switch(dayOfWeek){
-      case Days.Monday:
-        scheduleForDay = schedule.monday;
-        break;
-      case Days.Tuesday:
-        scheduleForDay = schedule.tuesday;
-        break;
-      case Days.Wednesday:
-        scheduleForDay = schedule.wednesday;
-        break;
-      case Days.Thursday:
-        scheduleForDay = schedule.thursday;
-        break;
-      case Days.Friday:
-        scheduleForDay = schedule.friday;
-        break;
-      case Days.Saturday:
-        scheduleForDay = schedule.saturday;
-        break;
-      case Days.Sunday:
-        scheduleForDay = schedule.sunday;
-        break;
-    }
-
-    return scheduleForDay;
-}
-
-const getScheduleForDay = (dayOfWeek: number, schedule: ScheduleInput) => {
-  let scheduleForDay = schedule.sunday;
-  
-  switch(dayOfWeek){
-    case 1:
-      scheduleForDay = schedule.monday;
-      break;
-    case 2:
-      scheduleForDay = schedule.tuesday;
-      break;
-    case 3:
-      scheduleForDay = schedule.wednesday;
-      break;
-    case 4:
-      scheduleForDay = schedule.thursday;
-      break;
-    case 5:
-      scheduleForDay = schedule.friday;
-      break;
-    case 6:
-      scheduleForDay = schedule.saturday;
-      break;
-    case 7:
-      scheduleForDay = schedule.sunday;
-      break;
-    default:
-      scheduleForDay = schedule.sunday;
-      break;
-  }
-
-  return scheduleForDay;
 }
 
 const validateTimeSlot = (from: string, to: string) => {
@@ -205,8 +140,6 @@ const profileService = {
     getProfile,
     getOwnProfileDataForEdit,
     getAll,
-    getScheduleForDayStr,
-    getScheduleForDay,
     validateTimeSlot,
     validateTimeSlotsInDay
 };

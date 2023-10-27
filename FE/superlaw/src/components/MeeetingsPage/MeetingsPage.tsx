@@ -76,7 +76,6 @@ const MeetingsPage = () => {
                     <p>Дата: <span>{meeting.date}</span></p>
                     <p>От: <span>{meeting.from}</span> До: <span>{meeting.to}</span></p>
                     {meeting.categoryName && <p>Категория: <span>{meeting.categoryName}</span></p>}
-                    {meeting.regionName && <p>Район: <span>{meeting.regionName}</span></p>}
                     {meeting.info && <p>Повече инфо: </p>}
                     {meeting.info && <p>{meeting.info}</p>}
                     {!meeting.isUserTheLawyer && meeting.rating === 0 && <Button className="primary-btn" onClick={() => openRateModal(meeting.id)}>Оцени</Button> }
@@ -100,7 +99,6 @@ const MeetingsPage = () => {
                     <p>Дата: <span>{meeting.date}</span></p>
                     <p>От: <span>{meeting.from}</span> До: <span>{meeting.to}</span></p>
                     {meeting.categoryName  && <p>Категория: <span>{meeting.categoryName}</span></p>}
-                    {meeting.regionName && <p>Район: <span>{meeting.regionName}</span></p>}
                     {meeting.info && <p>Повече инфо: </p>}
                     {meeting.info && <p>{meeting.info}</p>}
                   </div>

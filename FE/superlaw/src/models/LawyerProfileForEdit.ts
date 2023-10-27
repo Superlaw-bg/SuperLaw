@@ -1,4 +1,4 @@
-import ScheduleInput from "./inputs/ScheduleInput";
+import ScheduleDayInput from "./inputs/ScheduleDayInput";
 
 interface LawyerProfileForEdit {
     id: number,
@@ -7,7 +7,7 @@ interface LawyerProfileForEdit {
     address: string,
     categories: [],
     regions: [],
-    schedule: ScheduleInput,
+    schedule: ScheduleDayInput[],
     isJunior: boolean,
     isCompleted: boolean
 }

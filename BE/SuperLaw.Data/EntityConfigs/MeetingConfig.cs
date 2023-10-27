@@ -19,6 +19,11 @@ namespace SuperLaw.Data.EntityConfigs
                 .WithMany(l => l.Meetings)
                 .HasForeignKey(m => m.LawyerProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity
+                .HasOne(m => m.TimeSlot)
+                .WithOne(t => t.Meeting)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

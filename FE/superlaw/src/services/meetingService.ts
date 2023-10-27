@@ -25,7 +25,7 @@ const getAllForCurrentUser: () => Promise<MeetingsPageData> = async () => {
     return res;
 }
 
-const getMeetingsForDate = (date: Date, profile: LawyerProfile) => {
+/*const getMeetingsForDate = (date: Date, profile: LawyerProfile) => {
     let month = `${date.getMonth() + 1}`;
     let day = `${date.getDate()}`;
 
@@ -42,9 +42,9 @@ const getMeetingsForDate = (date: Date, profile: LawyerProfile) => {
     const meetings = profile.meetings[meetingsKey];
 
     return meetings;
-}
+}*/
 
-const isDayForMeetingsDisabled = (date: Date, timeSlots: TimeSlotInput[], profile: LawyerProfile) => {
+/*const isDayForMeetingsDisabled = (date: Date, timeSlots: TimeSlotInput[], profile: LawyerProfile) => {
     if (timeSlots.length === 0) {
         return true;
     }
@@ -83,9 +83,9 @@ const isDayForMeetingsDisabled = (date: Date, timeSlots: TimeSlotInput[], profil
     }
 
     return false;
-}
+}*/
 
-const getTimeSlotsForSelectionForDate = (profile: LawyerProfile, timeSlots: TimeSlotInput[], date: Date) => {
+/*const getTimeSlotsForSelectionForDate = (profile: LawyerProfile, timeSlots: TimeSlotInput[], date: Date) => {
     const todayDate = new Date();
     const meetingsForDate = meetingService.getMeetingsForDate(date, profile);
 
@@ -122,15 +122,15 @@ const getTimeSlotsForSelectionForDate = (profile: LawyerProfile, timeSlots: Time
     }
 
     return timeSlotsForSelections;
-}
+}*/
 
 const meetingService = {
     createMeeting,
     rateMeeting,
     getAllForCurrentUser,
-    getMeetingsForDate,
-    isDayForMeetingsDisabled,
-    getTimeSlotsForSelectionForDate
+    //getMeetingsForDate,
+    //isDayForMeetingsDisabled,
+    //getTimeSlotsForSelectionForDate
 };
 
 export default meetingService;

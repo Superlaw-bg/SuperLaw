@@ -22,10 +22,14 @@ namespace SuperLaw.Data.Models
 
         public int? CategoryId { get; set; }
 
-        public int? RegionId { get; set; }
-
         [Range(0, 5)]
         public decimal Rating { get; set; }
+
+        public int? TimeSlotId { get; set; }
+
+        public TimeSlot? TimeSlot { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
 
         public bool IsUserFlagged { get; set; }
 
