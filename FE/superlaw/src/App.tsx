@@ -22,6 +22,8 @@ import Profile from './components/Lawyer/Profile/Profile';
 import MeeetingsPage from './components/MeeetingsPage';
 import isNotLawyer from './hooks/isNotLawyer';
 import ScrollToTop from './components/ScrollToTop';
+import TermsAndConditionsPage from './components/TermsAndConditionsPage';
+import PersonalDataPage from './components/PersonalDataPage';
 
 const App: React.FC = () => (
   <>
@@ -35,6 +37,8 @@ const App: React.FC = () => (
               <Route path='/register' Component={isGuest(RegisterUser)}/>
               <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
               <Route path='/emailConfirm' Component={isGuest(ConfirmEmail)}/>
+              <Route path='/terms-and-conditions' Component={TermsAndConditionsPage}/>
+              <Route path='/personal-data' Component={PersonalDataPage}/>
               <Route path='/info' Component={InfoPage}/>
               <Route path='/profile' Component={isLawyer(OwnProfile)}/>
               <Route path='/profile/:id' Component={isAuth(Profile)}/>
