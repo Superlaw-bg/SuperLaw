@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
@@ -81,6 +82,25 @@ namespace SuperLaw.Api.Controllers
             var userInfo = await _authService.ConfirmEmail(input.Token, input.Email);
 
             return Ok(userInfo);
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost(nameof(ForgotPassword))]
+        public async Task<IActionResult> ForgotPassword([FromBody]string email)
+        {
+            await _authService.ForgotPasswordAsync(email);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(ResetPassword))]
+        public async Task<IActionResult> ResetPassword(ResetPasswordInput input)
+        {
+            await _authService.ResetPasswordAsync(input);
+
+            return Ok();
         }
 
         [HttpGet(nameof(Test))]

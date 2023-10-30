@@ -180,6 +180,41 @@ namespace SuperLaw.Services
             return userInfo;
         }
 
+        public async Task ForgotPasswordAsync(string email)
+        {
+           
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                throw new BusinessException("Няма потребител с този имейл");
+
+            await SendPasswordResetEmail(email, user);
+        }
+
+        public async Task ResetPasswordAsync(ResetPasswordInput input)
+        {
+            if (input.Password == null)
+                throw new BusinessException("Паролата не може да е празна");
+
+            if (input.Password != input.ConfirmPassword)
+                throw new BusinessException("Паролите не съвпадат");
+
+            var user = await _userManager.FindByEmailAsync(input.Email);
+
+            if (user == null)
+                throw new BusinessException("Невалиден потребител");
+
+            var codeDecodedBytes = WebEncoders.Base64UrlDecode(input.Token);
+            var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
+
+            var result = await _userManager.ResetPasswordAsync(user, codeDecoded, input.Password);
+
+            if (!result.Succeeded)
+            {
+                throw new BusinessException("Невалиден токен за смяна на парола");
+            }
+        }
+
         private string GenerateJwtToken(string userId, string email, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -212,6 +247,19 @@ namespace SuperLaw.Services
 
             _emailService.SendEmail(email, "Потвърждение на акаунт",
                 $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
+        }
+
+        private async Task SendPasswordResetEmail(string email, User user)
+        {
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            byte[] tokenGeneratedBytes = Encoding.UTF8.GetBytes(resetToken);
+            var codeEncoded = WebEncoders.Base64UrlEncode(tokenGeneratedBytes);
+
+            var confirmationLink = $"{_options.Value.ResetPassword}?token={codeEncoded}&email={email}";
+
+            _emailService.SendEmail(email, "Смяна на забравена парола",
+                $"За да смените Вашата парола, моля посетете страницата за забравена парола: {confirmationLink}");
         }
     }
 }
