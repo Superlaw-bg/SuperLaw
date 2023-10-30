@@ -1,7 +1,6 @@
-import React from 'react';
 import "./RegisterUser.scss";
-import { Button } from "react-bootstrap";
-import { useNavigate } from 'react-router-dom';
+import { Button, Form } from "react-bootstrap";
+import { Link, useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import City from "../../models/SimpleData";
 import cityService from "../../services/cityService";
@@ -29,6 +28,7 @@ const Register = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successRegister, setSuccessRegister] = useState(false);
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -49,7 +49,18 @@ const Register = () => {
     });
   };
 
+  const onClickTerms = (e: any) => {
+    const value = e.target.checked;
+    setHasAcceptedTerms(value);
+  };
+
   const isDataValid = () => {
+
+    if (!hasAcceptedTerms) {
+      setErrorMessage("Трябва да приемете общите условия и политиката за личните данни");
+      return false;
+    }
+
     if (registerForm.firstName === ''){
       setErrorMessage("Името е задължително");
       return false;
@@ -178,6 +189,13 @@ const Register = () => {
                 name="confirmPassword"
                 onChange={(e) => onInput(e)}
               />
+            </div>
+
+            <div className="form-group terms-and-conditions-check">
+              <label>
+              <input type="checkbox" onChange={onClickTerms}/>
+                 Запознах се с <Link target={"_blank"} to="/terms-and-conditions">oбщите условия</Link> и <Link target={"_blank"} to="/personal-data">политиката за личните данни</Link>
+              </label>
             </div>
 
              <p className='error'>

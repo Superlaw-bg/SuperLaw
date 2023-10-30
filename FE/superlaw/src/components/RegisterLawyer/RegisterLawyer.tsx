@@ -6,6 +6,7 @@ import RegisterLawyerInput from "../../models/inputs/RegisterLawyerInput";
 import cityService from "../../services/cityService";
 import authService from "../../services/authService";
 import toastService from "../../services/toastService";
+import { Link } from "react-router-dom";
 
 const RegisterLawyer = () => {
   const [cities, setCities] = useState<City[]>([]);
@@ -22,9 +23,10 @@ const RegisterLawyer = () => {
     confirmPassword: "",
   });
 
+  const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successRegister, setSuccessRegister] = useState(false);
-
+  
   useEffect(() => {
     const fetchCities = async () => {
         const cities = await cityService.getCities();
@@ -44,7 +46,17 @@ const RegisterLawyer = () => {
     });
   };
 
+  const onClickTerms = (e: any) => {
+    const value = e.target.checked;
+    setHasAcceptedTerms(value);
+  };
+
   const isDataValid = () => {
+    if (!hasAcceptedTerms) {
+      setErrorMessage("Трябва да приемете общите условия и политиката за личните данни");
+      return false;
+    }
+
     if (registerForm.firstName === ''){
       setErrorMessage("Името е задължително");
       return false;
@@ -192,6 +204,14 @@ const RegisterLawyer = () => {
               onChange={(e) => onInput(e)}
             />
           </div>
+
+          <div className="form-group terms-and-conditions-check">
+            <label>
+              <input type="checkbox" onChange={onClickTerms}/>
+              Запознах се с <Link target={"_blank"} to="/terms-and-conditions">oбщите условия</Link> и <Link target={"_blank"} to="/personal-data">политиката за личните данни</Link>
+            </label>
+          </div>
+
 
           <p className='error'>
               {errorMessage}

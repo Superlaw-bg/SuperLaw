@@ -51,6 +51,11 @@
       }
     }
 
+    .terms-and-conditions-check {
+      input {
+        margin-right: 3px;
+      }
+    }
     .error{
       color: red;
       margin-top: 40px;
@@ -73,6 +78,15 @@
   &:hover{
     color: $primary-color;
     background-color: $secondary-color;
+  }
+}
+
+@media (max-width: 1400px) {
+
+  .reg-lawyer-row {
+      .form-wrapper-reg {
+          width: 60%;
+      }
   }
 }
 

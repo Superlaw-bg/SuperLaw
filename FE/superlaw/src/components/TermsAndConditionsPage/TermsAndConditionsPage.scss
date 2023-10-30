@@ -1,0 +1,20 @@
+.terms-and-conditions {
+    width: 60%;
+    margin: 0 auto;
+    padding: 2rem 0rem;
+
+    h4{
+        margin-top: 3rem;
+    }
+
+    p{
+        margin-bottom: 1px;
+    }
+}
+
+@media (max-width: 1000px) {
+
+    .terms-and-conditions {
+        width: 80%;
+    }
+}
