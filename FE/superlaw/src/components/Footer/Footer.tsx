@@ -4,7 +4,7 @@ import './Footer.scss';
 const Footer = () => {
     return (
       <footer className="site-footer">
-        <p>SuperLaw &copy; Всички права запазени 2023 - 2024</p>
+        <p>Superlaw &copy; Всички права запазени 2023 - 2024</p>
         <p>
         <Link target={"_blank"} to="/terms-and-conditions">Общи условия</Link>
         </p>
