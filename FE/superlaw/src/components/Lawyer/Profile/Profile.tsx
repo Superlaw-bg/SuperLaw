@@ -26,7 +26,7 @@ const Profile = () => {
         imgPath: '',
         fullName: '',
         description: '',
-        hourlyRate: 0,
+        rate: 0,
         phone: '',
         address: '',
         categories: [],
@@ -254,7 +254,7 @@ const Profile = () => {
                 )}
               </div>
               <div className='sect'>
-              <p className='bold'>Часова ставка: {profile.hourlyRate}лв</p>
+              <p className='bold'>Консултация: {profile.rate}лв</p>
               </div>
               
           </div>

@@ -6,7 +6,7 @@ interface LawyerProfile {
     imgPath: string,
     fullName: string,
     description: string,
-    hourlyRate: number,
+    rate: number,
     phone: string,
     address: string,
     categories: SimpleData[],

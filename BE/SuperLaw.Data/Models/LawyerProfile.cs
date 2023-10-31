@@ -13,7 +13,7 @@ namespace SuperLaw.Data.Models
 
         public string Info { get; set; } = string.Empty;
 
-        public decimal HourlyRate { get; set; }
+        public decimal Rate { get; set; }
 
         public string Address { get; set; } = string.Empty;
 

@@ -76,9 +76,9 @@ namespace SuperLaw.Api.Controllers
                 });
             }
 
-            var hasHourlyRate = formCollection.TryGetValue("hourlyRate", out var hourlyRateStr);
+            var hasRate = formCollection.TryGetValue("rate", out var rateStr);
 
-            if (!hasHourlyRate)
+            if (!hasRate)
             {
                 return BadRequest(new ErrorDetails()
                 {
@@ -141,7 +141,7 @@ namespace SuperLaw.Api.Controllers
                 Image = image,
                 Description = description.ToString(),
                 Address = address.ToString(),
-                HourlyRate = int.Parse(hourlyRateStr.ToString()),
+                Rate = int.Parse(rateStr.ToString()),
                 Categories = categoriesStr
                     .ToString()
                     .Split(',')
@@ -189,9 +189,9 @@ namespace SuperLaw.Api.Controllers
                 });
             }
 
-            var hasHourlyRate = formCollection.TryGetValue("hourlyRate", out var hourlyRateStr);
+            var hasRate = formCollection.TryGetValue("rate", out var rateStr);
 
-            if (!hasHourlyRate)
+            if (!hasRate)
             {
                 return BadRequest(new ErrorDetails()
                 {
@@ -254,7 +254,7 @@ namespace SuperLaw.Api.Controllers
                 Image = image,
                 Description = description.ToString(),
                 Address = address.ToString(),
-                HourlyRate = int.Parse(hourlyRateStr.ToString()),
+                Rate = int.Parse(rateStr.ToString()),
                 Categories = categoriesStr
                     .ToString()
                     .Split(',')

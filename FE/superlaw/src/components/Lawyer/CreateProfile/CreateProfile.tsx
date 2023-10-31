@@ -9,7 +9,7 @@ import profileService from "../../../services/profileService";
 import legalCategoriesService from "../../../services/legalCategoriesService";
 import judicialRegionsService from "../../../services/judicialRegionsService";
 import { useNavigate } from "react-router-dom";
-import Calendar, { TileDisabledFunc } from "react-calendar";
+import Calendar from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
@@ -26,7 +26,7 @@ const CreateProfile = () => {
   const [profile, setProfile] = useState<ProfileInput>({
     image: "",
     description: "",
-    hourlyRate: 0,
+    rate: 0,
     address: "",
     categories: [],
     regions: [],
@@ -187,7 +187,7 @@ const CreateProfile = () => {
       setProfile({
         image: profile.image,
         description: profile.description,
-        hourlyRate: profile.hourlyRate,
+        rate: profile.rate,
         address: profile.address,
         categories: profile.categories,
         regions: profile.regions,
@@ -233,11 +233,11 @@ const CreateProfile = () => {
     }
 
     if (
-      Number.isNaN(profile.hourlyRate) ||
-      profile.hourlyRate < 100 ||
-      profile.hourlyRate > 500
+      Number.isNaN(profile.rate) ||
+      profile.rate < 100 ||
+      profile.rate > 500
     ) {
-      setErrorMessage("Часовата ставка трябва да е число между 100 и 500");
+      setErrorMessage("Цената трябва да е число между 100 и 500");
       return false;
     }
 
@@ -289,7 +289,7 @@ const CreateProfile = () => {
     const formData = new FormData();
     formData.append("image", profile.image);
     formData.append("description", profile.description);
-    formData.append("hourlyRate", profile.hourlyRate.toString());
+    formData.append("rate", profile.rate.toString());
     formData.append("address", profile.address);
     formData.append("categories", categories.join());
     formData.append("regions", regions.join());
@@ -330,12 +330,12 @@ const CreateProfile = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="hourly-rate">Часова ставка</label>
+          <label htmlFor="rate">Цена за консултация</label>
           <input
-            id="hourly-rate"
+            id="rate"
             type="text"
             className="form-control"
-            name="hourlyRate"
+            name="rate"
             onChange={(e) => onInput(e)}
           />
         </div>

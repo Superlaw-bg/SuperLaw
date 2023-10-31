@@ -10,7 +10,7 @@
 
         public string Description { get; set; }
 
-        public decimal HourlyRate { get; set; }
+        public decimal Rate { get; set; }
 
         public string Address { get; set; }
 
