@@ -207,7 +207,7 @@ const FindPage = () => {
               </div>
               <div className="important-info">
                 <div className="sect">
-                  <h3>{profile.fullName}</h3>
+                  <h3 className="name"  onClick={() => redirectToProfile(profile.id)}>{profile.fullName}</h3>
                   <p>{profile.isJunior ? "Младши адвокат" : "Адвокат"}</p>
                 </div>
 
