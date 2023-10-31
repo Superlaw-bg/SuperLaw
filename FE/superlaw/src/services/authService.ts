@@ -85,12 +85,29 @@ const confirmEmail: (email: string, token: string) => Promise<Result> = async (e
     };
 }
 
+const resetPassword: (email: string, token: string, password: string, confirmPassword: string) => Promise<Result> = async (email, token, password, confirmPassword) => {
+    const res = await requester.post(apiRoutes.resetPassword, {email, token, password, confirmPassword});
+
+    if(res.isError){
+        return {
+            isError: true,
+            data: res.msg
+        }
+    }
+
+    return {
+        isError: false,
+        data: res
+    };
+}
+
 const authService = {
     registerUser,
     registerLawyer,
     login,
     confirmEmail,
-    forgotPassword
+    forgotPassword,
+    resetPassword,
 };
 
 export default authService;

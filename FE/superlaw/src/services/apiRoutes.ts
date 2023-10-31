@@ -6,6 +6,7 @@ const apiRoutes = {
     registerLawyer: 'Auth/RegisterLawyer',
     login: 'Auth/Login',
     forgotPassword: 'Auth/ForgotPassword',
+    resetPassword: 'Auth/ResetPassword',
     confirmEmail: 'Auth/ConfirmEmail',
     createProfile: 'Profile/Create',
     editProfile: 'Profile/Edit',
