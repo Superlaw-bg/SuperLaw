@@ -27,7 +27,7 @@ const EditProfile = () => {
   const [profile, setProfile] = useState<ProfileInput>({
     image: '',
     description: "",
-    hourlyRate: 0,
+    rate: 0,
     address: "",
     categories: [],
     regions: [],
@@ -80,11 +80,11 @@ const EditProfile = () => {
 
     const fetchProfile = async () => {
       const res = await profileService.getOwnProfileDataForEdit();
-      console.log(res);
+     
       setProfile({
         ...profile,
         description: res.description,
-        hourlyRate: res.hourlyRate,
+        rate: res.rate,
         address: res.address,
         categories: res.categories,
         regions: res.regions,
@@ -196,7 +196,7 @@ const EditProfile = () => {
       setProfile({
         image: profile.image,
         description: profile.description,
-        hourlyRate: profile.hourlyRate,
+        rate: profile.rate,
         address: profile.address,
         categories: profile.categories,
         regions: profile.regions,
@@ -241,8 +241,8 @@ const EditProfile = () => {
       return false;
     }
 
-    if (Number.isNaN(profile.hourlyRate) || profile.hourlyRate < 100 || profile.hourlyRate > 500){
-      setErrorMessage("Часовата ставка трябва да е число между 100 и 500");
+    if (Number.isNaN(profile.rate) || profile.rate < 100 || profile.rate > 500){
+      setErrorMessage("Цената трябва да е число между 100 и 500");
       return false;
     }
 
@@ -294,7 +294,7 @@ const EditProfile = () => {
     const formData = new FormData();
     formData.append('image', profile.image);
     formData.append('description', profile.description);
-    formData.append('hourlyRate', profile.hourlyRate.toString());
+    formData.append('rate', profile.rate.toString());
     formData.append('address', profile.address);
     formData.append('categories', categories.join());
     formData.append('regions', regions.join());
@@ -326,8 +326,8 @@ const EditProfile = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="hourly-rate">Часова ставка</label>
-            <input id="hourly-rate" type="text" className="form-control" name="hourlyRate" value={profile.hourlyRate} onChange={(e) => onInput(e)}/>
+            <label htmlFor="rate">Цена за консултация</label>
+            <input id="rate" type="text" className="form-control" name="rate" value={profile.rate} onChange={(e) => onInput(e)}/>
           </div>
 
           <div className="form-group">

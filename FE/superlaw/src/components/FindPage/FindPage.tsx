@@ -242,7 +242,7 @@ const FindPage = () => {
                   ))}
                 </div>
                 <div className="sect">
-                  <p className="bold">Часова ставка: {profile.hourlyRate}лв</p>
+                  <p className="bold">Консултация: {profile.rate}лв</p>
                 </div>
                 <Button onClick={() => redirectToProfile(profile.id)} className="primary-btn">Запази час</Button>
               </div>

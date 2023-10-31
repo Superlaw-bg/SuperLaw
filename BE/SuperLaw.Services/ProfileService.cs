@@ -58,7 +58,7 @@ namespace SuperLaw.Services
                 ImgPath = imagePath,
                 Info = input.Description,
                 Address = input.Address,
-                HourlyRate = input.HourlyRate,
+                Rate = input.Rate,
                 IsCompleted = input.IsCompleted,
                 IsJunior = input.IsJunior,
                 LegalCategories = categories.Select(x => new LawyerProfileLegalCategory()
@@ -121,7 +121,7 @@ namespace SuperLaw.Services
             }
 
             profile.Address = input.Address;
-            profile.HourlyRate = input.HourlyRate;
+            profile.Rate = input.Rate;
             profile.Info = input.Description;
             profile.LegalCategories = categories.Select(x => new LawyerProfileLegalCategory()
             {
@@ -205,7 +205,7 @@ namespace SuperLaw.Services
                 Description = userLawyerProfile.Info,
                 Address = userLawyerProfile.Address,
                 Phone = $"0{user.Phone}",
-                HourlyRate = userLawyerProfile.HourlyRate,
+                Rate = userLawyerProfile.Rate,
                 Categories = userLawyerProfile.LegalCategories
                     .Select(x => new SimpleDto()
                     {
@@ -266,7 +266,7 @@ namespace SuperLaw.Services
                 Description = userLawyerProfile.Info,
                 Address = userLawyerProfile.Address,
                 Phone = $"0{user.Phone}",
-                HourlyRate = userLawyerProfile.HourlyRate,
+                Rate = userLawyerProfile.Rate,
                 Categories = userLawyerProfile.LegalCategories
                     .Select(x => new SimpleDto()
                     {
@@ -311,7 +311,7 @@ namespace SuperLaw.Services
                 Id = userLawyerProfile.Id,
                 Description = userLawyerProfile.Info,
                 Address = userLawyerProfile.Address,
-                HourlyRate = userLawyerProfile.HourlyRate,
+                Rate = userLawyerProfile.Rate,
                 Categories = userLawyerProfile.LegalCategories
                     .Select(x => new FrontEndOptionDto()
                     {
@@ -361,7 +361,7 @@ namespace SuperLaw.Services
                     ImgPath = x.ImgPath,
                     Description = x.Info,
                     Address = x.Address,
-                    HourlyRate = x.HourlyRate,
+                    Rate = x.Rate,
                     Phone = x.User.Phone,
                     IsJunior = x.IsJunior,
                     Categories = x.LegalCategories.Select(lc => new SimpleDto()
