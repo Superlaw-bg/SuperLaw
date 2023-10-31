@@ -53,8 +53,40 @@ const login: (input: LoginUserInput) => Promise<Result> = async (input) => {
     };
 }
 
+const forgotPassword: (email: string) => Promise<Result> = async (email) => {
+    const res = await requester.post(apiRoutes.forgotPassword, email);
+
+    if(res.isError){
+        return {
+            isError: true,
+            data: res.msg
+        }
+    }
+
+    return {
+        isError: false,
+        data: res
+    };
+}
+
 const confirmEmail: (email: string, token: string) => Promise<Result> = async (email, token) => {
     const res = await requester.post(apiRoutes.confirmEmail, {email, token});
+
+    if(res.isError){
+        return {
+            isError: true,
+            data: res.msg
+        }
+    }
+
+    return {
+        isError: false,
+        data: res
+    };
+}
+
+const resetPassword: (email: string, token: string, password: string, confirmPassword: string) => Promise<Result> = async (email, token, password, confirmPassword) => {
+    const res = await requester.post(apiRoutes.resetPassword, {email, token, password, confirmPassword});
 
     if(res.isError){
         return {
@@ -73,7 +105,9 @@ const authService = {
     registerUser,
     registerLawyer,
     login,
-    confirmEmail
+    confirmEmail,
+    forgotPassword,
+    resetPassword,
 };
 
 export default authService;

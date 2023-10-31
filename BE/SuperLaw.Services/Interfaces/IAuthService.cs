@@ -11,5 +11,9 @@ namespace SuperLaw.Services.Interfaces
         Task RegisterLawyer(RegisterLawyerInput input);
 
         Task<UserInfoDto> ConfirmEmail(string token, string email);
+
+        Task ForgotPasswordAsync (string email);
+
+        Task ResetPasswordAsync(ResetPasswordInput input);
     }
 }

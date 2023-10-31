@@ -7,6 +7,7 @@ import authService from '../../services/authService';
 import { useStoreActions } from '../../store/hooks';
 import User from '../../store/auth/models/User';
 import { Lawyer } from '../../constants/roles';
+import toastService from '../../services/toastService';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Login = () => {
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+  const [forgotPassClicked, setForgotPassClicked] = useState(false);
 
   const onInput = (e: any) => {
     const inputName = e.target.name;
@@ -66,6 +68,20 @@ const Login = () => {
       navigate('/');
     }
   };
+
+  const forgotPassword = async () => {
+    if (loginForm.email === '') {
+      setErrorMessage('Моля първо въведете имейла си');
+      return;
+    }
+
+    const res = await authService.forgotPassword(loginForm.email);
+
+    if(!res.isError){
+      setForgotPassClicked(true);
+      toastService.showSuccess('Изпратен Ви е имейл за смяна на паролата');
+    }
+  };
   
     return (
       <div className='wrap'>
@@ -83,10 +99,15 @@ const Login = () => {
                 <input type='password' className='form-control' name='password' onChange={(e) => onInput(e)}/>
               </div>
 
+              <a className='forgot-password' onClick={async () => await forgotPassword()}>Забравена парола?</a>
+
             <p className='error'>{errorMessage}</p>
           <Button className='login-btn' type='submit' variant='primary'>Влез</Button>
           <h5 className='link'>Нямаш акаунт?</h5>
           <NavLink className='link' to="/register" >Регистрирай се</NavLink>
+
+          {forgotPassClicked &&
+               <p className='success'>Изпратихме Ви имейл с линка за смяна на паролата Ви.</p>}
             </form>
           </div>
         </div>
