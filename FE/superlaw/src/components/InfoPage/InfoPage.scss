@@ -1,0 +1,76 @@
+@import '../../style-constants.scss';
+
+.cta-lawyer{
+    padding: 10rem 8rem;
+    color: $white;
+    position: relative;
+    text-align: center;
+    background: url('https://images.unsplash.com/photo-1593115057322-e94b77572f20?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80') center center;
+    background-size: cover;
+    z-index: 2;
+
+    h4,p {
+        z-index: 2;
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    h4 {
+        font-size: 3rem;
+        margin-bottom: 3rem;
+    }
+
+    p {
+        margin-bottom: 3rem;
+        font-size: 2rem;
+    }
+
+    .register-btn{
+        font-size: 1.5rem;
+    }
+
+    &::after{
+        display: block;
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.5));
+        z-index: -1;
+    }
+}
+
+.info {
+    padding: 100px 0px;
+    text-align: center;
+    color: $primary-color;
+
+    .title{
+        margin-bottom: 50px;
+    }
+
+    .row {
+        margin-top: 50px;
+    }
+
+    .img-wrapper {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+}
+
+
+@media (max-width: 900px) {
+    .cta-lawyer{
+        padding: 5rem 2rem;
+
+        h4,p {
+            z-index: 2;
+            width: 100%;
+            margin: 0;
+            font-size: 2rem;
+        }
+    }
+}

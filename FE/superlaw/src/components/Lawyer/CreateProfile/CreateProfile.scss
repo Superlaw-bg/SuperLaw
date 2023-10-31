@@ -1,0 +1,170 @@
+@import "../../../style-constants.scss";
+
+.form-wrapper-create-profile {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.create-profile-form {
+  margin: 2rem 0px;
+  color: $primary-color;
+
+  .register-heading {
+    text-align: center;
+    margin-bottom: 5%;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      font-size: 1.2rem;
+    }
+  }
+
+  .picture {
+    text-align: center;
+  }
+
+  .selection {
+    flex-wrap: wrap;
+
+    label {
+      flex: 0 0 100%;
+    }
+  }
+
+  .schedule {
+    display: flex;
+    flex-wrap: wrap;
+
+    label {
+      flex: 0 0 100%;
+    }
+
+    .react-calendar {
+      flex: 0 0 50%;
+      max-height: 350px;
+    }
+
+    .time-slots {
+      flex: 0 0 30%;
+      padding-left: 1rem;
+
+      .time-slot {
+        margin-bottom: 0px;
+        text-align: center;
+        margin-bottom: 3px;
+        border: 1px solid $primary-color;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        margin-right: 1rem;
+
+        p {
+          margin-bottom: 0px;
+
+          .delete {
+            display: inline-block;
+            float: right;
+            margin-right: 10px;
+            color: black;
+            &:hover {
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .select-range {
+        padding: 0px 5px;
+        border: 1px solid $primary-color;
+        border-radius: 10px;
+        color: $primary-color;
+        text-align: center;
+
+        input {
+          border: none;
+        }
+
+        .from {
+          margin-right: 5px;
+        }
+
+        .add {
+          display: inline-block;
+          float: right;
+          margin-right: 10px;
+          color: black;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+
+  .checkboxes {
+    margin-top: 40px;
+
+    .checkbox {
+      margin-bottom: 40px;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      label:hover {
+        cursor: pointer;
+      }
+    }
+
+    .info-isCompleted {
+      font-size: 1.2rem;
+    }
+  }
+
+  .error {
+    color: red;
+    margin-top: 40px;
+    font-size: 1.2rem;
+  }
+}
+
+.primary-btn {
+  margin-top: 20px;
+  background-color: $primary-color;
+  color: $secondary-color;
+  border: none;
+  font-size: 1.2rem;
+
+  &:hover {
+    color: $primary-color;
+    background-color: $secondary-color;
+  }
+}
+
+@media (max-width: 1150px) {
+  .form-wrapper-create-profile {
+    width: 80%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .form-wrapper-create-profile {
+    .create-profile-form {
+      .schedule {
+        .react-calendar {
+          flex: 0 0 100%;
+        }
+        .time-slots {
+          margin-top: 2rem;
+          flex: 0 0 100%;
+
+          p {
+            flex: none;
+            margin: 0px 5px;
+          }
+        }
+      }
+    }
+  }
+}

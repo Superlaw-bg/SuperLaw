@@ -1,0 +1,64 @@
+@import '../../style-constants.scss';
+
+.wrap {
+    padding-bottom: 5%;
+  
+    .row {
+      margin-right: 0px;
+  
+      .form-wrapper {
+        margin: 0 auto;
+      }
+    }
+  
+    .login-form {
+      margin-top: 10vh;
+      padding: 15% 15%;
+      padding-top: 7%;
+      border-radius: 13px;
+      border: 2px solid $primary-color;
+      color: $primary-color;
+  
+      .login-heading {
+        text-align: center;
+        margin-bottom: 10%;
+      }
+  
+      .link {
+        margin-top: 30px;
+        cursor: pointer;
+      }
+
+      .forgot-password {
+        
+        text-decoration: none;
+        &:hover {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+
+      .success{
+        color: green;
+      }
+      .login-btn{
+        margin-top: 20px;
+        background-color: $primary-color;
+        color: $secondary-color;
+        border: none;
+        width: 100px;
+        height: 50px;
+        font-size: 18px;
+
+        &:hover{
+          color: $primary-color;
+          background-color: $secondary-color;
+        }
+      }
+
+      .error{
+        color: red;
+        margin-top: 40px;
+      }
+    }
+  }

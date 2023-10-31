@@ -1,0 +1,188 @@
+@import '../../../style-constants.scss';
+
+.create-profile-info{
+    padding: 5rem 40px;
+    padding-bottom: 200px;
+
+    .wrapper {
+        width: 50%;
+        text-align: center;
+        margin: 0 auto;
+
+        h2 {
+            margin-bottom: 40px;
+            color: $primary-color;
+        }
+
+        p {
+            color: $primary-color;
+            font-size: 1.4rem;
+        }
+
+        .create-btn{
+            margin-top: 20px;
+            background-color: $primary-color;
+            color: $secondary-color;
+            border: none;
+            font-size: 1.4rem;
+
+            &:hover{
+                color: $primary-color;
+                background-color: $secondary-color;
+            }
+        }
+    } 
+}
+
+.own-profile-info {
+    padding: 5rem 40px;
+    padding-bottom: 200px;
+
+    color: $primary-color;
+    font-size: 1.2rem;
+    .bold {
+        font-weight: bold;
+    }
+    .sect {
+        margin-bottom: 30px;
+
+        p {
+            margin-bottom: 0px;
+        }
+
+        &.rating {
+            font-size: 2rem;
+            i {
+                color: yellow
+            }
+        }
+    }
+
+    .header {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        .profile-image {
+            flex: 0 0 30%;
+            max-height: 350px;
+
+            img{
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        .important-info{
+            flex: 0 0 60%;
+        }
+    }
+
+    .additional-info{
+        margin-top: 50px;
+
+        .schedule {
+            display: flex;
+            flex-wrap: wrap;
+        
+            .header {
+              flex: 0 0 100%;
+            }
+        
+            .react-calendar {
+              flex: 0 0 50%;
+              max-height: 350px;
+            }
+        
+            .time-slots {
+              flex: 0 0 30%;
+              padding-left: 1rem;
+        
+              .time-slot {
+                margin-bottom: 0px;
+                text-align: center;
+                margin-bottom: 3px;
+                border: 1px solid $primary-color;
+                border-radius: 10px;
+                margin-bottom: 1rem;
+                margin-right: 1rem;
+        
+                p {
+                  margin-bottom: 0px;
+                }
+
+                &.occupied {
+                    color: gray;
+                    border: 1px solid gray;
+
+                    &:hover{
+                        cursor: auto;
+                        background-color: white;
+                        color: gray;
+                    }
+                }
+              }
+            }
+          }
+
+        .edit-profile {
+            margin-top: 50px;
+
+            .btn {
+                background-color: $primary-color;
+                color: $secondary-color;
+                border: none;
+                font-size: 1.2rem;
+              
+                &:hover{
+                  color: $primary-color;
+                  background-color: $secondary-color;
+                }
+            }
+        }
+       
+    }
+}
+
+@media (max-width: 1050px) {
+    .create-profile-info {
+        .wrapper {
+            width: 80%;
+        }
+    }
+}
+
+@media (max-width: 900px) {
+    .own-profile-info {
+        .header {
+            flex-wrap: wrap;
+            .profile-image {
+                flex: 0 0 80%;
+                margin-bottom: 50px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .own-profile-info {
+        .additional-info {
+            
+            .schedule {
+                .react-calendar {
+                  flex: 0 0 100%;
+                }
+                .time-slots {
+                  margin-top: 2rem;
+                  flex: 0 0 100%;
+        
+                  p {
+                    flex: none;
+                    margin: 0px 5px;
+                  }
+                }
+              }
+        }
+    }
+}

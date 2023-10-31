@@ -1,0 +1,22 @@
+@import '../../style-constants.scss';
+
+.site-footer{
+    text-align: center;
+    color: $primary-color;
+    padding: 0.5rem;
+
+    p {
+        margin: 0;
+        font-size: 1.3rem;
+    }
+
+    a {
+        text-decoration: none;
+        color: $primary-color;
+        font-size: 1.2rem;
+
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+}

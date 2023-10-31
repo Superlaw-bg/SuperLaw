@@ -1,0 +1,27 @@
+.star-rating {
+    display: flex;
+    button {
+        flex: 0 0 20%;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+
+        i {
+            font-size: 4rem;
+            color: yellow;
+        }
+    }
+}
+
+@media (max-width: 1000px) {
+    .star-rating{
+        flex-wrap: wrap;
+
+        button {
+            i {
+                font-size: 2rem;
+            }
+        }
+    }
+}

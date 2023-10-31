@@ -1,0 +1,87 @@
+@import "../../style-constants.scss";
+
+.meetings-page{
+    width: 80%;
+    margin: 0 auto;
+    padding: 5rem 0px;
+    min-height: 80vh;
+
+    h2, h3 {
+        color: $primary-color;
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        margin-top: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .tabs {
+        .tab {
+            color: $secondary-color;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .active {
+            color: $primary-color;
+            border: 1px solid $primary-color;
+        }
+    }
+
+    .meetings {
+        padding: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+
+        .meeting {
+            flex: 0 0 60%;
+            margin: 0 auto;
+            color: $primary-color;
+            margin-bottom: 2rem;
+
+            p {
+                margin-bottom: 0px;
+                font-weight: bold;
+
+                span{
+                    font-weight: normal;
+                }
+
+                a {
+                    text-decoration: none;
+                    color: $primary-color;
+
+                    &:hover {
+                        text-decoration: underline;
+                        cursor: pointer;
+                    }
+                }
+
+                &.rating {
+                    font-size: 1.5rem;
+
+                    i{
+                        color: yellow;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1300px) {
+    .meetings-page{
+  
+        .meetings {
+            .meeting {
+                flex: 0 0 90%;
+            }
+        }
+    }
+  }
