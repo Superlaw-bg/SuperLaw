@@ -123,21 +123,21 @@ const FindPage = () => {
     }));
   };
 
-  const orderByHourlyRateAsc = () => {
+  const orderByRateAsc = () => {
     setProfiles(profiles.slice().sort((a: any, b: any) => {
-        if (a.hourlyRate < b.hourlyRate)
+        if (a.rate < b.rate)
             return -1;
-        if (a.hourlyRate > b.hourlyRate)
+        if (a.rate > b.rate)
             return 1;
         return 0;
     }));
   };
 
-  const orderByHourlyRateDesc = () => {
+  const orderByRateDesc = () => {
     setProfiles(profiles.slice().sort((a: any, b: any) => {
-        if (a.hourlyRate < b.hourlyRate)
+        if (a.rate < b.rate)
             return 1; 
-        if (a.hourlyRate > b.hourlyRate)
+        if (a.rate > b.rate)
             return -1;
         return 0;
     }));
@@ -192,8 +192,8 @@ const FindPage = () => {
           <span className="sorter" onClick={orderByRatingDesc}>Оценка ↓</span>
           <span className="sorter" onClick={orderByNameAsc}>Име ↑</span>
           <span className="sorter" onClick={orderByNameDesc}>Име ↓</span>
-          <span className="sorter" onClick={orderByHourlyRateAsc}>Ставка ↑</span>
-          <span className="sorter" onClick={orderByHourlyRateDesc}>Ставка ↓</span>
+          <span className="sorter" onClick={orderByRateAsc}>Цена ↑</span>
+          <span className="sorter" onClick={orderByRateDesc}>Цена ↓</span>
         </div>
         <div className="profiles">
           {profiles.length === 0 && <p className="no-profiles-msg">Съжаляваме, но не намираме адвокати</p>}
