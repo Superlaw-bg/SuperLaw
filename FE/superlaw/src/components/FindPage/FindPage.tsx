@@ -169,10 +169,10 @@ const FindPage = () => {
         </div>
 
         <div className="form-group selection">
-          <label htmlFor="cityId">Град</label>
+          <label htmlFor="cityId">Областен Град</label>
           <select className="form-select" name="cityId" id="cityId" onChange={(e) => onInput(e)}>
                 <option selected value={0}>
-                  Изберете град
+                  Изберете областен град
                 </option>
                 {allCities.map((city) => 
                   <option key={city.id} value={city.id}>{city.name}</option>
