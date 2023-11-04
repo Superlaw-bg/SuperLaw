@@ -15,6 +15,7 @@ import toastService from "../../../services/toastService";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import TimeSlot from "../../../models/TimeSlot";
 
+//TODO: Remove restriction on prod for booking hours in the future
 const Profile = () => {
     const params = useParams();
 
@@ -327,9 +328,11 @@ const Profile = () => {
                     {errorMessage}
                   </p>
 
-                  <div className="btn-wrapper">
-                    <Button className="book-btn" variant='primary' type="submit">Запази час</Button>
-                  </div>
+                  {process.env.REACT_APP_ENV !== 'prod' && 
+                    <div className="btn-wrapper">
+                      <Button className="book-btn" variant='primary' type="submit">Запази час</Button>
+                    </div>
+                  }
               </form>
              }
           </div>
