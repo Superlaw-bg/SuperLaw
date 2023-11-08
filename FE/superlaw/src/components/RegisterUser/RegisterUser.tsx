@@ -3,10 +3,10 @@ import { Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import City from "../../models/SimpleData";
-import cityService from "../../services/cityService";
 import authService from "../../services/authService";
 import RegisterUserInput from "../../models/inputs/RegisterUserInput";
 import toastService from '../../services/toastService';
+import cityApi from "../../api/cityApi";
 
 const Register = () => {  
   const navigate = useNavigate();
@@ -31,9 +31,11 @@ const Register = () => {
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
   useEffect(() => {
-    const fetchCities = async () => {
-        const cities = await cityService.getCities();
-        setCities(cities);
+    const fetchCities = () => {
+        cityApi
+        .getCities()
+        .then(res => setCities(res.data))
+        .catch(err => console.log(err));
     };
     
     fetchCities();
