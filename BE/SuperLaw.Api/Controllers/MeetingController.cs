@@ -25,7 +25,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Невалиден потребител"
+                    message = "Невалиден потребител"
                 });
             }
 
@@ -43,7 +43,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Невалиден потребител"
+                    message = "Невалиден потребител"
                 });
             }
 
@@ -60,7 +60,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Невалиден потребител"
+                    message = "Невалиден потребител"
                 });
             }
 

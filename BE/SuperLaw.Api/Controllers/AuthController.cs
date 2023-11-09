@@ -24,7 +24,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Данните са невалидни"
+                    message = "Данните са невалидни"
                 });
             }
 
@@ -32,7 +32,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Паролите не съвпадат"
+                    message = "Паролите не съвпадат"
                 });
             }
 
@@ -49,7 +49,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Данните са невалидни"
+                    message = "Данните са невалидни"
                 });
             }
 
@@ -57,7 +57,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Паролите не съвпадат"
+                    message = "Паролите не съвпадат"
                 });
             }
 

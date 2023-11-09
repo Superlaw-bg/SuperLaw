@@ -72,7 +72,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Информацията за профила е задължителна"
+                    message = "Информацията за профила е задължителна"
                 });
             }
 
@@ -82,7 +82,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Часовата ставка е задължителна"
+                    message = "Часовата ставка е задължителна"
                 });
             }
 
@@ -92,7 +92,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Адресът е задължителен"
+                    message = "Адресът е задължителен"
                 });
             }
 
@@ -102,7 +102,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Поне една категория е задължителна"
+                    message = "Поне една категория е задължителна"
                 });
             }
 
@@ -112,7 +112,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Поне един съдебен район е задължителен"
+                    message = "Поне един съдебен район е задължителен"
                 });
             }
 
@@ -122,7 +122,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Отметката е задължителна"
+                    message = "Отметката е задължителна"
                 });
             }
 
@@ -132,7 +132,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Отметката е задължителна"
+                    message = "Отметката е задължителна"
                 });
             }
 
@@ -185,7 +185,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Информацията за профила е задължителна"
+                    message = "Информацията за профила е задължителна"
                 });
             }
 
@@ -195,7 +195,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Часовата ставка е задължителна"
+                    message = "Часовата ставка е задължителна"
                 });
             }
 
@@ -205,7 +205,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Адресът е задължителен"
+                    message = "Адресът е задължителен"
                 });
             }
 
@@ -215,7 +215,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Поне една категория е задължителна"
+                    message = "Поне една категория е задължителна"
                 });
             }
 
@@ -225,7 +225,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Поне един съдебен район е задължителен"
+                    message = "Поне един съдебен район е задължителен"
                 });
             }
 
@@ -235,7 +235,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Отметката е задължителна"
+                    message = "Отметката е задължителна"
                 });
             }
 
@@ -245,7 +245,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Отметката е задължителна"
+                    message = "Отметката е задължителна"
                 });
             }
 

@@ -31,7 +31,7 @@ namespace SuperLaw.Api
                 await context.Response.WriteAsync(new ErrorDetails()
                 {
                     StatusCode = context.Response.StatusCode,
-                    Message = exception.Message
+                    message = exception.Message
                 }.ToString());
             }
             else
@@ -42,7 +42,7 @@ namespace SuperLaw.Api
                 await context.Response.WriteAsync(new ErrorDetails()
                 {
                     StatusCode = context.Response.StatusCode,
-                    Message = "Възникна грешка, моля опитайте отново по-късно"
+                    message = "Възникна грешка, моля опитайте отново по-късно"
                 }.ToString());
             }
         }
