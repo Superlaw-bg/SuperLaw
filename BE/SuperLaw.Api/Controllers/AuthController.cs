@@ -87,9 +87,9 @@ namespace SuperLaw.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost(nameof(ForgotPassword))]
-        public async Task<IActionResult> ForgotPassword([FromBody]string email)
+        public async Task<IActionResult> ForgotPassword(EmailInput input)
         {
-            await _authService.ForgotPasswordAsync(email);
+            await _authService.ForgotPasswordAsync(input.Email);
 
             return Ok();
         }

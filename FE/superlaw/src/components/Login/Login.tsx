@@ -83,11 +83,15 @@ const Login = () => {
       return;
     }
 
-    const res = await authService.forgotPassword(loginForm.email);
-
-    if(!res.isError){
+    try {
+      setLoading(true);
+      await authApi.forgotPassword(loginForm.email);
       setForgotPassClicked(true);
       toastService.showSuccess('Изпратен Ви е имейл за смяна на паролата');
+    } catch (error: any) {
+      toastService.showError(error.response.data.Message);
+    } finally {
+      setLoading(false);
     }
   };
   
