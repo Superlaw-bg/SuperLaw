@@ -1,5 +1,5 @@
 import requester from './requester';
-import apiRoutes from './apiRoutes';
+import apiRoutes from '../api/apiRoutes';
 import Result from '../models/Result';
 import LawyerProfile from '../models/LawyerProfile';
 import TimeSlotInput from '../models/inputs/TimeSlotInput';

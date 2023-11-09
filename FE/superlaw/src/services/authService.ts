@@ -1,5 +1,5 @@
 import requester from './requester';
-import apiRoutes from './apiRoutes';
+import apiRoutes from '../api/apiRoutes';
 import RegisterUserInput from '../models/inputs/RegisterUserInput';
 import LoginUserInput from '../models/inputs/LoginInput';
 import Result from '../models/Result';

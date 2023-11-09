@@ -6,14 +6,15 @@ import toastService from "../../../services/toastService";
 import Select from "react-select";
 import { ActionMeta } from "react-select";
 import profileService from "../../../services/profileService";
-import legalCategoriesService from "../../../services/legalCategoriesService";
-import judicialRegionsService from "../../../services/judicialRegionsService";
+import categoryApi from "../../../api/categoryApi";
+import regionApi from "../../../api/regionApi";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
 import ProfileInput from "../../../models/inputs/ProfileInput";
+import SimpleData from "../../../models/SimpleData";
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -51,11 +52,11 @@ const CreateProfile = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await legalCategoriesService.getCategories();
+      const res = await categoryApi.getCategories();
 
       let categoriesRes: any = [];
 
-      res.forEach((x) => {
+      res.data.forEach((x: SimpleData) => {
         categoriesRes.push({
           value: x.id,
           label: x.name,
@@ -66,11 +67,11 @@ const CreateProfile = () => {
     };
 
     const fetchRegions = async () => {
-      const res = await judicialRegionsService.getRegions();
+      const res = await regionApi.getRegions();
 
       let regionsRes: any = [];
 
-      res.forEach((x) => {
+      res.data.forEach((x: SimpleData) => {
         regionsRes.push({
           value: x.id,
           label: x.name,

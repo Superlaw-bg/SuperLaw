@@ -3,7 +3,7 @@ import City from "../../models/SimpleData";
 import "./RegisterLawyer.scss";
 import { Button } from "react-bootstrap";
 import RegisterLawyerInput from "../../models/inputs/RegisterLawyerInput";
-import cityService from "../../services/cityService";
+import cityApi from "../../api/cityApi";
 import authService from "../../services/authService";
 import toastService from "../../services/toastService";
 import { Link } from "react-router-dom";
@@ -29,8 +29,8 @@ const RegisterLawyer = () => {
   
   useEffect(() => {
     const fetchCities = async () => {
-        const cities = await cityService.getCities();
-        setCities(cities);
+        const res = await cityApi.getCities();
+        setCities(res.data);
     };
     
     fetchCities();

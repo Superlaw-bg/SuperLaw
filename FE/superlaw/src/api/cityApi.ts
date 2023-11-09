@@ -1,5 +1,4 @@
-import SimpleData from "../models/SimpleData";
-import apiRoutes from "../services/apiRoutes";
+import apiRoutes from "./apiRoutes";
 import axios from "./Api";
 
 const getCities = () => {

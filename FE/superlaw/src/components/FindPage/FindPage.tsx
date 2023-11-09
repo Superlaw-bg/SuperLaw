@@ -1,13 +1,13 @@
 import "./FindPage.scss";
 import Select, { ActionMeta } from "react-select";
 import { FormEvent, useEffect, useState } from "react";
-import legalCategoriesService from "../../services/legalCategoriesService";
+import categoryApi from "../../api/categoryApi";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
 import profileService from "../../services/profileService";
 import LawyerProfile from "../../models/LawyerProfile";
 import { useNavigate } from "react-router-dom";
-import cityService from "../../services/cityService";
+import cityApi from "../../api/cityApi";
 import SimpleData from "../../models/SimpleData";
 
 const FindPage = () => {
@@ -32,11 +32,12 @@ const FindPage = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await legalCategoriesService.getCategories();
+      console.log('fetch');
+      const res = await categoryApi.getCategories();
 
       let categoriesRes: any = [];
 
-      res.forEach((x) => {
+      res.data.forEach((x: SimpleData) => {
         categoriesRes.push({
           value: x.id,
           label: x.name,
@@ -47,9 +48,9 @@ const FindPage = () => {
     };
 
     const fetchCities = async () => {
-      const res = await cityService.getCities();
+      const res = await cityApi.getCities();
 
-      setCities(res);
+      setCities(res.data);
     };
 
     const fetchProfiles = async () => {
