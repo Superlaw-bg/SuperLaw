@@ -2,9 +2,14 @@ import apiRoutes from "./apiRoutes";
 import axios from "./Api";
 import LoginUserInput from "../models/inputs/LoginInput";
 import RegisterUserInput from "../models/inputs/RegisterUserInput";
+import RegisteLawyerInput from "../models/inputs/RegisterLawyerInput";
 
 const registerUser = (input: RegisterUserInput) => {
     return axios.post(apiRoutes.registerUser, input);
+}
+
+const registerLawyer = (input: RegisteLawyerInput) => {
+    return axios.post(apiRoutes.registerLawyer, input);
 }
 
 const login = (input: LoginUserInput) => {
@@ -25,6 +30,7 @@ const confirmEmail = (email: string, token: string) => {
 
 const authApi = {
     registerUser,
+    registerLawyer,
     login,
     forgotPassword,
     resetPassword,

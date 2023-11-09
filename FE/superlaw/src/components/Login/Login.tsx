@@ -3,7 +3,6 @@ import { Button } from 'react-bootstrap';
 import './Login.scss';
 import { NavLink, useNavigate } from 'react-router-dom';
 import LoginUserInput from '../../models/inputs/LoginInput';
-import authService from '../../services/authService';
 import authApi from '../../api/authApi';
 import { useStoreActions } from '../../store/hooks';
 import User from '../../store/auth/models/User';
@@ -71,7 +70,7 @@ const Login = () => {
       navigate('/');
 
     } catch (error: any) {
-      toastService.showError(error.response.data.Message);
+      toastService.showError(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -89,7 +88,7 @@ const Login = () => {
       setForgotPassClicked(true);
       toastService.showSuccess('Изпратен Ви е имейл за смяна на паролата');
     } catch (error: any) {
-      toastService.showError(error.response.data.Message);
+      toastService.showError(error.response.data.message);
     } finally {
       setLoading(false);
     }

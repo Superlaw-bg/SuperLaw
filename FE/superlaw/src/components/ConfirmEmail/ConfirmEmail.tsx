@@ -40,7 +40,7 @@ const ConfirmEmail = () => {
                 navigate('/');
               }
             } catch (error: any) {
-              toastService.showError(error.response.data.Message)
+              toastService.showError(error.response.data.message)
             }
         };
         
