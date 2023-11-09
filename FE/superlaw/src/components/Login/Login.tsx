@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import './Login.scss';
 import { NavLink, useNavigate } from 'react-router-dom';
 import LoginUserInput from '../../models/inputs/LoginInput';
 import authService from '../../services/authService';
+import authApi from '../../api/authApi';
 import { useStoreActions } from '../../store/hooks';
 import User from '../../store/auth/models/User';
-import { Lawyer } from '../../constants/roles';
 import toastService from '../../services/toastService';
+import LoaderSpinner from '../LoaderSpinner';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Login = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [forgotPassClicked, setForgotPassClicked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onInput = (e: any) => {
     const inputName = e.target.name;
@@ -53,9 +55,10 @@ const Login = () => {
       return;
     }
 
-    let res = await authService.login(loginForm);
-    
-    if(!res.isError){
+    setLoading(true);
+    try {
+      const res = await authApi.login(loginForm);
+      
       let user: User = {
         id: res.data.id,
         email: res.data.email,
@@ -63,9 +66,14 @@ const Login = () => {
         role: res.data.role,
         isLoggedIn: true
       }
-    
+     
       dispatchLogin(user);
       navigate('/');
+
+    } catch (error: any) {
+      toastService.showError(error.response.data.Message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,10 +110,16 @@ const Login = () => {
               <a className='forgot-password' onClick={async () => await forgotPassword()}>Забравена парола?</a>
 
             <p className='error'>{errorMessage}</p>
-          <Button className='login-btn' type='submit' variant='primary'>Влез</Button>
+            {loading ? 
+              <LoaderSpinner/>
+              :
+              <Button className='login-btn' type='submit' variant='primary'>Влез</Button>
+            }
+          
           <h5 className='link'>Нямаш акаунт?</h5>
           <NavLink className='link' to="/register" >Регистрирай се</NavLink>
 
+         
           {forgotPassClicked &&
                <p className='success'>Изпратихме Ви имейл с линка за смяна на паролата Ви.</p>}
             </form>
