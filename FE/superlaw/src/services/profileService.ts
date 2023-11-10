@@ -1,8 +1,6 @@
 import requester from './requester';
-import apiRoutes from './apiRoutes';
+import apiRoutes from '../api/apiRoutes';
 import Result from '../models/Result';
-import LawyerProfile from '../models/LawyerProfile';
-import LawyerProfileForEdit from '../models/LawyerProfileForEdit';
 import TimeSlotInput from '../models/inputs/TimeSlotInput';
 
 const createProfile: (input: any) => Promise<Result> = async (input) => {
@@ -13,36 +11,6 @@ const createProfile: (input: any) => Promise<Result> = async (input) => {
 
 const editProfile: (input: any) => Promise<Result> = async (input) => {
     const res = await requester.postFile(apiRoutes.editProfile, input);
-    
-    return res;
-}
-
-const getOwnProfile: () => Promise<LawyerProfile | null> = async () => {
-    const res = await requester.get(apiRoutes.ownProfile);
-    
-    return res;
-}
-
-const getOwnProfileDataForEdit: () => Promise<LawyerProfileForEdit> = async () => {
-    const res = await requester.get(apiRoutes.ownProfileDataForEdit);
-    
-    return res;
-}
-
-const getProfile: (id: number) => Promise<LawyerProfile | null> = async (id) => {
-    const res = await requester.get(`${apiRoutes.profile}/${id}`);
-    
-    return res;
-}
-
-const getAll: (name: string | null, categories: number[], cityId: number) => Promise<LawyerProfile[]> = async (name, categories, cityId) => {
-    let path = apiRoutes.allProfiles;
-    
-    if ((name !== null && name !== '') || categories.length !== 0 || cityId !== 0) {
-        path = `${apiRoutes.allProfiles}?name=${name === null ? '' : name}&categories=${categories.join()}&cityId=${cityId}`;
-    }
-   
-    const res = await requester.get(path);
     
     return res;
 }
@@ -136,10 +104,6 @@ const validateTimeSlotsInDay = (from: string, to: string, scheduleForDay: TimeSl
 const profileService = {
     createProfile,
     editProfile,
-    getOwnProfile,
-    getProfile,
-    getOwnProfileDataForEdit,
-    getAll,
     validateTimeSlot,
     validateTimeSlotsInDay
 };

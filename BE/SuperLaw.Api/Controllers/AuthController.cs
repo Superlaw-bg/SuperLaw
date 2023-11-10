@@ -24,7 +24,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Данните са невалидни"
+                    message = "Данните са невалидни"
                 });
             }
 
@@ -32,7 +32,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Паролите не съвпадат"
+                    message = "Паролите не съвпадат"
                 });
             }
 
@@ -49,7 +49,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Данните са невалидни"
+                    message = "Данните са невалидни"
                 });
             }
 
@@ -57,7 +57,7 @@ namespace SuperLaw.Api.Controllers
             {
                 return BadRequest(new ErrorDetails()
                 {
-                    Message = "Паролите не съвпадат"
+                    message = "Паролите не съвпадат"
                 });
             }
 
@@ -87,9 +87,9 @@ namespace SuperLaw.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost(nameof(ForgotPassword))]
-        public async Task<IActionResult> ForgotPassword([FromBody]string email)
+        public async Task<IActionResult> ForgotPassword(EmailInput input)
         {
-            await _authService.ForgotPasswordAsync(email);
+            await _authService.ForgotPasswordAsync(input.Email);
 
             return Ok();
         }

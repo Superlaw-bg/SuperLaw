@@ -3,10 +3,11 @@ import { Button, Form } from "react-bootstrap";
 import { Link, useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import City from "../../models/SimpleData";
-import cityService from "../../services/cityService";
-import authService from "../../services/authService";
+import authApi from "../../api/authApi";
 import RegisterUserInput from "../../models/inputs/RegisterUserInput";
 import toastService from '../../services/toastService';
+import cityApi from "../../api/cityApi";
+import LoaderSpinner from "../LoaderSpinner";
 
 const Register = () => {  
   const navigate = useNavigate();
@@ -26,14 +27,17 @@ const Register = () => {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successRegister, setSuccessRegister] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
 
   useEffect(() => {
-    const fetchCities = async () => {
-        const cities = await cityService.getCities();
-        setCities(cities);
+    const fetchCities = () => {
+        cityApi
+        .getCities()
+        .then(res => setCities(res.data))
+        .catch(err => console.log(err));
     };
     
     fetchCities();
@@ -125,11 +129,15 @@ const Register = () => {
       return;
     }
 
-    let res = await authService.registerUser(registerForm);
-
-    if (!res.isError){
+    try {
+      setLoading(true);
+      await authApi.registerUser(registerForm);
       toastService.showSuccess('Регистрацията е успешна. Моля потвърдете имейла си за да се логнете');
       setSuccessRegister(true);
+    } catch (error: any) {
+      toastService.showError(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -202,10 +210,14 @@ const Register = () => {
               {errorMessage}
              </p>
 
-            <Button className="primary-btn" type="submit" variant="primary">
-              Регистрация
-            </Button>
-
+            {
+              loading ?
+              <LoaderSpinner/> :
+              <Button className="primary-btn" type="submit" variant="primary">
+                Регистрация
+              </Button>
+            }
+          
             {successRegister &&
                <p className='success'>Регистрирахте се успешно. Остана само да потвърдите имейла си като цъкнете на линка, който ви изпратихме.</p>}
           </form>
