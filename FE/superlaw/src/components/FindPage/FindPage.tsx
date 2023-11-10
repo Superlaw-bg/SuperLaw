@@ -260,7 +260,7 @@ const FindPage = () => {
                 <div className="sect">
                   <p className="bold">Консултация: {profile.rate}лв</p>
                 </div>
-                <Button onClick={() => redirectToProfile(profile.id)} className="primary-btn">Запази час</Button>
+                <Button onClick={() => redirectToProfile(profile.id)} className="primary-btn">Запази консултация</Button>
               </div>
             </div>
           ))}

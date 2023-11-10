@@ -322,7 +322,7 @@ const EditProfile = () => {
     const res = await profileService.editProfile(formData);
 
     if (!res.isError){
-      toastService.showSuccess("Успешно редактирахте вашия профил");
+      toastService.showSuccess("Успешно редактирахте профила Ви");
       navigate('/profile');
     }
     setLoadingEdit(false);

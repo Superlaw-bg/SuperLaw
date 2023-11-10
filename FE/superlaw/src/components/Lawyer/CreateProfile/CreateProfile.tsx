@@ -304,7 +304,7 @@ const CreateProfile = () => {
     try {
       setLoading(true);
       await profileService.createProfile(formData);
-      toastService.showSuccess("Успешно създадохте вашия адвокатски профил");
+      toastService.showSuccess("Успешно създадохте адвокатския Ви профил");
       navigate('/profile');
     } catch (error: any) {
       toastService.showError(error.response.data.message);

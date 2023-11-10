@@ -352,7 +352,7 @@ const Profile = () => {
                     <div className="btn-wrapper">
                       {loading ?
                        <LoaderSpinner/> :
-                       <Button className="book-btn" variant='primary' type="submit">Запази час</Button>
+                       <Button className="book-btn" variant='primary' type="submit">Запази консултация</Button>
                       }
                     </div>
                   }
