@@ -4,11 +4,13 @@ import { FormEvent, useEffect, useState } from "react";
 import categoryApi from "../../api/categoryApi";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
-import profileService from "../../services/profileService";
+import profileApi from "../../api/profileApi";
 import LawyerProfile from "../../models/LawyerProfile";
-import { useNavigate } from "react-router-dom";
+import { useAsyncError, useNavigate } from "react-router-dom";
 import cityApi from "../../api/cityApi";
 import SimpleData from "../../models/SimpleData";
+import toastService from "../../services/toastService";
+import LoaderSpinner from "../LoaderSpinner";
 
 const FindPage = () => {
   const navigate = useNavigate();
@@ -22,6 +24,8 @@ const FindPage = () => {
   });
 
   const [profiles, setProfiles] = useState<LawyerProfile[]>([]);
+  
+  const [loading, setLoading] = useState(false);
 
   const onCategorySelect = (
     newValue: any,
@@ -32,7 +36,6 @@ const FindPage = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      console.log('fetch');
       const res = await categoryApi.getCategories();
 
       let categoriesRes: any = [];
@@ -54,9 +57,15 @@ const FindPage = () => {
     };
 
     const fetchProfiles = async () => {
-      const res = await profileService.getAll(null, [], 0);
-
-      setProfiles(res);
+      try {
+        setLoading(true);
+        const res = await profileApi.getAll(null, [], 0);
+        setProfiles(res.data);
+      } catch (error: any) {
+        toastService.showError(error.response.data.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchCategories();
@@ -78,10 +87,10 @@ const FindPage = () => {
     event.preventDefault();
 
     const categories = searchForm.categories.map((c: any) => c.value);
-    console.log(searchForm);
-    const res = await profileService.getAll(searchForm.name, categories, searchForm.cityId);
+   
+    const res = await profileApi.getAll(searchForm.name, categories, searchForm.cityId);
 
-    setProfiles(res);
+    setProfiles(res.data);
   }
 
   const orderByRatingAsc = () => {
@@ -196,7 +205,13 @@ const FindPage = () => {
           <span className="sorter" onClick={orderByRateAsc}>Цена ↑</span>
           <span className="sorter" onClick={orderByRateDesc}>Цена ↓</span>
         </div>
-        <div className="profiles">
+        {
+          loading ?
+            <div className="profiles-spinner">
+              <LoaderSpinner/>
+            </div>
+          :
+          <div className="profiles">
           {profiles.length === 0 && <p className="no-profiles-msg">Съжаляваме, но не намираме адвокати</p>}
           {profiles.map((profile: any) => (
             <div key={profile.id} className="profile">
@@ -250,6 +265,7 @@ const FindPage = () => {
             </div>
           ))}
         </div>
+        }
       </div>
     </div>
   );

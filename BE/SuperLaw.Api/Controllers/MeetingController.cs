@@ -38,7 +38,7 @@ namespace SuperLaw.Api.Controllers
         public async Task<IActionResult> Rate([FromBody] RateMeetingInput input)
         {
             var userId = GetCurrentUserId();
-
+            
             if (userId == null)
             {
                 return BadRequest(new ErrorDetails()

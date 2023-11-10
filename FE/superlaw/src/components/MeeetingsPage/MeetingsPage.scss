@@ -39,6 +39,14 @@
         display: flex;
         flex-wrap: wrap;
 
+        .spinner {
+            margin: 0 auto;
+        }
+
+        .no-meetings {
+            color: $primary-color;
+        }
+
         .meeting {
             flex: 0 0 60%;
             margin: 0 auto;

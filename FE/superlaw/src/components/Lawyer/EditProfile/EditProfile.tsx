@@ -6,6 +6,7 @@ import toastService from '../../../services/toastService';
 import Select from 'react-select';
 import { ActionMeta } from 'react-select';
 import profileService from '../../../services/profileService';
+import profileApi from '../../../api/profileApi';
 import categoryApi from '../../../api/categoryApi';
 import regionApi from '../../../api/regionApi';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,7 @@ import moment from 'moment';
 import ScheduleDayInput from '../../../models/inputs/ScheduleDayInput';
 import CalendarDateValue from '../../../models/CalendarDateValue';
 import SimpleData from '../../../models/SimpleData';
+import LoaderSpinner from '../../LoaderSpinner';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -22,6 +24,8 @@ const EditProfile = () => {
   const todayDate = moment().toDate();
   const maxDate = moment().add(2, "M").toDate();
 
+  const [loadingProfile, setLoadingProfile] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(false);
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
 
@@ -80,19 +84,30 @@ const EditProfile = () => {
     };
 
     const fetchProfile = async () => {
-      const res = await profileService.getOwnProfileDataForEdit();
-     
-      setProfile({
-        ...profile,
-        description: res.description,
-        rate: res.rate,
-        address: res.address,
-        categories: res.categories,
-        regions: res.regions,
-        schedule: res.schedule,
-        isCompleted: res.isCompleted,
-        isJunior: res.isJunior
-      });
+      try {
+        setLoadingProfile(true);
+        const res = await profileApi.getOwnProfileDataForEdit();
+        const data = res.data;
+
+        if (data) {
+          setProfile({
+            ...profile,
+            description: data.description,
+            rate: data.rate,
+            address: data.address,
+            categories: data.categories,
+            regions: data.regions,
+            schedule: data.schedule,
+            isCompleted: data.isCompleted,
+            isJunior: data.isJunior
+          });
+        }
+        
+      } catch (error: any) {
+        console.log(error.response.data.message)
+      } finally {
+        setLoadingProfile(false);
+      }
     };
   
     fetchCategories();
@@ -303,14 +318,23 @@ const EditProfile = () => {
     formData.append('isJunior', profile.isJunior.toString());
     formData.append('isCompleted', profile.isCompleted.toString());
     
+    setLoadingEdit(true);
     const res = await profileService.editProfile(formData);
 
     if (!res.isError){
       toastService.showSuccess("Успешно редактирахте вашия профил");
       navigate('/profile');
     }
-
+    setLoadingEdit(false);
   };
+
+  if (loadingProfile) {
+    return (
+      <div className='edit-profile-spinner'>
+        <LoaderSpinner/>
+      </div>
+    )
+  }
 
   return (
     <div className="form-wrapper-edit-profile">
@@ -436,10 +460,14 @@ const EditProfile = () => {
           <p className='error'>
               {errorMessage}
           </p>
-
-          <Button className="primary-btn" type="submit" variant="primary">
-            Редактирай
-          </Button>
+          
+          {
+            loadingEdit ?
+              <LoaderSpinner/> :
+              <Button className="primary-btn" type="submit" variant="primary">
+                Редактирай
+              </Button>
+          }
         </form>
       </div>
   );
