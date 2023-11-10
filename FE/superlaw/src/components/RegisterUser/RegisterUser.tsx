@@ -132,7 +132,7 @@ const Register = () => {
     try {
       setLoading(true);
       await authApi.registerUser(registerForm);
-      toastService.showSuccess('Регистрацията е успешна. Моля потвърдете имейла си за да се логнете');
+      toastService.showSuccess('Регистрирахте се успешно! Моля, кликнете на линка, който изпратихме на имейл адреса Ви.');
       setSuccessRegister(true);
     } catch (error: any) {
       toastService.showError(error.response.data.message);
@@ -219,7 +219,7 @@ const Register = () => {
             }
           
             {successRegister &&
-               <p className='success'>Регистрирахте се успешно. Остана само да потвърдите имейла си като цъкнете на линка, който ви изпратихме.</p>}
+               <p className='success'>Регистрирахте се успешно! Моля, кликнете на линка, който изпратихме на имейл адреса Ви.</p>}
           </form>
         </div>
         <div className="lawyer-info">
