@@ -2,7 +2,9 @@ import { Button } from 'react-bootstrap';
 import './ResetPasswordPage.scss';
 import { useLocation } from "react-router-dom";
 import { useState } from 'react';
-import authService from '../../services/authService';
+import authApi from '../../api/authApi';
+import toastService from '../../services/toastService';
+import LoaderSpinner from '../LoaderSpinner';
 
 const ResetPasswordPage = () => {
     const location = useLocation();
@@ -18,6 +20,7 @@ const ResetPasswordPage = () => {
 
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const onInput = (e: any) => {
       const inputName = e.target.name;
@@ -52,10 +55,14 @@ const ResetPasswordPage = () => {
         return;
       }
   
-      const res = await authService.resetPassword(email, token, resetPasswordForm.password, resetPasswordForm.confirmPassword);
-      
-      if(!res.isError){
+      try{
+        setLoading(true);
+        await authApi.resetPassword(email, token, resetPasswordForm.password, resetPasswordForm.confirmPassword);
         setSuccessMessage('Успешно сменихте паролата си. Можете да влезете в акаунта си с новата парола.');
+      } catch (err: any) {
+        toastService.showError(err.response.data.Message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -76,7 +83,10 @@ const ResetPasswordPage = () => {
               </div>
 
               <p className='error'>{errorMessage}</p>
-          <Button className='reset-pass-btn' type='submit' variant='primary'>Смени парола</Button>
+          {loading ?
+            <LoaderSpinner/> :
+            <Button className='reset-pass-btn' type='submit' variant='primary'>Смени парола</Button>
+          }
 
           {successMessage !== '' &&
                <p className='success'>{successMessage}</p>}

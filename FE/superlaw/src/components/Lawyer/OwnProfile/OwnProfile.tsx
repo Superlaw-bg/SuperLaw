@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./OwnProfile.scss";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import profileService from "../../../services/profileService";
+import profileApi from "../../../api/profileApi";
 import noProfilePic from "../../../assets/no-profile-picture-256.png";
 import Calendar, { TileDisabledFunc } from "react-calendar";
 import moment from "moment";
@@ -10,6 +10,8 @@ import CalendarDateValue from "../../../models/CalendarDateValue";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
 import LawyerProfile from "../../../models/LawyerProfile";
 import TimeSlot from "../../../models/TimeSlot";
+import toastService from "../../../services/toastService";
+import LoaderSpinner from "../../LoaderSpinner";
 
 const OwnProfile = () => {
   const minDate = moment().startOf('year').toDate();
@@ -17,6 +19,7 @@ const OwnProfile = () => {
   
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<LawyerProfile>({
     id: -1,
     imgPath: "",
@@ -38,10 +41,17 @@ const OwnProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await profileService.getOwnProfile();
-      
-      if (res !== null) {
-        setProfile(res);
+      try {
+        setLoading(true);
+        const res = await profileApi.getOwnProfile();
+        
+        if (res.data) {
+          setProfile(res.data);
+        }
+      } catch (error: any) {
+        toastService.showError(error.response.data.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -92,6 +102,14 @@ const OwnProfile = () => {
     return false;
   }
   
+  if (loading) {
+    return (
+      <div className="profile-spinner">
+        <LoaderSpinner/>
+      </div>
+    )
+  }
+
   return (
     <div>
       {profile && (!profile.id || profile.id === -1) && (

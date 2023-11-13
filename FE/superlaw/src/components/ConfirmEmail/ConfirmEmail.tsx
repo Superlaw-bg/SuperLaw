@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import authService from "../../services/authService";
+import authApi from "../../api/authApi";
 import toastService from "../../services/toastService";
 import User from "../../store/auth/models/User";
 import { Lawyer } from "../../constants/roles";
 import { useStoreActions } from "../../store/hooks";
+import LoaderSpinner from "../LoaderSpinner";
 
 const ConfirmEmail = () => {
     const navigate = useNavigate();
@@ -19,9 +20,9 @@ const ConfirmEmail = () => {
 
     useEffect(() => {
         const confirmEmail = async () => {
-            const res = await authService.confirmEmail(email, token);
-            
-            if (!res.isError) {
+
+            try {
+              const res = await authApi.confirmEmail(email, token);
               toastService.showSuccess('Имейлът Ви е потвърден, пренасочваме ви към приложението');
               let user: User = {
                 id: res.data.id,
@@ -38,6 +39,8 @@ const ConfirmEmail = () => {
               } else {
                 navigate('/');
               }
+            } catch (error: any) {
+              toastService.showError(error.response.data.message)
             }
         };
         
@@ -47,6 +50,7 @@ const ConfirmEmail = () => {
     return (
       <div className='email-confirmation'>
         <p>Имейлът Ви се потвърждава вмомента</p>
+        <LoaderSpinner/>
       </div>
     );
   };

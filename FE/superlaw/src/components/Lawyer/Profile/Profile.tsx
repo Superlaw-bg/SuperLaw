@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import './Profile.scss';
 import { useParams } from "react-router-dom";
-import profileService from "../../../services/profileService";
+import profileApi from "../../../api/profileApi";
 import LawyerProfile from "../../../models/LawyerProfile";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../../assets/no-profile-picture-256.png";
@@ -10,10 +10,11 @@ import 'react-calendar/dist/Calendar.css';
 import moment from"moment";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
 import BookMeetingInput from "../../../models/inputs/BookMeetingInput";
-import meetingService from "../../../services/meetingService";
+import meetingApi from "../../../api/meetingApi";
 import toastService from "../../../services/toastService";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import TimeSlot from "../../../models/TimeSlot";
+import LoaderSpinner from "../../LoaderSpinner";
 
 //TODO: Remove restriction on prod for booking hours in the future
 const Profile = () => {
@@ -21,6 +22,9 @@ const Profile = () => {
 
     const todayDate = moment().toDate();
     const maxDate = moment().add(1, 'M').toDate();
+
+    const [profileLoading, setProfileLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [profile, setProfile] = useState<LawyerProfile>({
         id: -1,
@@ -58,11 +62,18 @@ const Profile = () => {
       
     useEffect(() => {
         const fetchProfile = async (id: number) => {
-            const res = await profileService.getProfile(id);
-            if (res !== null){
-              setProfile(res);
-              console.log(res);
+            try {
+              setProfileLoading(true);
+              const res = await profileApi.getProfile(id);
+              if (res.data){
+                setProfile(res.data);
+              }
+            } catch (error: any) {
+              toastService.showError(error.response.data.message);
+            } finally {
+              setProfileLoading(false);
             }
+            
         };
         
         const profileId = Number(params.id);
@@ -90,8 +101,6 @@ const Profile = () => {
       if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()) {
        
         for (let i = 0; i < scheduleDay.timeSlots.length; i++) {
-          let slot = scheduleDay.timeSlots[i];
-          
           //getDay returns day of the week, getDate returns the number of the day
           let fromHours = Number(scheduleDay.timeSlots[i].from.split(':')[0]);
           let fromMinutes = Number(scheduleDay.timeSlots[i].from.split(':')[1]);
@@ -107,7 +116,6 @@ const Profile = () => {
        
       }
       
-
       let timeSlotsSelectedElem =  document.getElementsByClassName('selected')[0];
 
       if (timeSlotsSelectedElem) {
@@ -203,14 +211,14 @@ const Profile = () => {
 
       setErrorMessage('');
 
-      const res = await meetingService.createMeeting(
-        {
-          ...bookMeetingForm,
-          profileId: Number(params.id)
-        }
-      );
-
-      if(!res.isError){
+      try {
+        setLoading(true);
+        await meetingApi.createMeeting(
+          {
+            ...bookMeetingForm,
+            profileId: Number(params.id)
+          }
+        );
         toastService.showSuccess("Успешно запазихте час за консултация.");
 
         setBookMeetingForm({
@@ -221,7 +229,19 @@ const Profile = () => {
         });
   
         window.scrollTo(0, 0);
+      } catch (error: any) {
+        toastService.showError(error.response.data.message);
+      } finally {
+        setLoading(false);
       }
+    }
+
+    if (profileLoading) {
+      return (
+        <div className="profile-spinner">
+          <LoaderSpinner/>
+        </div>
+      )
     }
 
     return (
@@ -330,7 +350,10 @@ const Profile = () => {
 
                   {process.env.REACT_APP_ENV !== 'prod' && 
                     <div className="btn-wrapper">
-                      <Button className="book-btn" variant='primary' type="submit">Запази час</Button>
+                      {loading ?
+                       <LoaderSpinner/> :
+                       <Button className="book-btn" variant='primary' type="submit">Запази консултация</Button>
+                      }
                     </div>
                   }
               </form>

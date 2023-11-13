@@ -3,10 +3,11 @@ import City from "../../models/SimpleData";
 import "./RegisterLawyer.scss";
 import { Button } from "react-bootstrap";
 import RegisterLawyerInput from "../../models/inputs/RegisterLawyerInput";
-import cityService from "../../services/cityService";
-import authService from "../../services/authService";
+import cityApi from "../../api/cityApi";
+import authApi from "../../api/authApi";
 import toastService from "../../services/toastService";
 import { Link } from "react-router-dom";
+import LoaderSpinner from "../LoaderSpinner";
 
 const RegisterLawyer = () => {
   const [cities, setCities] = useState<City[]>([]);
@@ -23,14 +24,15 @@ const RegisterLawyer = () => {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successRegister, setSuccessRegister] = useState(false);
   
   useEffect(() => {
     const fetchCities = async () => {
-        const cities = await cityService.getCities();
-        setCities(cities);
+        const res = await cityApi.getCities();
+        setCities(res.data);
     };
     
     fetchCities();
@@ -131,12 +133,17 @@ const RegisterLawyer = () => {
       return;
     }
 
-    let res = await authService.registerLawyer(registerForm);
-
-    if (!res.isError){
-      toastService.showSuccess('Регистрацията е успешна. Моля потвърдете имейла си за да се логнете');
+    try {
+      setLoading(true);
+      await authApi.registerLawyer(registerForm);
+      toastService.showSuccess('Регистрирахте се успешно! Моля, кликнете на линка, който изпратихме на имейл адреса Ви.');
       setSuccessRegister(true);
+    } catch (error: any) {
+      toastService.showError(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
+
   };
   
     return (
@@ -217,12 +224,16 @@ const RegisterLawyer = () => {
               {errorMessage}
           </p>
 
-          <Button className="primary-btn" type="submit" variant="primary">
-            Регистрация
-          </Button>
+          {
+            loading ?
+              <LoaderSpinner/> :
+              <Button className="primary-btn" type="submit" variant="primary">
+                Регистрация
+              </Button>
+          }
 
           {successRegister &&
-               <p className='success'>Регистрирахте се успешно. Остана само да потвърдите имейла си като цъкнете на линка, който ви изпратихме.</p>}
+               <p className='success'>Регистрирахте се успешно! Моля, кликнете на линка, който изпратихме на имейл адреса Ви.</p>}
         </form>
       </div>
     </div>

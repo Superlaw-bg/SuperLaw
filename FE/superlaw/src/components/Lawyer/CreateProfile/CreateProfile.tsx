@@ -6,14 +6,17 @@ import toastService from "../../../services/toastService";
 import Select from "react-select";
 import { ActionMeta } from "react-select";
 import profileService from "../../../services/profileService";
-import legalCategoriesService from "../../../services/legalCategoriesService";
-import judicialRegionsService from "../../../services/judicialRegionsService";
+import profileApi from "../../../api/profileApi";
+import categoryApi from "../../../api/categoryApi";
+import regionApi from "../../../api/regionApi";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import moment from "moment";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
 import ProfileInput from "../../../models/inputs/ProfileInput";
+import SimpleData from "../../../models/SimpleData";
+import LoaderSpinner from "../../LoaderSpinner";
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -21,6 +24,7 @@ const CreateProfile = () => {
   const todayDate = moment().toDate();
   const maxDate = moment().add(2, "M").toDate();
 
+  const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
   const [profile, setProfile] = useState<ProfileInput>({
@@ -51,11 +55,11 @@ const CreateProfile = () => {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await legalCategoriesService.getCategories();
+      const res = await categoryApi.getCategories();
 
       let categoriesRes: any = [];
 
-      res.forEach((x) => {
+      res.data.forEach((x: SimpleData) => {
         categoriesRes.push({
           value: x.id,
           label: x.name,
@@ -66,11 +70,11 @@ const CreateProfile = () => {
     };
 
     const fetchRegions = async () => {
-      const res = await judicialRegionsService.getRegions();
+      const res = await regionApi.getRegions();
 
       let regionsRes: any = [];
 
-      res.forEach((x) => {
+      res.data.forEach((x: SimpleData) => {
         regionsRes.push({
           value: x.id,
           label: x.name,
@@ -233,7 +237,7 @@ const CreateProfile = () => {
     }
 
     if (
-      Number.isNaN(profile.rate) ||
+      Number.isNaN(Number(profile.rate)) ||
       profile.rate < 100 ||
       profile.rate > 500
     ) {
@@ -297,11 +301,15 @@ const CreateProfile = () => {
     formData.append("isJunior", profile.isJunior.toString());
     formData.append("isCompleted", profile.isCompleted.toString());
 
-    const res = await profileService.createProfile(formData);
-
-    if (!res.isError) {
-      toastService.showSuccess("Успешно създадохте вашия адвокатски профил");
+    try {
+      setLoading(true);
+      await profileService.createProfile(formData);
+      toastService.showSuccess("Успешно създадохте адвокатския Ви профил");
       navigate('/profile');
+    } catch (error: any) {
+      toastService.showError(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -446,9 +454,13 @@ const CreateProfile = () => {
 
         <p className="error">{errorMessage}</p>
 
-        <Button className="primary-btn" type="submit" variant="primary">
-          Създай
-        </Button>
+        {
+          loading ?
+            <LoaderSpinner/> :
+            <Button className="primary-btn" type="submit" variant="primary">
+              Създай
+            </Button>
+        }
       </form>
     </div>
   );
