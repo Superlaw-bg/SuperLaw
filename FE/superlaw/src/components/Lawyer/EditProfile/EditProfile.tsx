@@ -256,8 +256,8 @@ const EditProfile = () => {
       setErrorMessage("Моля въведете описание");
       return false;
     }
-
-    if (Number.isNaN(profile.rate) || profile.rate < 100 || profile.rate > 500){
+    
+    if (Number.isNaN(Number(profile.rate)) || profile.rate < 100 || profile.rate > 500){
       setErrorMessage("Цената трябва да е число между 100 и 500");
       return false;
     }

@@ -237,7 +237,7 @@ const CreateProfile = () => {
     }
 
     if (
-      Number.isNaN(profile.rate) ||
+      Number.isNaN(Number(profile.rate)) ||
       profile.rate < 100 ||
       profile.rate > 500
     ) {
