@@ -105,7 +105,7 @@ namespace SuperLaw.Services
 
             await _userManager.CreateAsync(user, input.Password);
 
-            await SendConfirmationEmail(input.Email, user);
+            await SendConfirmationEmail(input.Email, user, true);
 
             await _userManager.AddToRoleAsync(user, RoleNames.LawyerRole);
         }
@@ -236,7 +236,7 @@ namespace SuperLaw.Services
             return encryptedToken;
         }
 
-        private async Task SendConfirmationEmail(string email, User user)
+        private async Task SendConfirmationEmail(string email, User user, bool isLawyer = false)
         {
             var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -245,8 +245,14 @@ namespace SuperLaw.Services
 
             var confirmationLink = $"{_options.Value.EmailConfirm}?token={codeEncoded}&email={email}";
 
-            _emailService.SendEmail(email, "Потвърждение на акаунт",
-                $"Моля, потвърдете имейла си на следния линк: {confirmationLink}");
+            var msg = $"Моля, потвърдете имейла си на следния линк: {confirmationLink}";
+
+            if (isLawyer)
+            {
+               msg = $"Моля, потвърдете имейла си на следния линк: {confirmationLink}\r\n Не забравяйте да довършите профила си, за да бъде видим за потенциалните Ви клиенти.";
+            }
+
+            _emailService.SendEmail(email, "Потвърждение на акаунт", msg);
         }
 
         private async Task SendPasswordResetEmail(string email, User user)
