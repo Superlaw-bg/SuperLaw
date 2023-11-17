@@ -9,7 +9,6 @@ using System.Text;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
 using SuperLaw.Common.Options;
-using Microsoft.AspNetCore.Builder.Extensions;
 using SuperLaw.Services.Interfaces;
 using SuperLaw.Api;
 

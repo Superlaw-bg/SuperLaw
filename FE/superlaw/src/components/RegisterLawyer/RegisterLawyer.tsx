@@ -77,7 +77,7 @@ const RegisterLawyer = () => {
     const phoneAndLawyerIdRegex = /[a-zA-Zа-яА-Я]/g;
 
     if (registerForm.lawyerIdNumber === '' || phoneAndLawyerIdRegex.test(registerForm.lawyerIdNumber)){
-      setErrorMessage("Личният номер е невалиден");
+      setErrorMessage("Личният адвокатски номер е невалиден");
       return false;
     }
 
@@ -167,7 +167,7 @@ const RegisterLawyer = () => {
           </div>
 
           <div className="form-group selection">
-            <label htmlFor="id-number">Личен номер</label>
+            <label htmlFor="id-number">Личен адвокатски номер</label>
             <input id="id-number" type="text" className="form-control" name="lawyerIdNumber" onChange={(e) => onInput(e)}/>
           </div>
 

@@ -162,7 +162,7 @@ const OwnProfile = () => {
               </div>
 
               <div className="sect rating">
-                {profile.rating === 0 && <p className="bold">Нямаш оценка</p>}
+                {profile.rating === 0 && <p className="bold">Все още нямате оценка</p>}
                 {profile.rating !== 0 && (
                   <p className="bold">
                     <i className="fa-solid fa-star"></i> {profile.rating} / 5

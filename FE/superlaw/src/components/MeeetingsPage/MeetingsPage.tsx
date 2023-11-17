@@ -57,7 +57,7 @@ const MeetingsPage = () => {
       });
       toastService.showSuccess("Успешно оценихте консултацията");
 
-      let selMeeting = meetings.past.filter((x) => x.id == selectedMeeting)[0];
+      let selMeeting = meetings.past.filter((x) => x.id === selectedMeeting)[0];
       selMeeting.rating = rating;
 
       setMeetings(meetings);
