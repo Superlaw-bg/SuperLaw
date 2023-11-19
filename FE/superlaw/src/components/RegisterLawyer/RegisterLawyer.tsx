@@ -8,6 +8,7 @@ import authApi from "../../api/authApi";
 import toastService from "../../services/toastService";
 import { Link } from "react-router-dom";
 import LoaderSpinner from "../LoaderSpinner";
+import ReactGA from "react-ga4";
 
 const RegisterLawyer = () => {
   const [cities, setCities] = useState<City[]>([]);
@@ -125,6 +126,12 @@ const RegisterLawyer = () => {
   const onRegister = async (event: FormEvent) => {
     event.preventDefault();
     
+    //Google Analytics event for clicking on reg btn
+    ReactGA.event({
+      category: "User",
+      action: "registerLawyerClicked"
+    });
+
     if(successRegister){
       setSuccessRegister(false);
     }

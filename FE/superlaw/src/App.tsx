@@ -25,6 +25,7 @@ import ScrollToTop from './components/ScrollToTop';
 import TermsAndConditionsPage from './components/TermsAndConditionsPage';
 import PersonalDataPage from './components/PersonalDataPage';
 import ResetPasswordPage from './components/ResetPasswordPage';
+import QrCodeRedirectPage from './components/QrCodeRedirectPage';
 
 const App: React.FC = () => (
   <>
@@ -48,6 +49,7 @@ const App: React.FC = () => (
               <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
               <Route path='/find' Component={isNotLawyer(FindPage)}/>
               <Route path='/meetings' Component={isAuth(MeeetingsPage)}/>
+              <Route path='/qr' Component={QrCodeRedirectPage}/>
           </Routes>
           <Footer/>
       </Router>
