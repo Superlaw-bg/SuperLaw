@@ -7,8 +7,10 @@ import { useStoreActions, useStoreState } from '../../store/hooks';
 import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
 import { Lawyer, User as UserRole } from '../../constants/roles';
+import usePageTracking from '../../hooks/usePageTracking';
 
 const Header = () => {
+    usePageTracking();
     const navigate = useNavigate();
     const { isLoggedIn, email, role } = useStoreState(store => store.auth.user);
     const dispatchLogout = useStoreActions(actions => actions.auth.logout);

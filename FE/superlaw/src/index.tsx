@@ -5,6 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { StoreProvider } from 'easy-peasy';
 import store from './store/store';
+import ReactGA from 'react-ga4';
+
+const gaId = process.env.REACT_APP_GA_ID;
+
+if (gaId) {
+  ReactGA.initialize(gaId);
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

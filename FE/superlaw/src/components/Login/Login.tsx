@@ -8,6 +8,7 @@ import { useStoreActions } from '../../store/hooks';
 import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
 import LoaderSpinner from '../LoaderSpinner';
+import ReactGA from 'react-ga4';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -49,6 +50,12 @@ const Login = () => {
 
   const onLogin = async (event: any) => {
     event.preventDefault();
+
+    //Google Analytics event for clicking on login btn
+    ReactGA.event({
+      category: "User",
+      action: "loginClicked"
+    });
 
     if (!isDataValid()){
       return;
