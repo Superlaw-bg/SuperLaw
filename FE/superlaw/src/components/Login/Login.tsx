@@ -99,6 +99,7 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+    //TODO: Currently login page redirects to register law, not to register
   };
   
     return (
@@ -127,7 +128,7 @@ const Login = () => {
             }
           
           <h5 className='link'>Нямаш акаунт?</h5>
-          <NavLink className='link' to="/register" >Регистрирай се</NavLink>
+          <NavLink className='link' to="/registerLaw" >Регистрирай се</NavLink>
 
          
           {forgotPassClicked &&
