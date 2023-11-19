@@ -11,6 +11,7 @@ import LoaderSpinner from '../LoaderSpinner';
 import ReactGA from 'react-ga4';
 
 const Login = () => {
+  //TODO: Currently login page redirects to register law, not to register
   const navigate = useNavigate();
   const dispatchLogin = useStoreActions((actions) => actions.auth.login);
   
@@ -99,7 +100,6 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
-    //TODO: Currently login page redirects to register law, not to register
   };
   
     return (
