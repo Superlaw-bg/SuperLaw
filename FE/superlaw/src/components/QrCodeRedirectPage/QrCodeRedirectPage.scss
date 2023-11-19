@@ -1,0 +1,11 @@
+@import '../../style-constants.scss';
+
+.qr-page-wrapper {
+    padding: 10rem 4rem;
+    text-align: center;
+
+    h4 {
+        color: $primary-color;
+        margin-bottom: 2rem;
+    }
+}

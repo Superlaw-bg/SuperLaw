@@ -8,6 +8,7 @@ import RegisterUserInput from "../../models/inputs/RegisterUserInput";
 import toastService from '../../services/toastService';
 import cityApi from "../../api/cityApi";
 import LoaderSpinner from "../LoaderSpinner";
+import ReactGA from "react-ga4";
 
 const Register = () => {  
   const navigate = useNavigate();
@@ -121,6 +122,12 @@ const Register = () => {
   const onRegister = async (event: FormEvent) => {
     event.preventDefault();
     
+    //Google Analytics event for clicking on reg btn
+    ReactGA.event({
+      category: "User",
+      action: "registerUserClicked"
+    });
+
     if(successRegister){
       setSuccessRegister(false);
     }

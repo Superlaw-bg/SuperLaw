@@ -8,8 +8,10 @@ import { useStoreActions } from '../../store/hooks';
 import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
 import LoaderSpinner from '../LoaderSpinner';
+import ReactGA from 'react-ga4';
 
 const Login = () => {
+  //TODO: Currently login page redirects to register law, not to register
   const navigate = useNavigate();
   const dispatchLogin = useStoreActions((actions) => actions.auth.login);
   
@@ -49,6 +51,12 @@ const Login = () => {
 
   const onLogin = async (event: any) => {
     event.preventDefault();
+
+    //Google Analytics event for clicking on login btn
+    ReactGA.event({
+      category: "User",
+      action: "loginClicked"
+    });
 
     if (!isDataValid()){
       return;
@@ -120,7 +128,7 @@ const Login = () => {
             }
           
           <h5 className='link'>Нямаш акаунт?</h5>
-          <NavLink className='link' to="/register" >Регистрирай се</NavLink>
+          <NavLink className='link' to="/registerLaw" >Регистрирай се</NavLink>
 
          
           {forgotPassClicked &&
