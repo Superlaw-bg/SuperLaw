@@ -1,19 +1,4 @@
-import requester from './requester';
-import apiRoutes from '../api/apiRoutes';
-import Result from '../models/Result';
 import TimeSlotInput from '../models/inputs/TimeSlotInput';
-
-const createProfile: (input: any) => Promise<Result> = async (input) => {
-    const res = await requester.postFile(apiRoutes.createProfile, input);
-    
-    return res;
-}
-
-const editProfile: (input: any) => Promise<Result> = async (input) => {
-    const res = await requester.postFile(apiRoutes.editProfile, input);
-    
-    return res;
-}
 
 const validateTimeSlot = (from: string, to: string) => {
     let fromHours = Number(from.split(':')[0]);
@@ -102,8 +87,6 @@ const validateTimeSlotsInDay = (from: string, to: string, scheduleForDay: TimeSl
 }
 
 const profileService = {
-    createProfile,
-    editProfile,
     validateTimeSlot,
     validateTimeSlotsInDay
 };
