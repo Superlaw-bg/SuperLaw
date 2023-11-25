@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using SuperLaw.Common;
 using SuperLaw.Data;
 using SuperLaw.Data.Models;
@@ -20,7 +21,28 @@ namespace SuperLaw.Services
             _uploadService = uploadService;
         }
 
-        public async Task CreateProfileAsync(string userId, CreateProfileInput input)
+        public async Task UploadImageAsync(int profileId, IFormFile image)
+        {
+            var profile = _context.LawyerProfiles.SingleOrDefault(x => x.Id == profileId);
+
+            if (profile == null)
+            {
+                return;
+            }
+
+            var imagePath = await _uploadService.UploadImageAsync(image, profileId.ToString());
+
+            if (!string.IsNullOrEmpty(profile.ImgPath))
+            {
+                await _uploadService.DeleteImageAsync(profile.ImgPath);
+            }
+
+            profile.ImgPath = imagePath;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> CreateProfileAsync(string userId, CreateProfileInput input)
         {
             var userLawyerProfile = _context.LawyerProfiles.SingleOrDefault(x => x.UserId == userId);
 
@@ -43,19 +65,11 @@ namespace SuperLaw.Services
                 regions = regions.Where(x => x.Id == 1).ToList();
             }
 
-            var imagePath = string.Empty;
-
-            if (input.Image != null)
-            {
-                imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
-            }
-
             var timeSlots = GetProfileTimeSlots(input);
 
             var profile = new LawyerProfile()
             {
                 UserId = userId,
-                ImgPath = imagePath,
                 Info = input.Description,
                 Address = input.Address,
                 Rate = input.Rate,
@@ -76,9 +90,11 @@ namespace SuperLaw.Services
             await _context.LawyerProfiles.AddAsync(profile);
 
             await _context.SaveChangesAsync();
+
+            return profile.Id;
         }
 
-        public async Task EditProfileAsync(string userId, CreateProfileInput input)
+        public async Task<int> EditProfileAsync(string userId, CreateProfileInput input)
         {
             var profile = await _context.LawyerProfiles
                 .Include(x => x.JudicialRegions)
@@ -106,18 +122,6 @@ namespace SuperLaw.Services
             if (regions.SingleOrDefault(x => x.Id == 1) != null)
             {
                 regions = regions.Where(x => x.Id == 1).ToList();
-            }
-
-            if (input.Image != null)
-            {
-                if (!string.IsNullOrEmpty(profile.ImgPath))
-                {
-                    await _uploadService.DeleteImageAsync(profile.ImgPath);
-                }
-
-                var imagePath = await _uploadService.UploadImageAsync(input.Image, userId);
-
-                profile.ImgPath = imagePath;
             }
 
             profile.Address = input.Address;
@@ -169,6 +173,8 @@ namespace SuperLaw.Services
 
             _context.LawyerProfiles.Update(profile);
             await _context.SaveChangesAsync();
+
+            return profile.Id;
         }
 
         public async Task<LawyerProfileDto?> GetOwnProfileAsync(string userId)

@@ -24,11 +24,19 @@ const getAll = (name: string | null, categories: number[], cityId: number) => {
     return axios.get(path);
 }
 
+const uploadPicture = (profileId: number, file: File) => {
+    const formData = new FormData();
+    formData.append("picture", file);
+
+    return axios.post(`${apiRoutes.uploadPicture}?profileId=${profileId}`, formData);
+};
+
 const profileApi = {
     getOwnProfile,
     getOwnProfileDataForEdit,
     getProfile,
-    getAll
+    getAll,
+    uploadPicture
 };
 
 export default profileApi;

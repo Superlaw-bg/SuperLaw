@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SuperLaw.Services.DTO;
@@ -59,12 +60,19 @@ namespace SuperLaw.Api.Controllers
         }
 
         [Authorize(Roles = "Lawyer")]
+        [HttpPost(nameof(UploadPicture))]
+        public async Task<IActionResult> UploadPicture([FromQuery] int profileId, IFormFile picture)
+        {
+            await _profileService.UploadImageAsync(profileId, picture);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = "Lawyer")]
         [HttpPost(nameof(Create))]
         public async Task<IActionResult> Create()
         {
             var formCollection = await Request.ReadFormAsync();
-
-            var image = formCollection.Files.FirstOrDefault();
 
             var hasDescr = formCollection.TryGetValue("description", out var description);
             
@@ -138,7 +146,6 @@ namespace SuperLaw.Api.Controllers
 
             var profileInput = new CreateProfileInput()
             {
-                Image = image,
                 Description = description.ToString(),
                 Address = address.ToString(),
                 Rate = int.Parse(rateStr.ToString()),
@@ -176,8 +183,6 @@ namespace SuperLaw.Api.Controllers
         public async Task<IActionResult> Edit()
         {
             var formCollection = await Request.ReadFormAsync();
-
-            var image = formCollection.Files.FirstOrDefault();
 
             var hasDescr = formCollection.TryGetValue("description", out var description);
 
@@ -251,7 +256,6 @@ namespace SuperLaw.Api.Controllers
 
             var profileInput = new CreateProfileInput()
             {
-                Image = image,
                 Description = description.ToString(),
                 Address = address.ToString(),
                 Rate = int.Parse(rateStr.ToString()),

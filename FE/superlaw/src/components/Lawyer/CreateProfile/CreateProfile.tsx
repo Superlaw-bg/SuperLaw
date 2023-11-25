@@ -28,7 +28,7 @@ const CreateProfile = () => {
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
   const [profile, setProfile] = useState<ProfileInput>({
-    image: "",
+    image: null,
     description: "",
     rate: 0,
     address: "",
@@ -291,7 +291,6 @@ const CreateProfile = () => {
     let regions = profile.regions.map((r: any) => r.value);
    
     const formData = new FormData();
-    formData.append("image", profile.image);
     formData.append("description", profile.description);
     formData.append("rate", profile.rate.toString());
     formData.append("address", profile.address);
@@ -303,9 +302,11 @@ const CreateProfile = () => {
 
     try {
       setLoading(true);
-      await profileService.createProfile(formData);
+      profileService.createProfile(formData)
+      .then(res => console.log(res));
       toastService.showSuccess("Успешно създадохте адвокатския Ви профил");
       navigate('/profile');
+      //await profileApi.uploadPicture(profile.image)
     } catch (error: any) {
       toastService.showError(error.response.data.message);
     } finally {

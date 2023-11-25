@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using SuperLaw.Services.DTO;
+﻿using SuperLaw.Services.DTO;
 
 namespace SuperLaw.Services.Input
 {
     public class CreateProfileInput
     {
-        public IFormFile? Image { get; set; }
         public string Description { get; set; }
         public decimal Rate { get; set; }
         public string Address { get; set; }

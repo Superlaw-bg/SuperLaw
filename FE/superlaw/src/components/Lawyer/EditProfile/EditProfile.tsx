@@ -30,7 +30,7 @@ const EditProfile = () => {
   const [regions, setRegions] = useState([]);
 
   const [profile, setProfile] = useState<ProfileInput>({
-    image: '',
+    image: null,
     description: "",
     rate: 0,
     address: "",
@@ -308,7 +308,6 @@ const EditProfile = () => {
     let regions = profile.regions.map((r: any) => r.value);
 
     const formData = new FormData();
-    formData.append('image', profile.image);
     formData.append('description', profile.description);
     formData.append('rate', profile.rate.toString());
     formData.append('address', profile.address);
