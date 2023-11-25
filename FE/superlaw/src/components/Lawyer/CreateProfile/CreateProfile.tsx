@@ -289,24 +289,21 @@ const CreateProfile = () => {
 
     let categories = profile.categories.map((c: any) => c.value);
     let regions = profile.regions.map((r: any) => r.value);
-   
-    const formData = new FormData();
-    formData.append("description", profile.description);
-    formData.append("rate", profile.rate.toString());
-    formData.append("address", profile.address);
-    formData.append("categories", categories.join());
-    formData.append("regions", regions.join());
-    formData.append("schedule", JSON.stringify(profileSchedule));
-    formData.append("isJunior", profile.isJunior.toString());
-    formData.append("isCompleted", profile.isCompleted.toString());
 
     try {
       setLoading(true);
-      profileService.createProfile(formData)
-      .then(res => console.log(res));
+      const res = await profileApi.createProfile({
+        ...profile,
+        categories: categories,
+        regions: regions,
+        schedule: profileSchedule
+      });
+      const profileId = res.data;
+      if (profile.image) {
+        await profileApi.uploadPicture(profileId, profile.image);
+      }
       toastService.showSuccess("Успешно създадохте адвокатския Ви профил");
       navigate('/profile');
-      //await profileApi.uploadPicture(profile.image)
     } catch (error: any) {
       toastService.showError(error.response.data.message);
     } finally {

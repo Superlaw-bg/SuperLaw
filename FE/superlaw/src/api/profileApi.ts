@@ -1,6 +1,7 @@
 import axios from "./Api";
 import { setAuthHeader } from "./Api";
 import apiRoutes from '../api/apiRoutes';
+import ProfileInput from "../models/inputs/ProfileInput";
 
 const getOwnProfile = () => {
     return axios.get(apiRoutes.ownProfile, setAuthHeader());
@@ -24,19 +25,33 @@ const getAll = (name: string | null, categories: number[], cityId: number) => {
     return axios.get(path);
 }
 
-const uploadPicture = (profileId: number, file: File) => {
+const uploadPicture = (profileId: number, file: File | null) => {
+    if (file === null) {
+        return;
+    }
+
     const formData = new FormData();
     formData.append("picture", file);
 
-    return axios.post(`${apiRoutes.uploadPicture}?profileId=${profileId}`, formData);
+    return axios.post(`${apiRoutes.uploadPicture}?profileId=${profileId}`, formData, setAuthHeader());
 };
+
+const createProfile = (profileInput: any) => {
+    return axios.post(apiRoutes.createProfile, profileInput, setAuthHeader());
+}
+
+const editProfile = (profileInput: any) => {
+    return axios.post(apiRoutes.editProfile, profileInput, setAuthHeader());
+}
 
 const profileApi = {
     getOwnProfile,
     getOwnProfileDataForEdit,
     getProfile,
     getAll,
-    uploadPicture
+    uploadPicture,
+    createProfile,
+    editProfile
 };
 
 export default profileApi;
