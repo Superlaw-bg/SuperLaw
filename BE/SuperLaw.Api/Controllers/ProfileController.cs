@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SuperLaw.Services.DTO;
 using SuperLaw.Services.Input;
 using SuperLaw.Services.Interfaces;
 
@@ -59,229 +57,40 @@ namespace SuperLaw.Api.Controllers
         }
 
         [Authorize(Roles = "Lawyer")]
-        [HttpPost(nameof(Create))]
-        public async Task<IActionResult> Create()
+        [HttpPost(nameof(UploadPicture))]
+        public async Task<IActionResult> UploadPicture([FromQuery] int profileId, IFormFile picture)
         {
-            var formCollection = await Request.ReadFormAsync();
-
-            var image = formCollection.Files.FirstOrDefault();
-
-            var hasDescr = formCollection.TryGetValue("description", out var description);
-            
-            if (!hasDescr)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Информацията за профила е задължителна"
-                });
-            }
-
-            var hasRate = formCollection.TryGetValue("rate", out var rateStr);
-
-            if (!hasRate)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Часовата ставка е задължителна"
-                });
-            }
-
-            var hasAddress = formCollection.TryGetValue("address", out var address);
-
-            if (!hasAddress)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Адресът е задължителен"
-                });
-            }
-
-            var hasCategories = formCollection.TryGetValue("categories", out var categoriesStr);
-
-            if (!hasCategories)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Поне една категория е задължителна"
-                });
-            }
-
-            var hasRegions = formCollection.TryGetValue("regions", out var regionsStr);
-
-            if (!hasRegions)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Поне един съдебен район е задължителен"
-                });
-            }
-
-            var hasIsJunior = formCollection.TryGetValue("isJunior", out var isJuniorStr);
-
-            if (!hasIsJunior)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Отметката е задължителна"
-                });
-            }
-
-            var hasIsCompleted = formCollection.TryGetValue("isCompleted", out var isCompletedStr);
-
-            if (!hasIsCompleted)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Отметката е задължителна"
-                });
-            }
-
-            var profileInput = new CreateProfileInput()
-            {
-                Image = image,
-                Description = description.ToString(),
-                Address = address.ToString(),
-                Rate = int.Parse(rateStr.ToString()),
-                Categories = categoriesStr
-                    .ToString()
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList(),
-                Regions = regionsStr
-                    .ToString()
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList(),
-                IsJunior = isJuniorStr.ToString() == "true",
-                IsCompleted = isCompletedStr.ToString() == "true",
-            };
-
-            var hasSchedule = formCollection.TryGetValue("schedule", out var scheduleStr);
-
-            if (hasSchedule)
-            {
-                var schedule = JsonConvert.DeserializeObject<List<ScheduleDto>>(scheduleStr.ToString());
-                profileInput.Schedule = schedule;
-            }
-
-            var userId = GetCurrentUserId();
-
-            await _profileService.CreateProfileAsync(userId, profileInput);
+            await _profileService.UploadImageAsync(profileId, picture);
 
             return Ok();
         }
 
         [Authorize(Roles = "Lawyer")]
-        [HttpPost(nameof(Edit))]
-        public async Task<IActionResult> Edit()
+        [HttpPost(nameof(Create))]
+        public async Task<IActionResult> Create(CreateProfileInput input)
         {
-            var formCollection = await Request.ReadFormAsync();
-
-            var image = formCollection.Files.FirstOrDefault();
-
-            var hasDescr = formCollection.TryGetValue("description", out var description);
-
-            if (!hasDescr)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Информацията за профила е задължителна"
-                });
-            }
-
-            var hasRate = formCollection.TryGetValue("rate", out var rateStr);
-
-            if (!hasRate)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Часовата ставка е задължителна"
-                });
-            }
-
-            var hasAddress = formCollection.TryGetValue("address", out var address);
-
-            if (!hasAddress)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Адресът е задължителен"
-                });
-            }
-
-            var hasCategories = formCollection.TryGetValue("categories", out var categoriesStr);
-
-            if (!hasCategories)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Поне една категория е задължителна"
-                });
-            }
-
-            var hasRegions = formCollection.TryGetValue("regions", out var regionsStr);
-
-            if (!hasRegions)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Поне един съдебен район е задължителен"
-                });
-            }
-
-            var hasIsJunior = formCollection.TryGetValue("isJunior", out var isJuniorStr);
-
-            if (!hasIsJunior)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Отметката е задължителна"
-                });
-            }
-
-            var hasIsCompleted = formCollection.TryGetValue("isCompleted", out var isCompletedStr);
-
-            if (!hasIsCompleted)
-            {
-                return BadRequest(new ErrorDetails()
-                {
-                    message = "Отметката е задължителна"
-                });
-            }
-
-            var profileInput = new CreateProfileInput()
-            {
-                Image = image,
-                Description = description.ToString(),
-                Address = address.ToString(),
-                Rate = int.Parse(rateStr.ToString()),
-                Categories = categoriesStr
-                    .ToString()
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList(),
-                Regions = regionsStr
-                    .ToString()
-                    .Split(',')
-                    .Select(int.Parse)
-                    .ToList(),
-                IsJunior = isJuniorStr.ToString() == "true",
-                IsCompleted = isCompletedStr.ToString() == "true",
-            };
-
-            var hasSchedule = formCollection.TryGetValue("schedule", out var scheduleStr);
-
-            if (hasSchedule)
-            {
-                var schedule = JsonConvert.DeserializeObject<List<ScheduleDto>>(scheduleStr.ToString());
-                profileInput.Schedule = schedule;
-            }
+            if (ValidateInputData(input, out var badRequest) && badRequest != null)
+                return badRequest;
 
             var userId = GetCurrentUserId();
 
-            await _profileService.EditProfileAsync(userId, profileInput);
+            var profileId = await _profileService.CreateProfileAsync(userId, input);
 
-            return Ok();
+            return Ok(profileId);
+        }
+
+        [Authorize(Roles = "Lawyer")]
+        [HttpPost(nameof(Edit))]
+        public async Task<IActionResult> Edit(CreateProfileInput input)
+        {
+            if (ValidateInputData(input, out var badRequest) && badRequest != null)
+                return badRequest;
+
+            var userId = GetCurrentUserId();
+
+            var profileId = await _profileService.EditProfileAsync(userId, input);
+
+            return Ok(profileId);
         }
 
         [AllowAnonymous]
@@ -293,6 +102,68 @@ namespace SuperLaw.Api.Controllers
             var result = _profileService.GetAll(userId, input);
 
             return Ok(result);
+        }
+
+        private bool ValidateInputData(CreateProfileInput input, out IActionResult? badRequest)
+        {
+            if (string.IsNullOrEmpty(input.Description))
+            {
+                {
+                    badRequest = BadRequest(new ErrorDetails()
+                    {
+                        message = "Информацията за профила е задължителна"
+                    });
+                    return true;
+                }
+            }
+
+            if (input.Rate < 100 || input.Rate > 500)
+            {
+                {
+                    badRequest = BadRequest(new ErrorDetails()
+                    {
+                        message = "Часовата ставка е задължителна и трябва да е между 100 и 500"
+                    });
+                    return true;
+                }
+            }
+
+            if (string.IsNullOrEmpty(input.Address))
+            {
+                {
+                    badRequest = BadRequest(new ErrorDetails()
+                    {
+                        message = "Адресът е задължителен"
+                    });
+                    return true;
+                }
+            }
+
+            if (input.Categories.Count == 0)
+            {
+                {
+                    badRequest = BadRequest(new ErrorDetails()
+                    {
+                        message = "Поне една категория е задължителна"
+                    });
+                    return true;
+                }
+            }
+
+            if (input.Regions.Count == 0)
+            {
+                {
+                    badRequest = BadRequest(new ErrorDetails()
+                    {
+                        message = "Поне един съдебен район е задължителен"
+                    });
+                    return true;
+                }
+            }
+
+            badRequest = null;
+
+            return false;
         }
     }
 }

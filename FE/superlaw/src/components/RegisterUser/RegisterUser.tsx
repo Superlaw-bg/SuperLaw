@@ -81,9 +81,9 @@ const Register = () => {
       return false;
     }
 
-    const phoneRegex = /[a-zA-Zа-яА-Я]/g;
+    const phoneRegex = /[1-9]/g;
           
-    if (registerForm.phone === '' || phoneRegex.test(registerForm.phone) || registerForm.phone.length !== 9){
+    if (registerForm.phone === '' || !phoneRegex.test(registerForm.phone) || registerForm.phone.length !== 9){
       setErrorMessage("Телефонът трябва да е 9 цифри");
       return false;
     }

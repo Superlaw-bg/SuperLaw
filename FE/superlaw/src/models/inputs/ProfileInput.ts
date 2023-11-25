@@ -1,7 +1,7 @@
 import CreateScheduleInput from "./ScheduleDayInput";
 
 interface ProfileInput {
-    image: Blob | string,
+    image: File | null,
     description: string,
     rate: number,
     address: string,
