@@ -75,9 +75,9 @@ const RegisterLawyer = () => {
       return false;
     }
 
-    const phoneAndLawyerIdRegex = /[1-9]/g;
+    const phoneAndLawyerIdRegex = /^[0-9]+$/g;
 
-    if (registerForm.lawyerIdNumber === '' || !phoneAndLawyerIdRegex.test(registerForm.lawyerIdNumber)){
+    if (registerForm.lawyerIdNumber === '' || !registerForm.lawyerIdNumber.match(phoneAndLawyerIdRegex)){
       setErrorMessage("Личният адвокатски номер е невалиден");
       return false;
     }
@@ -87,7 +87,7 @@ const RegisterLawyer = () => {
       return false;
     }
 
-    if (registerForm.phone === '' || !phoneAndLawyerIdRegex.test(registerForm.phone) || registerForm.phone.length !== 9){
+    if (registerForm.phone === '' || !registerForm.phone.match(phoneAndLawyerIdRegex) || registerForm.phone.length !== 9){
       setErrorMessage("Телефонът трябва да е 9 цифри");
       return false;
     }
