@@ -48,7 +48,11 @@ const Header = () => {
     };
 
     return(
-        <Navbar className='superlaw-nav nav d-flex justify-content-between'>
+        <div>
+            <div className='test-banner'>
+                <h4>Платформата е в тестов вариант</h4>
+            </div>
+            <Navbar className='superlaw-nav nav d-flex justify-content-between'>
             <div className='left'>
                 <Navbar.Brand onClick={navigateToHome} className='logo'>Superlaw</Navbar.Brand>
             </div>
@@ -78,6 +82,7 @@ const Header = () => {
                 }
             </div>
         </Navbar>
+        </div> 
     );
   };
   
