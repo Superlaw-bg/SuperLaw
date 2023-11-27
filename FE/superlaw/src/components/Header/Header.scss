@@ -1,5 +1,16 @@
 @import '../../style-constants.scss';
 
+.test-banner {
+    text-align: center;
+    background-color: $primary-color;
+
+    h4 {
+        color: white;
+        margin: 0px;
+        font-size: 1.2rem;
+    }
+}
+
 .superlaw-nav{
     background-color: $primary-color;
     padding: 0px 3%;
