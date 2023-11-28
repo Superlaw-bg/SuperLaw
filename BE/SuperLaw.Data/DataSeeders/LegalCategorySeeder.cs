@@ -57,6 +57,7 @@ namespace SuperLaw.Data.DataSeeders
                 "Непозволено увреждане",
                 "Обезщетения за вреди",
                 "Казуси, свързани с ПТП",
+                "Медицинско право"
             };
 
             foreach (var str in categoriesStr)
