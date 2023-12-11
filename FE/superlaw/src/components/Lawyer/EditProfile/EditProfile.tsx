@@ -17,9 +17,12 @@ import ScheduleDayInput from '../../../models/inputs/ScheduleDayInput';
 import CalendarDateValue from '../../../models/CalendarDateValue';
 import SimpleData from '../../../models/SimpleData';
 import LoaderSpinner from '../../LoaderSpinner';
+import User from '../../../store/auth/models/User';
+import { useStoreActions } from '../../../store/hooks';
 
 const EditProfile = () => {
   const navigate = useNavigate();
+  const dispatchLogout = useStoreActions(actions => actions.auth.logout);
 
   const todayDate = moment().toDate();
   const maxDate = moment().add(2, "M").toDate();
@@ -104,7 +107,6 @@ const EditProfile = () => {
         }
         
       } catch (error: any) {
-        console.log(error.response.data.message)
       } finally {
         setLoadingProfile(false);
       }
@@ -315,6 +317,7 @@ const EditProfile = () => {
         regions: regions,
         schedule: profileSchedule
       });
+      
       const profileId = res.data;
       if (profile.image) {
         await profileApi.uploadPicture(profileId, profile.image);
@@ -322,7 +325,6 @@ const EditProfile = () => {
       toastService.showSuccess("Успешно редактирахте профила Ви");
       navigate('/profile');
     } catch (error: any) {
-      toastService.showError(error.response.data.message);
     } finally {
       setLoadingEdit(false);
     }

@@ -60,7 +60,6 @@ const ResetPasswordPage = () => {
         await authApi.resetPassword(email, token, resetPasswordForm.password, resetPasswordForm.confirmPassword);
         setSuccessMessage('Успешно сменихте паролата си. Можете да влезете в акаунта си с новата парола.');
       } catch (err: any) {
-        toastService.showError(err.response.data.Message);
       } finally {
         setLoading(false);
       }

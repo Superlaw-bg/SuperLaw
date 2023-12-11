@@ -49,7 +49,6 @@ const OwnProfile = () => {
           setProfile(res.data);
         }
       } catch (error: any) {
-        toastService.showError(error.response.data.message);
       } finally {
         setLoading(false);
       }

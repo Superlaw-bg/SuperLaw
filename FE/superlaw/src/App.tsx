@@ -25,6 +25,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ResetPasswordPage from './components/ResetPasswordPage';
 import QrCodeRedirectPage from './components/QrCodeRedirectPage';
 import TermsAndConditionsPage from './components/TermsAndConditionsPage';
+import { AxiosInterceptor } from './components/AxiosInterceptor/AxiosInterceptor';
 
  /* 
   <Route path='/personal-data' Component={PersonalDataPage}/>
@@ -34,9 +35,10 @@ const App: React.FC = () => (
   <>
     <Toaster/>
       <Router>
-          <ScrollToTop/>
-          <Header/>
-          <Routes>
+          <AxiosInterceptor>
+            <ScrollToTop/>
+            <Header/>
+            <Routes>
               <Route path='/' Component={isNotLawyer(HomePage)}/>
               <Route path='/login' Component={isGuest(Login)}/>
               <Route path='/register' Component={isGuest(RegisterUser)}/>
@@ -52,8 +54,9 @@ const App: React.FC = () => (
               <Route path='/find' Component={isNotLawyer(FindPage)}/>
               <Route path='/meetings' Component={isAuth(MeeetingsPage)}/>
               <Route path='/qr' Component={QrCodeRedirectPage}/>
-          </Routes>
-          <Footer/>
+            </Routes>
+            <Footer/>
+          </AxiosInterceptor>
       </Router>
   </>
 );

@@ -78,7 +78,6 @@ const Login = () => {
       navigate('/');
 
     } catch (error: any) {
-      toastService.showError(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -96,7 +95,6 @@ const Login = () => {
       setForgotPassClicked(true);
       toastService.showSuccess('Изпратен Ви е имейл за смяна на паролата');
     } catch (error: any) {
-      toastService.showError(error.response.data.message);
     } finally {
       setLoading(false);
     }
