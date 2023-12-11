@@ -26,7 +26,6 @@ const MeetingsPage = () => {
         const res = await meetingApi.getAllForCurrentUser();
         setMeetings(res.data);
       } catch (error: any) {
-        toastService.showError(error.response.data.message);
       } finally {
         setLoading(false);
       }
@@ -64,7 +63,6 @@ const MeetingsPage = () => {
 
       closeRateModal();
     } catch (error: any) {
-      toastService.showError(error.response.data.message);
     }
   };
 

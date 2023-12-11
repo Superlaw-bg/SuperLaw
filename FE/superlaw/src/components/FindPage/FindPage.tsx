@@ -62,7 +62,6 @@ const FindPage = () => {
         const res = await profileApi.getAll(null, [], 0);
         setProfiles(res.data);
       } catch (error: any) {
-        toastService.showError(error.response.data.message);
       } finally {
         setLoading(false);
       }
