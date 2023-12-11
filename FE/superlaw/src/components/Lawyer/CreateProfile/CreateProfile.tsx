@@ -36,7 +36,7 @@ const CreateProfile = () => {
     regions: [],
     schedule: [],
     isJunior: false,
-    isCompleted: false,
+    isCompleted: true,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -305,7 +305,6 @@ const CreateProfile = () => {
       toastService.showSuccess("Успешно създадохте адвокатския Ви профил");
       navigate('/profile');
     } catch (error: any) {
-      toastService.showError(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -446,6 +445,7 @@ const CreateProfile = () => {
             label="Профилът Ви завършен ли е?"
             id="isCompleted"
             name="isCompleted"
+            defaultChecked={true}
             onChange={onCheckbox}
           />
         </div>

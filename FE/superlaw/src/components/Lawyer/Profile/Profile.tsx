@@ -69,7 +69,6 @@ const Profile = () => {
                 setProfile(res.data);
               }
             } catch (error: any) {
-              toastService.showError(error.response.data.message);
             } finally {
               setProfileLoading(false);
             }
@@ -230,7 +229,6 @@ const Profile = () => {
   
         window.scrollTo(0, 0);
       } catch (error: any) {
-        toastService.showError(error.response.data.message);
       } finally {
         setLoading(false);
       }

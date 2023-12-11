@@ -1,18 +1,16 @@
 import axios from "./Api";
-import { setAuthHeader } from "./Api";
 import apiRoutes from '../api/apiRoutes';
-import ProfileInput from "../models/inputs/ProfileInput";
 
 const getOwnProfile = () => {
-    return axios.get(apiRoutes.ownProfile, setAuthHeader());
+    return axios.get(apiRoutes.ownProfile);
 }
 
 const getOwnProfileDataForEdit = () => {
-    return axios.get(apiRoutes.ownProfileDataForEdit, setAuthHeader());
+    return axios.get(apiRoutes.ownProfileDataForEdit);
 }
 
 const getProfile = (id: number) => {
-    return axios.get(`${apiRoutes.profile}/${id}`, setAuthHeader());
+    return axios.get(`${apiRoutes.profile}/${id}`);
 }
 
 const getAll = (name: string | null, categories: number[], cityId: number) => {
@@ -33,15 +31,15 @@ const uploadPicture = (profileId: number, file: File | null) => {
     const formData = new FormData();
     formData.append("picture", file);
 
-    return axios.post(`${apiRoutes.uploadPicture}?profileId=${profileId}`, formData, setAuthHeader());
+    return axios.post(`${apiRoutes.uploadPicture}?profileId=${profileId}`, formData);
 };
 
 const createProfile = (profileInput: any) => {
-    return axios.post(apiRoutes.createProfile, profileInput, setAuthHeader());
+    return axios.post(apiRoutes.createProfile, profileInput);
 }
 
 const editProfile = (profileInput: any) => {
-    return axios.post(apiRoutes.editProfile, profileInput, setAuthHeader());
+    return axios.post(apiRoutes.editProfile, profileInput);
 }
 
 const profileApi = {

@@ -146,7 +146,6 @@ const RegisterLawyer = () => {
       toastService.showSuccess('Регистрирахте се успешно! Моля, кликнете на линка, който изпратихме на имейл адреса Ви.');
       setSuccessRegister(true);
     } catch (error: any) {
-      toastService.showError(error.response.data.message);
     } finally {
       setLoading(false);
     }
