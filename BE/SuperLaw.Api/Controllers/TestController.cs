@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SuperLaw.Common;
+using SuperLaw.Services;
 
 namespace SuperLaw.Api.Controllers
 {
@@ -16,6 +18,20 @@ namespace SuperLaw.Api.Controllers
         public string Auth()
         {
             return "You are authorized";
+        }
+
+        [AllowAnonymous]
+        [HttpGet(nameof(ExceptionLogging))]
+        public string ExceptionLogging()
+        {
+            throw new Exception("Test exception");
+        }
+
+        [AllowAnonymous]
+        [HttpGet(nameof(BusinessExceptionLogging))]
+        public string BusinessExceptionLogging()
+        {
+            throw new BusinessException("Test business exception");
         }
     }
 }
