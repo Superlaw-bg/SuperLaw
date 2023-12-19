@@ -26,6 +26,7 @@ import ResetPasswordPage from './components/ResetPasswordPage';
 import QrCodeRedirectPage from './components/QrCodeRedirectPage';
 import TermsAndConditionsPage from './components/TermsAndConditionsPage';
 import { AxiosInterceptor } from './components/AxiosInterceptor/AxiosInterceptor';
+import { HelmetProvider } from 'react-helmet-async';
 
  /* 
   <Route path='/personal-data' Component={PersonalDataPage}/>
@@ -35,6 +36,7 @@ const App: React.FC = () => (
   <>
     <Toaster/>
       <Router>
+        <HelmetProvider>
           <AxiosInterceptor>
             <ScrollToTop/>
             <Header/>
@@ -57,6 +59,7 @@ const App: React.FC = () => (
             </Routes>
             <Footer/>
           </AxiosInterceptor>
+          </HelmetProvider>
       </Router>
   </>
 );
