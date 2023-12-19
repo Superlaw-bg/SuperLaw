@@ -12,8 +12,9 @@
         display: flex;
         flex-wrap: wrap;
 
-        h3 {
+        h1 {
             margin-bottom: 40px;
+            font-size: 1.8rem;
         }
 
         .form-group {
@@ -97,7 +98,7 @@
                     }
                 }
 
-                h3, p {
+                h1, p {
                     margin: 0px;
                 }
 

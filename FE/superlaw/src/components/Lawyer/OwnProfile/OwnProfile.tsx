@@ -12,6 +12,7 @@ import LawyerProfile from "../../../models/LawyerProfile";
 import TimeSlot from "../../../models/TimeSlot";
 import toastService from "../../../services/toastService";
 import LoaderSpinner from "../../LoaderSpinner";
+import { Helmet } from "react-helmet-async";
 
 const OwnProfile = () => {
   const minDate = moment().startOf('year').toDate();
@@ -110,6 +111,12 @@ const OwnProfile = () => {
   }
 
   return (
+    <>
+     <Helmet>
+        <title>Профил - SuperLaw</title>
+        <meta name='description' content='Профилът Ви съдържа информация за Вас, снимка и виртуален календар, чрез който може да задавате свободни за вас часове за консултация.' />
+        <link rel="canonical" href='/profile' />
+      </Helmet>
     <div>
       {profile && (!profile.id || profile.id === -1) && (
         <div className="create-profile-info">
@@ -147,7 +154,7 @@ const OwnProfile = () => {
             </div>
             <div className="important-info">
               <div className="sect">
-                <h3>{profile.fullName}</h3>
+                <h1>{profile.fullName}</h1>
                 <p>{profile.isJunior ? "Младши адвокат" : "Адвокат"}</p>
               </div>
 
@@ -253,6 +260,7 @@ const OwnProfile = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

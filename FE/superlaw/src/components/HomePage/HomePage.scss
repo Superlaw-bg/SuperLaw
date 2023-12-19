@@ -10,13 +10,13 @@
     z-index: 2;
     min-height: 90vh;
 
-    h4,p {
+    h1,p {
         z-index: 2;
         width: 80%;
         margin: 0 auto;
     }
 
-    h4 {
+    h1 {
         font-size: 3rem;
         margin-bottom: 3rem;
     }
@@ -54,7 +54,7 @@
 @media (max-width: 900px) {
     .cta {
         padding: 5rem 2rem;
-        h4, p {
+        h1, p {
             font-size: 2rem;
         }
     }

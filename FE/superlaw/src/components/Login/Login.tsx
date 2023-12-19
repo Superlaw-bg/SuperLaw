@@ -9,6 +9,7 @@ import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
 import LoaderSpinner from '../LoaderSpinner';
 import ReactGA from 'react-ga4';
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
   //TODO: Currently login page redirects to register law, not to register
@@ -101,6 +102,12 @@ const Login = () => {
   };
   
     return (
+      <>
+       <Helmet>
+        <title>Вход - SuperLaw</title>
+        <meta name='description' content='Влезте в системата' />
+        <link rel="canonical" href='/login' />
+      </Helmet>
       <div className='wrap'>
         <div className='row'>
           <div className='form-wrapper col-md-4'>
@@ -135,6 +142,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      </>
     );
   };
   

@@ -17,6 +17,7 @@ import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
 import ProfileInput from "../../../models/inputs/ProfileInput";
 import SimpleData from "../../../models/SimpleData";
 import LoaderSpinner from "../../LoaderSpinner";
+import { Helmet } from "react-helmet-async";
 
 const CreateProfile = () => {
   const navigate = useNavigate();

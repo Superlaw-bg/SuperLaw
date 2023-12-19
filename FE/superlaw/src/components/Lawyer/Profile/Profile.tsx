@@ -15,6 +15,7 @@ import toastService from "../../../services/toastService";
 import CalendarDateValue from "../../../models/CalendarDateValue";
 import TimeSlot from "../../../models/TimeSlot";
 import LoaderSpinner from "../../LoaderSpinner";
+import { Helmet } from "react-helmet-async";
 
 //TODO: Remove restriction on prod for booking hours in the future
 const Profile = () => {
@@ -243,14 +244,20 @@ const Profile = () => {
     }
 
     return (
-        <div className='profile-info'>
+      <>
+       <Helmet>
+        <title>Профил - SuperLaw</title>
+        <meta name='description' content='Профилът на адвоката съдържа информация за него, снимка и виртуален календар в който е възможно да запазите час за консултация в удобно за Вас и за него време.' />
+        <link rel="canonical" href={`/profile/${Number(params.id)}`} />
+      </Helmet>
+      <div className='profile-info'>
         <div className='header'>
           <div className='profile-image'>
               <img src={profile.imgPath !== '' ? profile.imgPath : noProfilePic} alt="profile picture" />
           </div>
           <div className='important-info'>
              <div className='sect'>
-                <h3>{profile.fullName}</h3>
+                <h1>{profile.fullName}</h1>
                 <p>{profile.isJunior ? 'Младши адвокат' : 'Адвокат'}</p>
              </div>
 
@@ -361,6 +368,8 @@ const Profile = () => {
           
         </div>
       </div>
+      </>
+        
     );
   };
   

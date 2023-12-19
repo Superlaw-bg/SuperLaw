@@ -7,6 +7,7 @@ import meetingApi from "../../api/meetingApi";
 import RateModal from "./RateModal";
 import toastService from "../../services/toastService";
 import LoaderSpinner from "../LoaderSpinner";
+import { Helmet } from "react-helmet-async";
 
 const MeetingsPage = () => {
   const navigate = useNavigate();
@@ -67,8 +68,14 @@ const MeetingsPage = () => {
   };
 
   return (
+    <>
+    <Helmet>
+        <title>Консултации - SuperLaw</title>
+        <meta name='description' content='Всички предстоящи и отминали срещи с клиенти и адвокати. Инфо за това с кого е срещата, кога и тн. Ако срещата е отминала клиентът може да даде неговата оценка.' />
+        <link rel="canonical" href='/meetings' />
+    </Helmet>
     <div className="meetings-page">
-      <h2>Моите консултации</h2>
+      <h1>Моите консултации</h1>
       <Tabs defaultActiveKey="upcoming-meetings" className="tabs" fill>
         <Tab eventKey="past-meetings" title="Изминали" tabClassName="tab past">
           <div className="meetings">
@@ -193,6 +200,7 @@ const MeetingsPage = () => {
         onHide={closeRateModal}
       />
     </div>
+    </>
   );
 };
 

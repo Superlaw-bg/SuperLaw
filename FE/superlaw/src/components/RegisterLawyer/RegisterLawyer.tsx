@@ -9,6 +9,7 @@ import toastService from "../../services/toastService";
 import { Link } from "react-router-dom";
 import LoaderSpinner from "../LoaderSpinner";
 import ReactGA from "react-ga4";
+import { Helmet } from "react-helmet-async";
 
 const RegisterLawyer = () => {
   const [cities, setCities] = useState<City[]>([]);
@@ -153,6 +154,12 @@ const RegisterLawyer = () => {
   };
   
     return (
+      <>
+      <Helmet>
+        <title>Регистрация като адвокат - SuperLaw</title>
+        <meta name='description' content='Регистрирайте се като адвокат. Станете част от нашето адвокатско семейство.' />
+        <link rel="canonical" href="/registerLaw" />
+      </Helmet>
       <div className="reg-lawyer-row">
       <div className="form-wrapper-reg">
         <form className="register-law-form" onSubmit={(e) => onRegister(e)}>
@@ -243,6 +250,7 @@ const RegisterLawyer = () => {
         </form>
       </div>
     </div>
+      </>
     );
   };
   
