@@ -11,6 +11,7 @@ import cityApi from "../../api/cityApi";
 import SimpleData from "../../models/SimpleData";
 import toastService from "../../services/toastService";
 import LoaderSpinner from "../LoaderSpinner";
+import { Helmet } from "react-helmet-async";
 
 const FindPage = () => {
   const navigate = useNavigate();
@@ -157,9 +158,15 @@ const FindPage = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Намери адвокат - SuperLaw</title>
+      <meta name='description' content='Тук са всички адвокатски профили. Търсете адвокато по име, град или специалност.' />
+      <link rel="canonical" href="/find" />
+    </Helmet>
     <div className="find-page-wrapper">
       <form className="search" onSubmit={onSearchSubmit}>
-        <h3>Намерете адвокат и резервирайте консултация онлайн</h3>
+        <h1>Намерете адвокат и резервирайте консултация онлайн</h1>
         <div className="form-group search-bar">
           <input type="text" placeholder="Търси по име..." name='name' onChange={(e) => onInput(e)}/>
         </div>
@@ -267,6 +274,7 @@ const FindPage = () => {
         }
       </div>
     </div>
+    </> 
   );
 };
 
