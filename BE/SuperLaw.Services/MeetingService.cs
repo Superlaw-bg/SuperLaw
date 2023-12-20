@@ -7,20 +7,26 @@ using SuperLaw.Services.Interfaces;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using SuperLaw.Services.DTO;
+using Microsoft.Extensions.Options;
+using SuperLaw.Common.Options;
 
 namespace SuperLaw.Services
 {
     public class MeetingService : IMeetingService
     {
+        private IOptions<ClientLinksOption> _options;
         private readonly SuperLawDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly IStringEncryptService _stringEncryptService;
+        private readonly EmailService _emailService;
 
-        public MeetingService(SuperLawDbContext context, IStringEncryptService stringEncryptService, UserManager<User> userManager)
+        public MeetingService(IOptions<ClientLinksOption> options, SuperLawDbContext context, IStringEncryptService stringEncryptService, UserManager<User> userManager, EmailService emailService)
         {
+            _options = options;
             _context = context;
             _stringEncryptService = stringEncryptService;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public async Task CreateMeetingAsync(string userId, CreateMeetingInput input)
@@ -108,6 +114,20 @@ namespace SuperLaw.Services
 
             await _context.Meetings.AddAsync(meeting);
             await _context.SaveChangesAsync();
+
+            var lawyerUser = _context.Users.SingleOrDefault(x => x.Id == profile.UserId);
+
+            if (lawyerUser == null)
+            {
+                throw new BusinessException("Невалиден потребител за изпращане на имейл");
+            }
+
+            var meetingsPageLink = $"{_options.Value.MeetingsPage}";
+
+            _emailService.SendEmail(
+                lawyerUser.Email,
+                "Имате насрочена нова консултация", 
+                $"Здравейте адв. {lawyerUser.LastName},\r\n Имате нова насрочена консултация за {meeting.DateTime:dd.MM.yy} от {meeting.From} до {meeting.To} с {user.FirstName} {user.LastName}.\r\n За повече инфо посетете страницата с предстоящи консултации: {meetingsPageLink}");
         }
 
         public async Task RateMeetingAsync(string userId, RateMeetingInput input)

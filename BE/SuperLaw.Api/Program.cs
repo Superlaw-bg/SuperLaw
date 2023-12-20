@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using SuperLaw.Common.Options;
 using SuperLaw.Services.Interfaces;
 using SuperLaw.Api;
+using SuperLaw.Services.HostedServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -84,7 +85,10 @@ builder.Services.AddTransient<IFileUploadService, FileUploadService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddTransient<IMeetingService, MeetingService>();
 builder.Services.AddTransient<IStringEncryptService, StringEncryptService>();
+
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
+builder.Services.AddHostedService<MeetingsReminderService>();
 
 var app = builder.Build();
 

@@ -7,5 +7,7 @@
         public string EmailConfirm { get; set; }
 
         public string ResetPassword { get; set; }
+
+        public string MeetingsPage { get; set; }
     }
 }
