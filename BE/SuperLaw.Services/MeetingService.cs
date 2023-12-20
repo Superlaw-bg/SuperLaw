@@ -127,7 +127,7 @@ namespace SuperLaw.Services
             _emailService.SendEmail(
                 lawyerUser.Email,
                 "Имате насрочена нова консултация", 
-                $"Уважаеми адв. {lawyerUser.LastName},\r\n Имате нова насрочена консултация за {meeting.DateTime:dd.MM.yy} от {meeting.From} до {meeting.To} с {user.FirstName} {user.LastName}.\r\n За повече инфо посетете страницата с предстоящи консултации: {meetingsPageLink}");
+                $"Уважаеми адв. {lawyerUser.LastName},\r\n Имате нова насрочена консултация за {meeting.DateTime:dd.MM.yy} от {meeting.From} до {meeting.To} с {user.FirstName} {user.LastName}.\r\n За повече инфо посетете страницата с предстоящи консултации: {meetingsPageLink}. \r\nС уважение,\r\n Екипът на Superlaw.bg");
         }
 
         public async Task RateMeetingAsync(string userId, RateMeetingInput input)
