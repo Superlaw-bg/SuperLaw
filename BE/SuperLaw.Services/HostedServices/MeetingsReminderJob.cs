@@ -26,7 +26,7 @@ namespace SuperLaw.Services.HostedServices
 
         public Task Execute(IJobExecutionContext context)
         {
-            _logger.LogInformation($"Meetings Reminder Job started at: {DateTime.UtcNow}");
+            _logger.LogTrace($"Meetings Reminder Job started at: {DateTime.UtcNow}");
 
             var tomorrowDate = DateTime.UtcNow.AddDays(1).Date;
 
@@ -37,7 +37,7 @@ namespace SuperLaw.Services.HostedServices
                 .ThenInclude(x => x.Client)
                 .ToList();
 
-            _logger.LogInformation($"Meetings Reminder Job - There are {lawyersWithMeetings.Count} lawyers with meetings tomorrow");
+            _logger.LogTrace($"Meetings Reminder Job - There are {lawyersWithMeetings.Count} lawyers with meetings tomorrow");
 
             var usersWithMeetings = _context.Users
                 .Where(x => x.Meetings.Any(m => m.DateTime.Date == tomorrowDate))
@@ -46,7 +46,7 @@ namespace SuperLaw.Services.HostedServices
                 .ThenInclude(x => x.User)
                 .ToList();
 
-            _logger.LogInformation($"Meetings Reminder Job - There are {usersWithMeetings.Count} users with meetings tomorrow");
+            _logger.LogTrace($"Meetings Reminder Job - There are {usersWithMeetings.Count} users with meetings tomorrow");
 
             foreach (var lawyer in lawyersWithMeetings)
             {
@@ -94,7 +94,7 @@ namespace SuperLaw.Services.HostedServices
                 _emailService.SendEmail(user.Email, $"Предстоящи консултации {tomorrowDate:dd.MM.yy}", sb.ToString());
             }
             
-            _logger.LogInformation($"Meetings Reminder Job finished at: {DateTime.UtcNow}");
+            _logger.LogTrace($"Meetings Reminder Job finished at: {DateTime.UtcNow}");
             return Task.CompletedTask;
         }
     }
