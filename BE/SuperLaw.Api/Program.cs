@@ -8,9 +8,12 @@ using SuperLaw.Services;
 using System.Text;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
+using Quartz;
 using SuperLaw.Common.Options;
 using SuperLaw.Services.Interfaces;
 using SuperLaw.Api;
+using SuperLaw.Api.Extensions;
+using SuperLaw.Services.HostedServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +63,16 @@ builder.Services.AddAuthentication(x =>
         };
     });
 
+builder.Services.AddQuartz(q =>
+{
+    q.AddJobAndTrigger<MeetingsReminderJob>(builder.Configuration);
+});
+
+// Add the Quartz.NET hosted service
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+
 var cloudinaryCredentials = new Account(
     builder.Configuration["Cloudinary:CloudName"],
     builder.Configuration["Cloudinary:ApiKey"],
@@ -84,6 +97,7 @@ builder.Services.AddTransient<IFileUploadService, FileUploadService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddTransient<IMeetingService, MeetingService>();
 builder.Services.AddTransient<IStringEncryptService, StringEncryptService>();
+
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
