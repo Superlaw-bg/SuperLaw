@@ -27,6 +27,7 @@ import QrCodeRedirectPage from './components/QrCodeRedirectPage';
 import TermsAndConditionsPage from './components/TermsAndConditionsPage';
 import { AxiosInterceptor } from './components/AxiosInterceptor/AxiosInterceptor';
 import { HelmetProvider } from 'react-helmet-async';
+import AdsRedirectPage from './components/AdsRedirectPage';
 
  /* 
   <Route path='/personal-data' Component={PersonalDataPage}/>
@@ -56,6 +57,7 @@ const App: React.FC = () => (
               <Route path='/find' Component={isNotLawyer(FindPage)}/>
               <Route path='/meetings' Component={isAuth(MeeetingsPage)}/>
               <Route path='/qr' Component={QrCodeRedirectPage}/>
+              <Route path='/ads' Component={AdsRedirectPage}/>
             </Routes>
             <Footer/>
           </AxiosInterceptor>

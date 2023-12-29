@@ -1,0 +1,12 @@
+@import '../../style-constants.scss';
+
+.ads-page-wrapper {
+    padding: 10rem 4rem;
+    text-align: center;
+
+    h1 {
+        color: $primary-color;
+        margin-bottom: 2rem;
+        font-size: 1.8rem;
+    }
+}
