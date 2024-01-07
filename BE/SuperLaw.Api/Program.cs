@@ -14,6 +14,8 @@ using SuperLaw.Services.Interfaces;
 using SuperLaw.Api;
 using SuperLaw.Api.Extensions;
 using SuperLaw.Services.HostedServices;
+using Twilio.Rest.Verify.V2.Service;
+using Twilio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,6 +90,7 @@ builder.Services.AddOptions();
 builder.Services.Configure<EmailSendingOptions>(builder.Configuration.GetSection(EmailSendingOptions.Section));
 builder.Services.Configure<ClientLinksOption>(builder.Configuration.GetSection(ClientLinksOption.Section));
 builder.Services.Configure<CloudinaryOptions>(builder.Configuration.GetSection(CloudinaryOptions.Section));
+builder.Services.Configure<TwilioOptions>(builder.Configuration.GetSection(TwilioOptions.Section));
 
 builder.Services.AddSingleton(cloudinaryUtility);
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -97,8 +100,14 @@ builder.Services.AddTransient<IFileUploadService, FileUploadService>();
 builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddTransient<IMeetingService, MeetingService>();
 builder.Services.AddTransient<IStringEncryptService, StringEncryptService>();
+builder.Services.AddTransient<ISmsService, SmsService>();
 
 builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
+var twilioAccountSid = builder.Configuration["Twilio:AccountSid"];
+var twilioAuthToken = builder.Configuration["Twilio:AuthToken"];
+
+TwilioClient.Init(twilioAccountSid, twilioAuthToken);
 
 var app = builder.Build();
 

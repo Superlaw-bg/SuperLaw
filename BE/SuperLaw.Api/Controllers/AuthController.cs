@@ -76,6 +76,24 @@ namespace SuperLaw.Api.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost(nameof(PhoneVerification))]
+        public IActionResult PhoneVerification(string phoneNumber)
+        {
+            _authService.SendPhoneVerification(phoneNumber);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost(nameof(ConfirmPhone))]
+        public IActionResult ConfirmPhone(string phoneNumber, string code)
+        {
+            _authService.VerifyPhone(phoneNumber, code);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
         [HttpPost(nameof(ConfirmEmail))]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailInput input)
         {

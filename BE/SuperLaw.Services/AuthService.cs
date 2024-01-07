@@ -22,15 +22,17 @@ namespace SuperLaw.Services
         private readonly UserManager<User> _userManager;
         private readonly EmailService _emailService;
         private readonly ISimpleDataService _simpleDataService;
+        private readonly ISmsService _smsService;
 
         private readonly string? _secret;
 
-        public AuthService(IConfiguration configuration, IOptions<ClientLinksOption> options, UserManager<User> userManager, EmailService emailService, ISimpleDataService simpleDataService)
+        public AuthService(IConfiguration configuration, IOptions<ClientLinksOption> options, UserManager<User> userManager, EmailService emailService, ISimpleDataService simpleDataService, ISmsService smsService)
         {
             _options = options;
             _userManager = userManager;
             _emailService = emailService;
             _simpleDataService = simpleDataService;
+            _smsService = smsService;
 
             _secret = configuration["Secret"];
         }
@@ -140,6 +142,16 @@ namespace SuperLaw.Services
             };
 
             return userInfo;
+        }
+
+        public void SendPhoneVerification(string phoneNumber)
+        {
+            _smsService.SendSms($"+359{phoneNumber}");
+        }
+
+        public void VerifyPhone(string phoneNumber, string code)
+        {
+            _smsService.VerifySms($"+359{phoneNumber}", code);
         }
 
         public async Task<UserInfoDto> Login(LoginInput input)

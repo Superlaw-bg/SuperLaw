@@ -12,6 +12,10 @@ namespace SuperLaw.Services.Interfaces
 
         Task<UserInfoDto> ConfirmEmail(string token, string email);
 
+        void SendPhoneVerification(string phoneNumber);
+
+        void VerifyPhone(string phoneNumber, string code);
+
         Task ForgotPasswordAsync (string email);
 
         Task ResetPasswordAsync(ResetPasswordInput input);
