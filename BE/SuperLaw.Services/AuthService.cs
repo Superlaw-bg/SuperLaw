@@ -158,9 +158,9 @@ namespace SuperLaw.Services
 
         public void SendPhoneVerification(string phoneNumber)
         {
-            var user = _userManager.Users.SingleOrDefault(x => x.Phone == phoneNumber);
+            var usersWithThatPhone = _userManager.Users.Where(x => x.Phone == phoneNumber).ToList();
 
-            if (user != null)
+            if (usersWithThatPhone.Any())
             {
                 throw new BusinessException("Има вече потребител с този телефонен номер");
             }
@@ -168,9 +168,11 @@ namespace SuperLaw.Services
             _smsService.SendSms($"+359{phoneNumber}");
         }
 
-        public void VerifyPhone(ConfirmPhoneInput input)
+        public bool VerifyPhone(ConfirmPhoneInput input)
         {
-            _smsService.VerifySms($"+359{input.PhoneNumber}", input.Code);
+            var result = _smsService.VerifySms($"+359{input.PhoneNumber}", input.Code);
+
+            return result;
         }
 
         public async Task<UserInfoDto> Login(LoginInput input)

@@ -14,7 +14,7 @@ namespace SuperLaw.Services.Interfaces
 
         void SendPhoneVerification(string phoneNumber);
 
-        void VerifyPhone(ConfirmPhoneInput input);
+        bool VerifyPhone(ConfirmPhoneInput input);
 
         Task ForgotPasswordAsync (string email);
 

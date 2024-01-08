@@ -77,9 +77,9 @@ namespace SuperLaw.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost(nameof(PhoneVerification))]
-        public IActionResult PhoneVerification(string phoneNumber)
+        public IActionResult PhoneVerification(PhoneVerificationInput input)
         {
-            _authService.SendPhoneVerification(phoneNumber);
+            _authService.SendPhoneVerification(input.PhoneNumber);
 
             return Ok();
         }
@@ -88,9 +88,9 @@ namespace SuperLaw.Api.Controllers
         [HttpPost(nameof(ConfirmPhone))]
         public IActionResult ConfirmPhone(ConfirmPhoneInput input)
         {
-            _authService.VerifyPhone(input);
+            var result = _authService.VerifyPhone(input);
 
-            return Ok();
+            return Ok(result);
         }
 
         [AllowAnonymous]
