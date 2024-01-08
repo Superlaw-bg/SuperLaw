@@ -1,5 +1,4 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -46,6 +45,18 @@ namespace SuperLaw.Services
                 throw new BusinessException("Регистриран е вече такъв потребител");
             }
 
+            var userWithSamePhone = _userManager.Users.FirstOrDefault(x => x.Phone == input.Phone);
+           
+            if (userWithSamePhone != null)
+            {
+                var roles = await _userManager.GetRolesAsync(userWithSamePhone);
+
+                if (roles.Contains("User"))
+                {
+                    throw new BusinessException("Потребител с такъв телефонен номер вече съществува");
+                }
+            }
+
             var city = _simpleDataService.GetCity(input.CityId);
 
             if (city == null)
@@ -61,6 +72,7 @@ namespace SuperLaw.Services
                 Email = input.Email,
                 UserName = input.Email,
                 CityId = input.CityId,
+                PhoneNumberConfirmed = true
             };
 
             await _userManager.CreateAsync(user, input.Password);
@@ -146,12 +158,19 @@ namespace SuperLaw.Services
 
         public void SendPhoneVerification(string phoneNumber)
         {
+            var user = _userManager.Users.SingleOrDefault(x => x.Phone == phoneNumber);
+
+            if (user != null)
+            {
+                throw new BusinessException("Има вече потребител с този телефонен номер");
+            }
+
             _smsService.SendSms($"+359{phoneNumber}");
         }
 
-        public void VerifyPhone(string phoneNumber, string code)
+        public void VerifyPhone(ConfirmPhoneInput input)
         {
-            _smsService.VerifySms($"+359{phoneNumber}", code);
+            _smsService.VerifySms($"+359{input.PhoneNumber}", input.Code);
         }
 
         public async Task<UserInfoDto> Login(LoginInput input)

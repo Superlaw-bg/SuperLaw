@@ -4,6 +4,6 @@
     {
         void SendSms(string phoneNumber);
 
-        void VerifySms(string phoneNumber, string code);
+        bool VerifySms(string phoneNumber, string code);
     }
 }

@@ -17,14 +17,24 @@ namespace SuperLaw.Services
 
         public void SendSms(string phoneNumber)
         {
-            VerificationResource.Create(
-                to: phoneNumber,
-                channel: "sms",
-                pathServiceSid: _options.Value.ServiceSId
-            );
+            try
+            {
+                VerificationResource.Create(
+                    to: phoneNumber,
+                    channel: "sms",
+                    pathServiceSid: _options.Value.ServiceSId
+                );
+            }
+            catch (Exception e)
+            {
+                if (e.Message.StartsWith("Invalid parameter"))
+                {
+                    throw new BusinessException("Невалиден телефонен номер");
+                }
+            }
         }
 
-        public void VerifySms(string phoneNumber, string code)
+        public bool VerifySms(string phoneNumber, string code)
         {
             try
             {
@@ -34,7 +44,15 @@ namespace SuperLaw.Services
                     pathServiceSid: _options.Value.ServiceSId
                 );
 
-                Console.WriteLine(verificationCheck.Status);
+                switch (verificationCheck.Status)
+                {
+                    case "pending":
+                        return false;
+                    case "approved":
+                        return true;
+                    default:
+                        return false;
+                }
             }
             catch (Exception e)
             {

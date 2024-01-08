@@ -86,9 +86,9 @@ namespace SuperLaw.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost(nameof(ConfirmPhone))]
-        public IActionResult ConfirmPhone(string phoneNumber, string code)
+        public IActionResult ConfirmPhone(ConfirmPhoneInput input)
         {
-            _authService.VerifyPhone(phoneNumber, code);
+            _authService.VerifyPhone(input);
 
             return Ok();
         }
