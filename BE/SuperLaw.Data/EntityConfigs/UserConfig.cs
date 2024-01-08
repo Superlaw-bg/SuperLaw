@@ -13,7 +13,6 @@ namespace SuperLaw.Data.EntityConfigs
                 .Ignore(c => c.LockoutEnabled)
                 .Ignore(c => c.ConcurrencyStamp)
                 .Ignore(c => c.PhoneNumber)
-                .Ignore(c => c.PhoneNumberConfirmed)
                 .Ignore(c => c.LockoutEnd)
                 .Ignore(c => c.TwoFactorEnabled);
 

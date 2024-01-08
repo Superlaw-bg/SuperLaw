@@ -1,0 +1,55 @@
+@import "../../../style-constants.scss";
+
+.confirm-phone-modal {
+    .modal-title {
+        color: $primary-color;
+    }
+
+    .modal-body {
+        text-align: center;
+
+        p {
+            color: $primary-color;
+        }
+    }
+
+    .send-btn, .verify-btn {
+        margin-top: 20px;
+        background-color: $primary-color;
+        color: $secondary-color;
+        border: none;
+        font-size: 18px;
+        
+        &:hover{
+            color: $primary-color;
+            background-color: $secondary-color;
+        }
+    }
+
+    .enter-code{
+        display: flex;
+        flex-wrap: wrap;
+        width: 50%;
+        margin: 0 auto;
+        text-align: center;
+
+        .code-input-wrapper{
+            flex: 0 0 100%;
+        }
+
+        .btn-wrapper {
+            flex: 0 0 100%;
+        }
+    }
+
+    .error {
+        text-align: center;
+        width: 100%;
+        margin-top: 1rem;
+        p {
+            color: red;
+            font-style: bold;
+            font-size: 1.2rem;
+        }
+    }
+}

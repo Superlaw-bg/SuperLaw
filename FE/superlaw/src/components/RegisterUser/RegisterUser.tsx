@@ -1,5 +1,5 @@
 import "./RegisterUser.scss";
-import { Button, Form } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Link, useNavigate } from 'react-router-dom';
 import { FormEvent, useEffect, useState } from 'react';
 import City from "../../models/SimpleData";
@@ -9,6 +9,7 @@ import toastService from '../../services/toastService';
 import cityApi from "../../api/cityApi";
 import LoaderSpinner from "../LoaderSpinner";
 import ReactGA from "react-ga4";
+import ConfirmPhoneModal from "./ConfirmPhoneModal/ConfirmPhoneModal";
 
 const Register = () => {  
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successRegister, setSuccessRegister] = useState(false);
   const [hasAcceptedTerms, setHasAcceptedTerms] = useState(false);
+  const [isConfirmPhoneModalOpen, setIsConfirmPhoneModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCities = () => {
@@ -119,9 +121,9 @@ const Register = () => {
     return true;
   }
 
-  const onRegister = async (event: FormEvent) => {
-    event.preventDefault();
-    
+  const onRegister = async () => {
+    setIsConfirmPhoneModalOpen(false);
+
     //Google Analytics event for clicking on reg btn
     ReactGA.event({
       category: "User",
@@ -147,12 +149,22 @@ const Register = () => {
     }
   };
 
+  const onFormSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    
+    if (!isDataValid()){
+      return;
+    }
+    
+    setIsConfirmPhoneModalOpen(true);
+  }
 
   return (
-    <div className="wrap">
+    <>
+      <div className="wrap">
       <div className="row d-flex">
         <div className="form-wrapper-reg col-md-4">
-          <form className="register-form" onSubmit={(e) => onRegister(e)}>
+          <form className="register-form" onSubmit={(e) => onFormSubmit(e)}>
             <h1 className="register-heading">Регистрирай се</h1>
             <div className="form-group">
               <label htmlFor="firstName">Име</label>
@@ -244,6 +256,11 @@ const Register = () => {
         </div>
       </div>
     </div>
+    {
+      isConfirmPhoneModalOpen &&  
+      <ConfirmPhoneModal phoneNumber={registerForm.phone} onPhoneConfirmation={onRegister} onClose={() => setIsConfirmPhoneModalOpen(false)} />
+    }
+    </>
   );
 };
 
