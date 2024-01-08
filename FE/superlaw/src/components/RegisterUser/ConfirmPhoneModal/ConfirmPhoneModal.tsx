@@ -67,7 +67,7 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
 
     {isSendCodeBtnPressed && (
           <Modal.Body className="modal-body">
-          <p>Моля въведете смс кода, пратен на посочения от вас телефонен номер</p>
+          <p>Моля въведете СМС кода, пратен на посочения от Вас телефонен номер</p>
           <div className="enter-code">
             <div className="code-input-wrapper">
                 <input
@@ -78,7 +78,7 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
             </div>
            
            <div className="btn-wrapper">
-                <Button variant="primary" onClick={handleConfirm} className="verify-btn">Верифицирай</Button>
+                <Button variant="primary" onClick={handleConfirm} className="verify-btn">Потвърди</Button>
            </div>
            {error && <div className="error">
             <p>{error}</p>
@@ -89,7 +89,7 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
 
     {!isSendCodeBtnPressed && (
           <Modal.Body>
-          <p>За да запазвате консултации е нужно да верифицираме вашия телефонен номер. При кликане на бутона за пращане на код ще Ви изпратим смс с вашия код, който трябва да въведете.</p>
+          <p>За да запазвате консултации, е необходимо да потвърдите Вашия телефонен номер. При кликане на бутона за пращане на код, ще Ви изпратим СМС с Вашия код, който трябва да въведете.</p>
           <Button variant="primary" onClick={async () => await handleSendCodeBtnClick()} className="send-btn">Изпрати код</Button>
         </Modal.Body>
     )}
