@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import "./ConfirmPhoneModal.scss";
+import authApi from "../../../api/authApi";
 
 interface ConfirmPhoneDialogProps {
   phoneNumber: string;
@@ -17,9 +18,14 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
 
   const [isSendCodeBtnPressed, setIsSendCodeBtnPressed] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
+  const [error, setError] = useState('');
 
-  const handleSendCodeBtnClick = () => {
-    setIsSendCodeBtnPressed(true);
+  const handleSendCodeBtnClick = async () => {
+    try {
+        await authApi.phoneVerification(phoneNumber);
+        setIsSendCodeBtnPressed(true);
+    } catch (error: any) {
+    }
   }
 
   const handleVerificationCodeChange = (
@@ -28,10 +34,17 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
     setVerificationCode(e.target.value);
   };
 
-  const handleConfirm = () => {
-    // TODO: Implement phone number verification logic
-    // You can use the verificationCode and phoneNumber state values here
-    onPhoneConfirmation();
+  const handleConfirm = async () => {
+    const result = await authApi.confirmPhone(phoneNumber, verificationCode);
+    const isConfirmed = result.data;
+
+    if (isConfirmed) {
+        handleClose();
+        await onPhoneConfirmation();
+    } else {
+        setError("Грешен код, моля опитайте отново");
+        setVerificationCode('');
+    }
   };
 
   const handleClose = () => {
@@ -67,6 +80,9 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
            <div className="btn-wrapper">
                 <Button variant="primary" onClick={handleConfirm} className="verify-btn">Верифицирай</Button>
            </div>
+           {error && <div className="error">
+            <p>{error}</p>
+            </div>}
           </div>
         </Modal.Body>
     )}
@@ -74,7 +90,7 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
     {!isSendCodeBtnPressed && (
           <Modal.Body>
           <p>За да запазвате консултации е нужно да верифицираме вашия телефонен номер. При кликане на бутона за пращане на код ще Ви изпратим смс с вашия код, който трябва да въведете.</p>
-          <Button variant="primary" onClick={handleSendCodeBtnClick} className="send-btn">Изпрати код</Button>
+          <Button variant="primary" onClick={async () => await handleSendCodeBtnClick()} className="send-btn">Изпрати код</Button>
         </Modal.Body>
     )}
   </Modal>

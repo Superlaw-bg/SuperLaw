@@ -8,6 +8,8 @@ const apiRoutes = {
     forgotPassword: 'Auth/ForgotPassword',
     resetPassword: 'Auth/ResetPassword',
     confirmEmail: 'Auth/ConfirmEmail',
+    phoneVerification: 'Auth/PhoneVerification',
+    confirmPhone: 'Auth/ConfirmPhone',
     uploadPicture: 'Profile/UploadPicture',
     createProfile: 'Profile/Create',
     editProfile: 'Profile/Edit',

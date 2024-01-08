@@ -155,7 +155,7 @@ const Register = () => {
     if (!isDataValid()){
       return;
     }
-    console.log("teees");
+    
     setIsConfirmPhoneModalOpen(true);
   }
 

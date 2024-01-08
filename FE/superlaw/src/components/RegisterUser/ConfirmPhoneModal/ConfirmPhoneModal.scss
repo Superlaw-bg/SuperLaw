@@ -41,4 +41,15 @@
             flex: 0 0 100%;
         }
     }
+
+    .error {
+        text-align: center;
+        width: 100%;
+        margin-top: 1rem;
+        p {
+            color: red;
+            font-style: bold;
+            font-size: 1.2rem;
+        }
+    }
 }
