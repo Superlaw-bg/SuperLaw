@@ -133,7 +133,7 @@ const Login = () => {
             }
           
           <h5 className='link'>Нямаш акаунт?</h5>
-          <NavLink className='link' to="/registerLaw" >Регистрирай се</NavLink>
+          <NavLink className='link' to="/register" >Регистрирай се</NavLink>
 
          
           {forgotPassClicked &&

@@ -17,7 +17,6 @@ import TimeSlot from "../../../models/TimeSlot";
 import LoaderSpinner from "../../LoaderSpinner";
 import { Helmet } from "react-helmet-async";
 
-//TODO: Remove restriction on prod for booking hours in the future
 const Profile = () => {
     const params = useParams();
 
@@ -353,14 +352,12 @@ const Profile = () => {
                     {errorMessage}
                   </p>
 
-                  {process.env.REACT_APP_ENV !== 'prod' && 
-                    <div className="btn-wrapper">
+                  <div className="btn-wrapper">
                       {loading ?
                        <LoaderSpinner/> :
                        <Button className="book-btn" variant='primary' type="submit">Запази консултация</Button>
                       }
                     </div>
-                  }
                   
               </form>
              }
