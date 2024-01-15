@@ -26,13 +26,7 @@ const InfoPage = () => {
         <div className="text">
           <h4>Станете част от нас</h4>
           <p>Чрез нас ще откриете много нови клиенти!</p>
-          <Button
-            onClick={redirect}
-            className="register-btn primary-btn"
-            variant="primary"
-          >
-            Регистрайте се като адвокат
-          </Button>
+          <p className="info-email">За повече информация и за създаване на акаунт се свържете с нас на <span>info@superlaw.bg</span></p>
         </div>
       </section>
       <section className="info">

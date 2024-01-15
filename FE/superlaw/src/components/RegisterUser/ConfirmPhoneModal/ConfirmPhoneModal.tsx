@@ -22,7 +22,10 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
 
   const handleSendCodeBtnClick = async () => {
     try {
-        await authApi.phoneVerification(phoneNumber);
+      const env = process.env.REACT_APP_ENV;
+        if (env === 'prod') {
+          await authApi.phoneVerification(phoneNumber);
+        }
         setIsSendCodeBtnPressed(true);
     } catch (error: any) {
     }
@@ -35,8 +38,12 @@ const ConfirmPhoneModal: React.FC<ConfirmPhoneDialogProps> = ({
   };
 
   const handleConfirm = async () => {
-    const result = await authApi.confirmPhone(phoneNumber, verificationCode);
-    const isConfirmed = result.data;
+    const env = process.env.REACT_APP_ENV;
+    let isConfirmed = true;
+    if (env === 'prod') {
+      const result = await authApi.confirmPhone(phoneNumber, verificationCode);
+      isConfirmed = result.data;
+    }
 
     if (isConfirmed) {
         handleClose();
