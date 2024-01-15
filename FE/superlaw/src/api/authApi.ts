@@ -28,13 +28,23 @@ const confirmEmail = (email: string, token: string) => {
     return axios.post(apiRoutes.confirmEmail, {email, token});
 }
 
+const phoneVerification = (phoneNumber: string) => {
+    return axios.post(apiRoutes.phoneVerification, { phoneNumber });
+}
+
+const confirmPhone = (phoneNumber: string, code: string) => {
+    return axios.post(apiRoutes.confirmPhone, {phoneNumber, code});
+}
+
 const authApi = {
     registerUser,
     registerLawyer,
     login,
     forgotPassword,
     resetPassword,
-    confirmEmail
+    confirmEmail,
+    phoneVerification,
+    confirmPhone,
 };
 
 export default authApi;

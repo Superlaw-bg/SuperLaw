@@ -50,6 +50,11 @@ namespace SuperLaw.Services
                 throw new BusinessException("Не съществува такъв потребител");
             }
 
+            if (!user.PhoneNumberConfirmed)
+            {
+                throw new BusinessException("Трябва първо да си потвърдите телефония номер");
+            }
+
             if (profile.UserId == userId)
             {
                 throw new BusinessException("Не може сам да си запазваш консултация");
