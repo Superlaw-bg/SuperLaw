@@ -51,7 +51,7 @@ const App: React.FC = () => (
               <Route path='/terms-and-conditions' Component={TermsAndConditionsPage}/>
               <Route path='/info' Component={InfoPage}/>
               <Route path='/profile' Component={isLawyer(OwnProfile)}/>
-              <Route path='/profile/:id' Component={isAuth(Profile)}/>
+              <Route path='/profile/:id' Component={Profile}/>
               <Route path='/profile/create' Component={isLawyer(CreateProfile)}/>
               <Route path='/profile/edit' Component={isLawyer(EditProfile)}/>
               <Route path='/find' Component={isNotLawyer(FindPage)}/>

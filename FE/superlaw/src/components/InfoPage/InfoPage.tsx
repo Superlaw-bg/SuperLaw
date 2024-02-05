@@ -9,10 +9,6 @@ import letterImg from "../../assets/letter-image-128.png";
 import { Helmet } from "react-helmet-async";
 
 const InfoPage = () => {
-  const navigate = useNavigate();
-  const redirect = () => {
-    navigate("/registerLaw");
-  };
 
   return (
     <>
