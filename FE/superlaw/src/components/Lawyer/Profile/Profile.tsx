@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import './Profile.scss';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import profileApi from "../../../api/profileApi";
 import LawyerProfile from "../../../models/LawyerProfile";
 import { Button } from "react-bootstrap";
@@ -16,9 +16,13 @@ import CalendarDateValue from "../../../models/CalendarDateValue";
 import TimeSlot from "../../../models/TimeSlot";
 import LoaderSpinner from "../../LoaderSpinner";
 import { Helmet } from "react-helmet-async";
+import { useStoreState } from "../../../store/hooks";
 
 const Profile = () => {
     const params = useParams();
+    const navigate = useNavigate();
+    
+    const isLoggedIn = useStoreState((state) => state.auth.user.isLoggedIn);
 
     const todayDate = moment().toDate();
     const maxDate = moment().add(1, 'M').toDate();
@@ -74,7 +78,7 @@ const Profile = () => {
             }
             
         };
-        
+
         const profileId = Number(params.id);
 
         fetchProfile(profileId);
@@ -197,6 +201,11 @@ const Profile = () => {
     const onSubmit = async (event: FormEvent) => {
       event.preventDefault();
     
+      if (!isLoggedIn) {
+        toastService.showError('За да запазвате консултрации трябва да сте влезли в профила Ви.');
+        navigate('/login');
+        return;
+      }
 
       if (bookMeetingForm.date === null) {
         setErrorMessage('Моля, изберете дата');
