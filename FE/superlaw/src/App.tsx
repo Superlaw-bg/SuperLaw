@@ -28,10 +28,7 @@ import TermsAndConditionsPage from './components/TermsAndConditionsPage';
 import { AxiosInterceptor } from './components/AxiosInterceptor/AxiosInterceptor';
 import { HelmetProvider } from 'react-helmet-async';
 import AdsRedirectPage from './components/AdsRedirectPage';
-
- /* 
-  <Route path='/personal-data' Component={PersonalDataPage}/>
-*/
+import PersonalDataPage from './components/PersonalDataPage';
 
 const App: React.FC = () => (
   <>
@@ -48,6 +45,7 @@ const App: React.FC = () => (
               <Route path='/registerLaw' Component={isGuest(RegisterLawyer)}/>
               <Route path='/emailConfirm' Component={isGuest(ConfirmEmail)}/>
               <Route path='/resetPassword' Component={ResetPasswordPage}/>
+              <Route path='/personal-data' Component={PersonalDataPage}/>
               <Route path='/terms-and-conditions' Component={TermsAndConditionsPage}/>
               <Route path='/info' Component={InfoPage}/>
               <Route path='/profile' Component={isLawyer(OwnProfile)}/>
