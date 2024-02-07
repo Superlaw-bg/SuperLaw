@@ -6,55 +6,56 @@ namespace SuperLaw.Services
 {
     public class StringEncryptService : IStringEncryptService
     {
-        const string PassPhrase = "Sup3rS3curePass!123";
+        const string PassPhrase = "SuperSecurePassSuperlawBg";
 
-        private byte[] _iv =
+        public async Task<string> EncryptAsync(string clearText)
         {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16
-        };
+            var textBytes = Encoding.UTF8.GetBytes(clearText); // UTF8 saves Space
+            var textHas = MD5.Create().ComputeHash(textBytes);
 
-        public async Task<byte[]> EncryptAsync(string clearText)
-        {
-            using Aes aes = Aes.Create();
-            aes.Key = DeriveKeyFromPassword(PassPhrase);
-            aes.IV = _iv;
+            SymmetricAlgorithm crypt = Aes.Create(); // (Default: AES-CCM (Counter with CBC-MAC))
+            crypt.Key = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(PassPhrase)); // MD5: 128 Bit Hash
+            crypt.IV = new byte[16]; // by Default. IV[] to 0.. is OK simple crypt
 
-            using MemoryStream output = new();
-            using CryptoStream cryptoStream = new(output, aes.CreateEncryptor(), CryptoStreamMode.Write);
+            using var memoryStream = new MemoryStream();
+            using var cryptoStream = new CryptoStream(memoryStream, crypt.CreateEncryptor(), CryptoStreamMode.Write);
 
-            await cryptoStream.WriteAsync(Encoding.Unicode.GetBytes(clearText));
+            await cryptoStream.WriteAsync(textBytes, 0, textBytes.Length); // User Data
+            await cryptoStream.WriteAsync(textHas, 0, textHas.Length); // Add HASH
             await cryptoStream.FlushFinalBlockAsync();
 
-            return output.ToArray();
+            var resultString = Convert.ToBase64String(memoryStream.ToArray());
+
+            return resultString;
         }
 
-        public async Task<string> DecryptAsync(byte[] encrypted)
+        public async Task<string> DecryptAsync(string encryptedText)
         {
-            using Aes aes = Aes.Create();
-            aes.Key = DeriveKeyFromPassword(PassPhrase);
-            aes.IV = _iv;
+            var encryptedBytes = Convert.FromBase64String(encryptedText);
+            SymmetricAlgorithm crypt = Aes.Create();
+            crypt.Key = MD5.Create().ComputeHash(Encoding.UTF8.GetBytes(PassPhrase));
+            crypt.IV = new byte[16];
 
-            using MemoryStream input = new(encrypted);
-            using CryptoStream cryptoStream = new(input, aes.CreateDecryptor(), CryptoStreamMode.Read);
-            using MemoryStream output = new();
+            using var memoryStream = new MemoryStream();
+            using var cryptoStream = new CryptoStream(memoryStream, crypt.CreateDecryptor(), CryptoStreamMode.Write);
 
-            await cryptoStream.CopyToAsync(output);
+            await cryptoStream.WriteAsync(encryptedBytes, 0, encryptedBytes.Length);
+            await cryptoStream.FlushFinalBlockAsync();
 
-            return Encoding.Unicode.GetString(output.ToArray());
-        }
+            var allBytes = memoryStream.ToArray();
+            var textLen = allBytes.Length - 16;
 
-        private byte[] DeriveKeyFromPassword(string password)
-        {
-            var emptySalt = Array.Empty<byte>();
-            var iterations = 1000;
-            var desiredKeyLength = 16; // 16 bytes equal 128 bits.
-            var hashMethod = HashAlgorithmName.SHA384;
-            return Rfc2898DeriveBytes.Pbkdf2(Encoding.Unicode.GetBytes(password),
-                emptySalt,
-                iterations,
-                hashMethod,
-                desiredKeyLength);
+            if (textLen < 0) throw new Exception("Encryption Invalid Len");   // No Hash?
+
+            var textHash = new byte[16];
+            Array.Copy(allBytes, textLen, textHash, 0, 16); // Get the 2 Hashes
+
+            var decryptHash = MD5.Create().ComputeHash(allBytes, 0, textLen);
+
+            if (textHash.SequenceEqual(decryptHash) == false) throw new Exception("Invalid Hash");
+            var resultString = Encoding.UTF8.GetString(allBytes, 0, textLen);
+
+            return resultString;
         }
     }
 }

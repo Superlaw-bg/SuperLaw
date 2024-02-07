@@ -114,7 +114,7 @@ namespace SuperLaw.Services
             {
                 var encryptedInfo = await _stringEncryptService.EncryptAsync(input.Info);
 
-                meeting.Info = Encoding.Unicode.GetString(encryptedInfo);
+                meeting.Info = encryptedInfo;
             }
 
             await _context.Meetings.AddAsync(meeting);
@@ -328,7 +328,7 @@ namespace SuperLaw.Services
         {
             if (!string.IsNullOrEmpty(meeting.Info))
             {
-                var decryptedInfo = await _stringEncryptService.DecryptAsync(Encoding.Unicode.GetBytes(meeting.Info));
+                var decryptedInfo = await _stringEncryptService.DecryptAsync(meeting.Info);
 
                 dto.Info = decryptedInfo;
             }
