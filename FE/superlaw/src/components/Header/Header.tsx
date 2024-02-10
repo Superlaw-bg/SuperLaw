@@ -11,8 +11,8 @@ import usePageTracking from '../../hooks/usePageTracking';
 const Header = () => {
     usePageTracking();
     const navigate = useNavigate();
-    const { isLoggedIn, email, role } = useStoreState(store => store.auth.user);
-    const dispatchClearState = useStoreActions(actions => actions.auth.logout);
+    const { isLoggedIn, email, role } = useStoreState(store => store.store.user);
+    const dispatchClearState = useStoreActions(actions => actions.store.logout);
 
     const logout = () => {
         dispatchClearState();

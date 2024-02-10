@@ -22,7 +22,7 @@ const Profile = () => {
     const params = useParams();
     const navigate = useNavigate();
     
-    const isLoggedIn = useStoreState((state) => state.auth.user.isLoggedIn);
+    const isLoggedIn = useStoreState((state) => state.store.user.isLoggedIn);
 
     const todayDate = moment().toDate();
     const maxDate = moment().add(1, 'M').toDate();
@@ -136,7 +136,7 @@ const Profile = () => {
     }
 
     const onSlotSelect = (event: any, slot: any) => {
-      
+
       if (!isLoggedIn) {
         toastService.showError('За да запазвате консултрации трябва да сте влезли в профила Ви.');
         navigate('/login', { state: { from: `/profile/${Number(params.id)}`} });

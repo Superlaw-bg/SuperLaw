@@ -8,13 +8,13 @@ import { useNavigate } from 'react-router-dom';
 
 const AxiosInterceptor = ({ children }: any) => {
     const navigate = useNavigate();
-    const dispatchLogout = useStoreActions(actions => actions.auth.logout);
+    const dispatchLogout = useStoreActions(actions => actions.store.logout);
     const [isSet, setIsSet] = useState(false);
 
     useEffect(() => {
 
         axios.interceptors.request.use(config => {
-            const authToken = store.getState().auth.user.token;
+            const authToken = store.getState().store.user.token;
             if (authToken) {
               config.headers.Authorization = `Bearer ${authToken}`;
             }

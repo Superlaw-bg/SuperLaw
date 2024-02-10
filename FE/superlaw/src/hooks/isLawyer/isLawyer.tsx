@@ -6,7 +6,7 @@ import { Lawyer } from '../../constants/roles';
 const isLawyer = (Component: React.FC) => {
     const Wrapper = () => {
         const navigate = useNavigate();
-        const { isLoggedIn, role } = useStoreState(state => state.auth.user);
+        const { isLoggedIn, role } = useStoreState(state => state.store.user);
 
         useEffect(() => {
            

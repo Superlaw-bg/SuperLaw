@@ -1,9 +1,9 @@
 import { createStore, persist } from 'easy-peasy';
-import { authStore } from './auth/AuthStore';
+import { storeData } from './auth/StoreData';
 import StoreModel from "./StoreModel";
 
 const storeModel: StoreModel = {
-    auth: authStore,
+    store: storeData,
 };
 
 const store = createStore<StoreModel>(

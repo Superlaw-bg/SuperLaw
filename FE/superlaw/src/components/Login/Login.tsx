@@ -13,8 +13,8 @@ import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
   const location = useLocation();
-  const dispatchLogin = useStoreActions((actions) => actions.auth.login);
-  const dispatchSetRedirect = useStoreActions((actions) => actions.auth.setRedirect);
+  const dispatchLogin = useStoreActions((actions) => actions.store.login);
+  const dispatchSetRedirect = useStoreActions((actions) => actions.store.setRedirect);
   
   const [loginForm, setLoginForm] = useState<LoginUserInput>({
     email: "",

@@ -9,13 +9,13 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   //If a user has been redirect to login after browsing a profil, will be redirected back to the profile
-  const redirect = useStoreState(store => store.auth.redirect);
-  const dispatchSetRedirect = useStoreActions(actions => actions.auth.setRedirect);
+  const redirect = useStoreState(store => store.store.redirect);
+  const dispatchSetRedirect = useStoreActions(actions => actions.store.setRedirect);
   
   const redirectToFind = () => navigate('/find');
 
   useEffect(() => {
-    
+
     if (redirect) {
       navigate(redirect);
       dispatchSetRedirect(null);

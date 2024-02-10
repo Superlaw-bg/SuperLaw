@@ -1,7 +1,7 @@
-import AuthStoreModel from './auth/models/AuthStoreModel';
+import StoreDataModel from './auth/models/StoreDataModel';
 
 interface StoreModel {
-   auth: AuthStoreModel,
+   store: StoreDataModel,
 }
 
 export default StoreModel;
