@@ -34,7 +34,7 @@ const AxiosInterceptor = ({ children }: any) => {
                   email: ''
                 };
           
-                dispatchLogout(user);
+                dispatchLogout();
                 navigate('/login');
                 toastService.showError('Сесията Ви е изтекла. Моля влезте отново.');
               } else if (status === 404) {

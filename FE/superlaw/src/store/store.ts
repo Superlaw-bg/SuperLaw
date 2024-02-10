@@ -3,7 +3,7 @@ import { authStore } from './auth/AuthStore';
 import StoreModel from "./StoreModel";
 
 const storeModel: StoreModel = {
-    auth: authStore
+    auth: authStore,
 };
 
 const store = createStore<StoreModel>(

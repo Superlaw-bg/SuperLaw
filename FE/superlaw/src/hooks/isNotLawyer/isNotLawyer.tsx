@@ -9,7 +9,6 @@ const isNotLawyer = (Component: React.FC) => {
         const { role } = useStoreState(state => state.auth.user);
 
         useEffect(() => {
-
             if (role === Lawyer) {
                 navigate('/profile');
                 return;

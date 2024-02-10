@@ -12,6 +12,7 @@ const initialState: User = {
 
 export const authStore: AuthStoreModel = {
     user: initialState,
+    redirect: null,
     login: action((state, payload) => {
         payload = { ...payload, isLoggedIn: true };
         state.user = payload;
@@ -20,7 +21,11 @@ export const authStore: AuthStoreModel = {
         payload = { ...payload, isLoggedIn: true };
         state.user = payload;
     }),
-    logout: action((state, _) => {
+    logout: action((state) => {
         state.user = initialState;
+        state.redirect = null;
     }),
+    setRedirect: action((state, payload) => {
+        state.redirect = payload;
+    })
 };

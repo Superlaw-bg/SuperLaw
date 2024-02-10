@@ -136,6 +136,13 @@ const Profile = () => {
     }
 
     const onSlotSelect = (event: any, slot: any) => {
+      
+      if (!isLoggedIn) {
+        toastService.showError('За да запазвате консултрации трябва да сте влезли в профила Ви.');
+        navigate('/login', { state: { from: `/profile/${Number(params.id)}`} });
+        return;
+      }
+
       const slotDiv = event.target.parentElement;
 
       if (slotDiv.classList.contains('occupied')) {
@@ -200,12 +207,6 @@ const Profile = () => {
 
     const onSubmit = async (event: FormEvent) => {
       event.preventDefault();
-    
-      if (!isLoggedIn) {
-        toastService.showError('За да запазвате консултрации трябва да сте влезли в профила Ви.');
-        navigate('/login');
-        return;
-      }
 
       if (bookMeetingForm.date === null) {
         setErrorMessage('Моля, изберете дата');
