@@ -124,10 +124,10 @@ const OwnProfile = () => {
             <div className="text">
               <h2>Все още нямате профил</h2>
               <p>
-                Чрез вашия профил в платформата на Superlaw потребителите могат да Ви открият да си запазят консултация.
+                Чрез вашия профил в платформата на Superlaw потребителите могат да Ви открият и да си запазят консултация.
               </p>
               <p>
-              В профила Ви може да качите Ваша снимка, кратко описание в свободен текст, цената за консултация, адрес на кантората, правните категории с които работите, съдебните райони в които практикувате и телефон за връзка с вас. В профила Ви се намира и виртуалният календар, чрез който определяте свободните си часове за консултация. Можете да обновявате информацията в профила си по всяко време, с изключение на вече заети времеви диапазони запазени за консултация с клиент.
+              В профила Ви може да качите Ваша снимка, кратко описание в свободен текст, цената за консултация, адрес на кантората, правните категории с които работите, съдебните райони, в които практикувате, и телефон за връзка с Вас. Също така там се намира и виртуалният календар, чрез който определяте свободните си часове за консултация. Можете да обновявате информацията в профила си по всяко време.
               </p>
             </div>
             <div className="create-profile">
@@ -168,25 +168,18 @@ const OwnProfile = () => {
               </div>
 
               <div className="sect categories">
-                <p className="bold">Категории: </p>
-                {profile.categories.map((cat, ind) => (
+                {profile.categories.map((cat) => (
                   <span key={cat.id}>
-                    {" "}
-                    {ind !== profile.categories.length - 1
-                      ? cat.name + ", "
-                      : cat.name}
+                    { cat.name }
                   </span>
                 ))}
               </div>
 
               <div className="sect regions">
-                <p className="bold">Райони: </p>
-                {profile.regions.map((reg, ind) => (
+                <p className="bold">Райони </p>
+                {profile.regions.map((reg) => (
                   <span key={reg.id}>
-                    {" "}
-                    {ind !== profile.regions.length - 1
-                      ? reg.name + ", "
-                      : reg.name}
+                    {reg.name}
                   </span>
                 ))}
               </div>
@@ -196,28 +189,39 @@ const OwnProfile = () => {
             </div>
           </div>
           <div className="additional-info">
-            <div className="sect phone">
-              <p className="bold">Телефон:</p>
-              <p>{profile.phone}</p>
-            </div>
+            <div className="left">
+              <div className="sect phone">
+                <p className='bold'>Телефон</p>
+                <p>{profile.phone}</p>
+              </div>
 
-            <div className="sect city">
-              <p className="bold">Град:</p>
-              <p>{profile.city}</p>
-            </div>
+              <div className="sect city">
+                <p className='bold'>Град</p>
+                <p>{profile.city}</p>
+              </div>
 
-            <div className="sect address">
-              <p className="bold">Адрес:</p>
-              <p>{profile.address}</p>
-            </div>
+              <div className="sect address">
+                <p className='bold'>Адрес</p>
+                <p>{profile.address}</p>
+              </div>
 
-            <div className="sect description">
-              <p className="bold">Информация:</p>
-              <p>{profile.description}</p>
-            </div>
+              <div className="sect description">
+                <p className='bold'>Информация</p>
+                <p>{profile.description}</p>
+              </div>
 
+              <div className="edit-profile">
+              <Button
+                className="edit-btn"
+                variant="primary"
+                onClick={onEditClick}
+              >
+                Редактирай
+              </Button>
+            </div>
+            </div>
+           
             <div className="schedule">
-              <p className="bold header">График:</p>
               <Calendar
                 onChange={onDateSelect}
                 defaultView="month"
@@ -245,16 +249,6 @@ const OwnProfile = () => {
                   ))}
                 </div>
               )}
-            </div>
-
-            <div className="edit-profile">
-              <Button
-                className="edit-btn"
-                variant="primary"
-                onClick={onEditClick}
-              >
-                Редактирай
-              </Button>
             </div>
           </div>
         </div>

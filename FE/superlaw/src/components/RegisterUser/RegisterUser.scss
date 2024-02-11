@@ -14,7 +14,7 @@
   }
 
   .register-form {
-    margin-top: 10vh;
+    margin-top: 2rem;
     padding: 15% 15%;
     padding-top: 7%;
     border-radius: 13px;
@@ -97,18 +97,23 @@
   .wrap{
 
     .row {
-      flex-wrap: wrap;
+      flex-wrap: wrap-reverse;
     }
   
     .form-wrapper-reg{
-      flex: 0 0 80%;
+      flex: 0 0 100%;
       margin: 0 auto;
+    }
+
+    .register-form {
+      margin-top: 1rem;
+      padding: 10% 5%;
     }
 
     .lawyer-info{
       margin: 0 auto;
-      margin-top: 30px;
-      flex: 0 0 60%;
+      margin: 20px 0px;
+      flex: 0 0 90%;
     }
   }
 }

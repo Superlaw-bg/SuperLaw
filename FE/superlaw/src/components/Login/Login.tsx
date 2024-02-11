@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import './Login.scss';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -24,6 +24,13 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [forgotPassClicked, setForgotPassClicked] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  //If it needs to redirect to a page it sets the redirect path and also if you click on register it will redirect you to the right page
+  useEffect(() => {
+    if (location.state && location.state.from) {
+      dispatchSetRedirect(location.state.from);
+    }
+  }, []);
 
   const onInput = (e: any) => {
     const inputName = e.target.name;
@@ -76,10 +83,6 @@ const Login = () => {
       }
 
       dispatchLogin(user);
-      
-      if (location.state && location.state.from) {
-        dispatchSetRedirect(location.state.from);
-      }
 
     } catch (error: any) {
     } finally {

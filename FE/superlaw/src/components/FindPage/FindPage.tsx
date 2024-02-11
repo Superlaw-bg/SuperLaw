@@ -268,24 +268,11 @@ const FindPage = () => {
                   {profile.rating !== 0 && <p className="bold"><i className="fa-solid fa-star"></i> {profile.rating} / 5</p> }
                 </div>
 
-                <div className="sect categories">
-                  <p className="bold">Категории: </p>
-                  {profile.categories.map((cat: any, ind: any) => (
-                    <span key={cat.id}>
-                      {ind !== profile.categories.length - 1
-                        ? cat.name + ", "
-                        : cat.name}
-                    </span>
-                  ))}
-                </div>
-
                 <div className="sect regions">
-                  <p className="bold">Райони: </p>
-                  {profile.regions.map((reg: any, ind: any) => (
+                  <p className="bold">Райони </p>
+                  {profile.regions.map((reg: any) => (
                     <span key={reg.id}>
-                      {ind !== profile.regions.length - 1
-                        ? reg.name + ", "
-                        : reg.name}
+                      {reg.name}
                     </span>
                   ))}
                 </div>

@@ -73,13 +73,27 @@
 
 @media (max-width: 900px) {
     .cta-lawyer{
-        padding: 5rem 2rem;
+        padding: 2rem 1rem;
+        background: none;
+        color: $primary-color;
+    
+
+        &::after {
+            display: none;
+        }
 
         h4,p {
-            z-index: 2;
-            width: 100%;
             margin: 0;
-            font-size: 2rem;
+            width: 100%;
+            font-size: 1.4rem;
+        }
+    }
+
+    .info {
+        padding: 2rem 1rem;
+        
+        div {
+            margin-bottom: 2rem;
         }
     }
 }

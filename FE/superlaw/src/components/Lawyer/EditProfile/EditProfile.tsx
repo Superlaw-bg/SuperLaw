@@ -21,7 +21,6 @@ import { useStoreActions } from '../../../store/hooks';
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const dispatchLogout = useStoreActions(actions => actions.store.logout);
 
   const todayDate = moment().toDate();
   const maxDate = moment().add(2, "M").toDate();

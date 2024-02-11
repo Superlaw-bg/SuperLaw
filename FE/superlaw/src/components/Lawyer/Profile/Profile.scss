@@ -19,11 +19,21 @@
         }
 
         &.rating {
-            font-size: 2rem;
+            font-size: 1.4rem;
             i {
                 color: yellow
             }
         }
+    }
+
+    .categories, .regions {
+        span {
+            display: inline-block;
+            border: 1px solid $primary-color;
+            border-radius: 1rem;
+            padding: 0rem 1rem;
+            margin: 0.5rem;
+        }   
     }
 
     .header {
@@ -56,10 +66,10 @@
         }
 
         .book-calendar {
-            flex: 0 0 60%;
 
             .react-calendar {
                 margin: 0 auto;
+                width: auto;
             }
 
             .time-slots {
@@ -141,8 +151,12 @@
         .header {
             flex-wrap: wrap;
             .profile-image {
-                flex: 0 0 80%;
+                flex: 0 0 100%;
                 margin-bottom: 50px;
+            }
+
+            .important-info {
+                flex: 0 0 100%;
             }
         }
     }
@@ -150,6 +164,9 @@
 
 @media (max-width: 1000px) {
     .profile-info {
+        padding: 2rem 10px;
+        padding-bottom: 100px;
+
         .additional-info {
             display: flex;
             flex-wrap: wrap;
@@ -161,31 +178,6 @@
                 flex: 0 0 100%;
 
                 .time-slots{
-                    width: 100%;
-                }
-
-                form{
-                    width: 100%;
-                }
-            }
-        }
-    }
-}
-
-@media (max-width: 600px) {
-    .profile-info {
-        .sect {
-    
-            &.rating {
-                font-size: 1.5rem;   
-            }
-        }
-
-        .additional-info {
-            .book-calendar{
-                width: 100%;
-
-                .react-calendar{
                     width: 100%;
                 }
 

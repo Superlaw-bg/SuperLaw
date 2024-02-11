@@ -276,16 +276,15 @@ const Profile = () => {
               </div>
 
               <div className='sect categories'>
-                <p className='bold'>Категории: </p>
-                {profile.categories.map((cat, ind) => 
-                  <span key={cat.id}> {ind !== profile.categories.length - 1 ? cat.name + ', ' : cat.name}</span>
+                {profile.categories.map((cat) => 
+                  <span key={cat.id}> {cat.name}</span>
                 )}
               </div>
             
               <div className='sect regions'>
-                <p className='bold'>Райони: </p>
-                {profile.regions.map((reg, ind) => 
-                  <span key={reg.id}> {ind !== profile.regions.length - 1 ? reg.name + ', ' : reg.name}</span>
+                <p className="bold">Райони </p>
+                {profile.regions.map((reg) => 
+                  <span key={reg.id}> { reg.name }</span>
                 )}
               </div>
               <div className='sect'>
@@ -297,28 +296,28 @@ const Profile = () => {
         <div className='additional-info'>
           <div className="left">
             <div className='sect phone'>
-              <p className='bold'>Телефон:</p>
+              <p className='bold'>Телефон</p>
               <p>{profile.phone}</p>    
             </div>
 
             <div className='sect city'>
-              <p className='bold'>Град:</p>
+              <p className='bold'>Град</p>
               <p>{profile.city}</p>    
             </div>
 
             <div className='sect address'>
-              <p className='bold'>Адрес:</p>
+              <p className='bold'>Адрес</p>
               <p>{profile.address}</p>    
             </div>
 
             <div className='sect description'>
-              <p className='bold'>Информация:</p>
+              <p className='bold'>Информация</p>
               <p>{profile.description}</p>    
             </div>
           </div>
          
           <div className="book-calendar">
-            <Calendar 
+            <Calendar
               onChange={onDateSelect}
               value={bookMeetingForm.date}
               defaultView="month"
