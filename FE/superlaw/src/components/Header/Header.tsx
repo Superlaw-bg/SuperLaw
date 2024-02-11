@@ -4,7 +4,6 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import './Header.scss';
 import { useStoreActions, useStoreState } from '../../store/hooks';
-import User from '../../store/auth/models/User';
 import toastService from '../../services/toastService';
 import { Lawyer, User as UserRole } from '../../constants/roles';
 import usePageTracking from '../../hooks/usePageTracking';
@@ -12,19 +11,11 @@ import usePageTracking from '../../hooks/usePageTracking';
 const Header = () => {
     usePageTracking();
     const navigate = useNavigate();
-    const { isLoggedIn, email, role } = useStoreState(store => store.auth.user);
-    const dispatchLogout = useStoreActions(actions => actions.auth.logout);
+    const { isLoggedIn, email, role } = useStoreState(store => store.store.user);
+    const dispatchClearState = useStoreActions(actions => actions.store.logout);
 
     const logout = () => {
-        const user: User = {
-            isLoggedIn: false,
-            role: '',
-            token: '',
-            id: '',
-            email: ''
-        };
-
-        dispatchLogout(user);
+        dispatchClearState();
         toastService.showSuccess('Успешно излязохте от акаунта си');
         navigate('/');
     };

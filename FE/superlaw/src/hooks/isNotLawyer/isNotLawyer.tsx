@@ -6,10 +6,9 @@ import { Lawyer } from '../../constants/roles';
 const isNotLawyer = (Component: React.FC) => {
     const Wrapper = () => {
         const navigate = useNavigate();
-        const { role } = useStoreState(state => state.auth.user);
+        const { role } = useStoreState(state => state.store.user);
 
         useEffect(() => {
-
             if (role === Lawyer) {
                 navigate('/profile');
                 return;

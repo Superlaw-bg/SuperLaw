@@ -34,16 +34,43 @@
             align-items:center;
         }
 
-        .search-btn {
+        .btns{
+            width: 100%;
             margin: 0 auto;
-            background-color: $primary-color;
-            color: $secondary-color;
-            border: none;
-            font-size: 1.2rem;
-          
-            &:hover{
-              color: $primary-color;
-              background-color: $secondary-color;
+            display: flex;
+            flex-wrap: wrap;
+
+            button {
+                flex: 0 0 100%;
+                margin-bottom: 20px;
+            }
+
+            .search-btn {
+                margin: 0 auto;
+                background-color: $primary-color;
+                color: $secondary-color;
+                border: none;
+                font-size: 1.2rem;
+                margin-bottom: 1.4rem;
+              
+                &:hover{
+                  color: $primary-color;
+                  background-color: $secondary-color;
+                }
+            }
+
+            .clear-btn {
+                margin: 0 auto;
+                background-color: white;
+                color: $primary-color;
+                border: none;
+                font-size: 1.2rem;
+                text-decoration: none;
+              
+                &:hover{
+                  cursor: pointer;
+                  text-decoration: underline;
+                }
             }
         }
     }
@@ -120,6 +147,16 @@
                     }
                 }
 
+                .regions {
+                    span {
+                        display: inline-block;
+                        border: 1px solid $primary-color;
+                        border-radius: 1rem;
+                        padding: 0rem 1rem;
+                        margin: 0.5rem;
+                    }
+                }
+
                 .bold {
                     font-weight: bold;
                 }
@@ -141,7 +178,12 @@
                 flex-wrap: wrap;
 
                 .profile {
-                    flex: 0 0 45%;   
+                    flex: 0 0 45%;  
+                    
+                    .profile-image {
+                        width: 150px;
+                        height: 150px;
+                    }
                 }
             }
         }
@@ -153,7 +195,12 @@
         width: 90%;
 
         .search {
-            width: 70%;
+            width: 100%;
+
+            h1{
+                font-size: 1.4rem;
+                margin-bottom: 1rem;
+            }
         }
 
         .profiles-section {

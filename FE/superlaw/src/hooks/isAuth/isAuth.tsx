@@ -5,7 +5,7 @@ import { useStoreState } from '../../store/hooks';
 const isAuth = (Component: React.FC) => {
     const Wrapper = () => {
         const navigate = useNavigate();
-        const { isLoggedIn } = useStoreState(state => state.auth.user);
+        const { isLoggedIn } = useStoreState(state => state.store.user);
 
         useEffect(() => {
             if (!isLoggedIn) {

@@ -85,10 +85,12 @@
 
 @media (max-width: 1300px) {
     .meetings-page{
-  
+        width: 100%;
+        padding: 1rem 10px;
+
         .meetings {
             .meeting {
-                flex: 0 0 90%;
+                flex: 0 0 100%;
             }
         }
     }

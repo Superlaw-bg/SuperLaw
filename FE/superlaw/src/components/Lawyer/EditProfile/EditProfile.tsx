@@ -17,12 +17,10 @@ import ScheduleDayInput from '../../../models/inputs/ScheduleDayInput';
 import CalendarDateValue from '../../../models/CalendarDateValue';
 import SimpleData from '../../../models/SimpleData';
 import LoaderSpinner from '../../LoaderSpinner';
-import User from '../../../store/auth/models/User';
 import { useStoreActions } from '../../../store/hooks';
 
 const EditProfile = () => {
   const navigate = useNavigate();
-  const dispatchLogout = useStoreActions(actions => actions.auth.logout);
 
   const todayDate = moment().toDate();
   const maxDate = moment().add(2, "M").toDate();

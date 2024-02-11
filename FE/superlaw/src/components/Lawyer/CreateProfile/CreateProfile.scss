@@ -142,14 +142,10 @@
   }
 }
 
-@media (max-width: 1150px) {
-  .form-wrapper-create-profile {
-    width: 80%;
-  }
-}
-
 @media (max-width: 1000px) {
   .form-wrapper-create-profile {
+    width: 100%;
+    padding: 0 10px;
     .create-profile-form {
       .schedule {
         .react-calendar {
