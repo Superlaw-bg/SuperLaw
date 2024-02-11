@@ -94,7 +94,13 @@
 
     .reg-lawyer-row {
         .form-wrapper-reg {
-            width: 80%;
+            width: 100%;
+            padding: 1rem 10px;
+        }
+
+        .register-law-form {
+            margin: 0;
+            padding: 10% 5%;
         }
     }
 }

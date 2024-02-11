@@ -51,11 +51,23 @@
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
     .cta {
-        padding: 5rem 2rem;
+        padding: 1rem 2rem;
+        background: none;
+        color: $primary-color;
+        min-height: 1vh;
+        margin-bottom: 2rem;
+
+        &::after{
+            display: none;
+        }
+
         h1, p {
-            font-size: 2rem;
+            font-size: 1.4rem;
+            margin-left: 0px;
+            margin-right: 0px;
+            width: 100%;
         }
     }
 }

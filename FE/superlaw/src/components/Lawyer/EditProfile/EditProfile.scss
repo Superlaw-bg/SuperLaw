@@ -162,16 +162,21 @@
   }
 }
 
-@media (max-width: 1150px) {
-    .form-wrapper-edit-profile {
-        width: 80%;
-    }
-}
-
 @media (max-width: 1000px) {
   .form-wrapper-edit-profile {
+    width: 100%;
+    padding: 1rem 10px;
+
+    .picture{
+      margin-bottom: 1rem;
+
+      label {
+        font-size: 1rem;
+      }
+    }
+
       .edit-profile-form {
-          
+          margin: 0;
         .schedule {
           .react-calendar {
             flex: 0 0 100%;

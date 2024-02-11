@@ -6,23 +6,24 @@ import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
 import profileApi from "../../api/profileApi";
 import LawyerProfile from "../../models/LawyerProfile";
-import { useAsyncError, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import cityApi from "../../api/cityApi";
 import SimpleData from "../../models/SimpleData";
-import toastService from "../../services/toastService";
 import LoaderSpinner from "../LoaderSpinner";
 import { Helmet } from "react-helmet-async";
+import { useStoreActions, useStoreState } from "../../store/hooks";
+import SearchForm from "../../models/SearchForm";
 
 const FindPage = () => {
   const navigate = useNavigate();
+
+  const searchFormState  = useStoreState(store => store.store.findPageSearch);
+  const dispatchSetSearch = useStoreActions(actions => actions.store.setFindPageSearch);
+
   const [allCategories, setCategories] = useState([]);
   const [allCities, setCities] = useState<SimpleData[]>([]);
 
-  const [searchForm, setSearchForm] = useState({
-    name: "",
-    categories: [],
-    cityId: 0,
-  });
+  const [searchForm, setSearchForm] = useState<SearchForm>(searchFormState);
 
   const [profiles, setProfiles] = useState<LawyerProfile[]>([]);
   
@@ -60,7 +61,17 @@ const FindPage = () => {
     const fetchProfiles = async () => {
       try {
         setLoading(true);
-        const res = await profileApi.getAll(null, [], 0);
+
+        let res;
+
+        if (searchForm) {
+          const categories = searchForm.categories.map((c: any) => c.value);
+
+          res = await profileApi.getAll(searchForm.name, categories, searchForm.cityId);
+        } else {
+          res = await profileApi.getAll(null, [], 0);
+        }
+        
         setProfiles(res.data);
       } catch (error: any) {
       } finally {
@@ -85,6 +96,8 @@ const FindPage = () => {
 
   const onSearchSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    
+    dispatchSetSearch(searchForm);
 
     const categories = searchForm.categories.map((c: any) => c.value);
    
@@ -157,6 +170,14 @@ const FindPage = () => {
     navigate(`/profile/${profileId}`);
   };
 
+  const clearSearchForm = () => {
+    setSearchForm({
+      name: "",
+      categories: [],
+      cityId: 0
+    });
+  };
+
   return (
     <>
     <Helmet>
@@ -168,7 +189,7 @@ const FindPage = () => {
       <form className="search" onSubmit={onSearchSubmit}>
         <h1>Намерете адвокат и резервирайте консултация онлайн</h1>
         <div className="form-group search-bar">
-          <input type="text" placeholder="Търси по име..." name='name' onChange={(e) => onInput(e)}/>
+          <input type="text" placeholder="Търси по име..." name='name' onChange={(e) => onInput(e)} value={searchForm.name}/>
         </div>
 
         <div className="form-group selection">
@@ -186,7 +207,7 @@ const FindPage = () => {
 
         <div className="form-group selection">
           <label htmlFor="cityId">Областен Град</label>
-          <select className="form-select" name="cityId" id="cityId" onChange={(e) => onInput(e)}>
+          <select className="form-select" name="cityId" id="cityId" value={searchForm.cityId} onChange={(e) => onInput(e)}>
                 <option selected value={0}>
                   Изберете областен град
                 </option>
@@ -196,9 +217,14 @@ const FindPage = () => {
           </select>
         </div>
 
-        <Button className="search-btn" type="submit" variant="primary">
-          Търси
-        </Button>
+        <div className="btns">
+          <Button className="search-btn" type="submit" variant="primary">
+            Търси
+          </Button>
+          <a className="clear-btn" onClick={clearSearchForm}>
+            Изчисти
+          </a>
+        </div>
       </form>
       <div className="profiles-section">
         <h2>Профили</h2>
@@ -242,24 +268,11 @@ const FindPage = () => {
                   {profile.rating !== 0 && <p className="bold"><i className="fa-solid fa-star"></i> {profile.rating} / 5</p> }
                 </div>
 
-                <div className="sect categories">
-                  <p className="bold">Категории: </p>
-                  {profile.categories.map((cat: any, ind: any) => (
-                    <span key={cat.id}>
-                      {ind !== profile.categories.length - 1
-                        ? cat.name + ", "
-                        : cat.name}
-                    </span>
-                  ))}
-                </div>
-
                 <div className="sect regions">
-                  <p className="bold">Райони: </p>
-                  {profile.regions.map((reg: any, ind: any) => (
+                  <p className="bold">Райони </p>
+                  {profile.regions.map((reg: any) => (
                     <span key={reg.id}>
-                      {ind !== profile.regions.length - 1
-                        ? reg.name + ", "
-                        : reg.name}
+                      {reg.name}
                     </span>
                   ))}
                 </div>

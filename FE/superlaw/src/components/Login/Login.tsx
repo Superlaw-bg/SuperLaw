@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import './Login.scss';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import LoginUserInput from '../../models/inputs/LoginInput';
 import authApi from '../../api/authApi';
 import { useStoreActions } from '../../store/hooks';
@@ -12,9 +12,9 @@ import ReactGA from 'react-ga4';
 import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
-  //TODO: Currently login page redirects to register law, not to register
-  const navigate = useNavigate();
-  const dispatchLogin = useStoreActions((actions) => actions.auth.login);
+  const location = useLocation();
+  const dispatchLogin = useStoreActions((actions) => actions.store.login);
+  const dispatchSetRedirect = useStoreActions((actions) => actions.store.setRedirect);
   
   const [loginForm, setLoginForm] = useState<LoginUserInput>({
     email: "",
@@ -24,6 +24,13 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [forgotPassClicked, setForgotPassClicked] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  //If it needs to redirect to a page it sets the redirect path and also if you click on register it will redirect you to the right page
+  useEffect(() => {
+    if (location.state && location.state.from) {
+      dispatchSetRedirect(location.state.from);
+    }
+  }, []);
 
   const onInput = (e: any) => {
     const inputName = e.target.name;
@@ -74,9 +81,8 @@ const Login = () => {
         role: res.data.role,
         isLoggedIn: true
       }
-     
+
       dispatchLogin(user);
-      navigate('/');
 
     } catch (error: any) {
     } finally {

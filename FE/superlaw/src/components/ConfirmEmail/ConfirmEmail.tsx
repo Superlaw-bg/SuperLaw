@@ -10,7 +10,7 @@ import LoaderSpinner from "../LoaderSpinner";
 const ConfirmEmail = () => {
     const navigate = useNavigate();
     
-    const dispatchRegister = useStoreActions(actions => actions.auth.register);
+    const dispatchRegister = useStoreActions(actions => actions.store.register);
 
     const location = useLocation();
 

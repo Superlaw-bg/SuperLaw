@@ -3,7 +3,7 @@ interface User {
     token: string,
     email: string,
     isLoggedIn: boolean,
-    role: string
+    role: string,
 }
 
 export default User;
