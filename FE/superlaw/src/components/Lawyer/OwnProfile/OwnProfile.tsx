@@ -10,7 +10,6 @@ import CalendarDateValue from "../../../models/CalendarDateValue";
 import { TileArgs } from "react-calendar/dist/cjs/shared/types";
 import LawyerProfile from "../../../models/LawyerProfile";
 import TimeSlot from "../../../models/TimeSlot";
-import toastService from "../../../services/toastService";
 import LoaderSpinner from "../../LoaderSpinner";
 import { Helmet } from "react-helmet-async";
 
@@ -26,6 +25,7 @@ const OwnProfile = () => {
     imgPath: "",
     fullName: "",
     description: "",
+    lawyerFirm: "",
     rate: 0,
     phone: "",
     city: "",
@@ -182,6 +182,10 @@ const OwnProfile = () => {
                     {reg.name}
                   </span>
                 ))}
+              </div>
+              <div className="sect">
+                <p className='bold'>Дружество</p>
+                <p>{profile.lawyerFirm}</p>
               </div>
               <div className="sect">
                 <p className="bold">Консултация: {profile.rate}лв</p>
