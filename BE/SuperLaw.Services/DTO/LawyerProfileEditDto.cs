@@ -17,5 +17,7 @@
         public bool IsJunior { get; set; }
 
         public bool IsCompleted { get; set; }
+
+        public string LawyerFirm { get; set; }
     }
 }
