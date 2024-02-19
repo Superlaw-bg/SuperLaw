@@ -17,7 +17,6 @@ import ScheduleDayInput from "../../../models/inputs/ScheduleDayInput";
 import ProfileInput from "../../../models/inputs/ProfileInput";
 import SimpleData from "../../../models/SimpleData";
 import LoaderSpinner from "../../LoaderSpinner";
-import { Helmet } from "react-helmet-async";
 
 const CreateProfile = () => {
   const navigate = useNavigate();
@@ -33,6 +32,7 @@ const CreateProfile = () => {
     description: "",
     rate: 0,
     address: "",
+    lawyerFirm: "",
     categories: [],
     regions: [],
     schedule: [],
@@ -194,6 +194,7 @@ const CreateProfile = () => {
         description: profile.description,
         rate: profile.rate,
         address: profile.address,
+        lawyerFirm: profile.lawyerFirm,
         categories: profile.categories,
         regions: profile.regions,
         schedule: [...profileScheduleWithoutSelected, selectedDaySlots],
@@ -353,6 +354,17 @@ const CreateProfile = () => {
             type="text"
             className="form-control"
             name="address"
+            onChange={(e) => onInput(e)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="lawyerFirm">Дружество</label>
+          <input
+            id="lawyerFirm"
+            type="text"
+            className="form-control"
+            name="lawyerFirm"
             onChange={(e) => onInput(e)}
           />
         </div>

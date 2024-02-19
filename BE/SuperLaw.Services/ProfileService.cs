@@ -75,6 +75,7 @@ namespace SuperLaw.Services
                 Rate = input.Rate,
                 IsCompleted = input.IsCompleted,
                 IsJunior = input.IsJunior,
+                LawyerFirm = input.LawyerFirm,
                 LegalCategories = categories.Select(x => new LawyerProfileLegalCategory()
                 {
                     CategoryId = x.Id,
@@ -124,6 +125,7 @@ namespace SuperLaw.Services
                 regions = regions.Where(x => x.Id == 1).ToList();
             }
 
+            profile.LawyerFirm = input.LawyerFirm;
             profile.Address = input.Address;
             profile.Rate = input.Rate;
             profile.Info = input.Description;
@@ -232,6 +234,7 @@ namespace SuperLaw.Services
                 City = userLawyerProfile.User.City.Name,
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
+                LawyerFirm = userLawyerProfile.LawyerFirm,
             };
 
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result, true);
@@ -293,6 +296,7 @@ namespace SuperLaw.Services
                 City = userLawyerProfile.User.City.Name,
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
+                LawyerFirm = userLawyerProfile.LawyerFirm,
             };
            
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);
@@ -336,6 +340,7 @@ namespace SuperLaw.Services
                     .ToList(),
                 IsCompleted = userLawyerProfile.IsCompleted,
                 IsJunior = userLawyerProfile.IsJunior,
+                LawyerFirm = userLawyerProfile.LawyerFirm,
             };
 
             SetScheduleForProfileDto(userLawyerProfile.TimeSlots.OrderBy(x => x.From).ToList(), result);

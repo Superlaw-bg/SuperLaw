@@ -35,6 +35,7 @@ const Profile = () => {
         imgPath: '',
         fullName: '',
         description: '',
+        lawyerFirm: '',
         rate: 0,
         phone: '',
         address: '',
@@ -287,6 +288,12 @@ const Profile = () => {
                   <span key={reg.id}> { reg.name }</span>
                 )}
               </div>
+              { profile.lawyerFirm !== '' && 
+                <div className="sect">
+                  <p className='bold'>Дружество</p>
+                  <p>{profile.lawyerFirm}</p>
+                </div>
+              }
               <div className='sect'>
               <p className='bold'>Консултация: {profile.rate}лв</p>
               </div>
