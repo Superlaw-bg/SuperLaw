@@ -20,6 +20,8 @@ namespace SuperLaw.Data.Models
         [Range(0, 5)]
         public decimal Rating { get; set; }
 
+        public string LawyerFirm { get; set; } = string.Empty;
+
         public bool IsJunior { get; set; }
 
         public bool IsCompleted { get; set; }

@@ -17,7 +17,6 @@ import ScheduleDayInput from '../../../models/inputs/ScheduleDayInput';
 import CalendarDateValue from '../../../models/CalendarDateValue';
 import SimpleData from '../../../models/SimpleData';
 import LoaderSpinner from '../../LoaderSpinner';
-import { useStoreActions } from '../../../store/hooks';
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -35,6 +34,7 @@ const EditProfile = () => {
     description: "",
     rate: 0,
     address: "",
+    lawyerFirm: "",
     categories: [],
     regions: [],
     schedule: [],
@@ -89,13 +89,14 @@ const EditProfile = () => {
         setLoadingProfile(true);
         const res = await profileApi.getOwnProfileDataForEdit();
         const data = res.data;
-
+        
         if (data) {
           setProfile({
             ...profile,
             description: data.description,
             rate: data.rate,
             address: data.address,
+            lawyerFirm: data.lawyerFirm,
             categories: data.categories,
             regions: data.regions,
             schedule: data.schedule,
@@ -214,6 +215,7 @@ const EditProfile = () => {
         description: profile.description,
         rate: profile.rate,
         address: profile.address,
+        lawyerFirm: profile.lawyerFirm,
         categories: profile.categories,
         regions: profile.regions,
         schedule: [...profileScheduleWithoutSelected, selectedDaySlots],
@@ -353,6 +355,11 @@ const EditProfile = () => {
           <div className="form-group">
             <label htmlFor="rate">Цена за консултация</label>
             <input id="rate" type="text" className="form-control" name="rate" value={profile.rate} onChange={(e) => onInput(e)}/>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="lawyerFirm">Дружество</label>
+            <input id="lawyerFirm" type="text" className="form-control" name="lawyerFirm" value={profile.lawyerFirm} onChange={(e) => onInput(e)}/>
           </div>
 
           <div className="form-group">

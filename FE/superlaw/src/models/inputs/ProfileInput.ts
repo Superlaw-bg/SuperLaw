@@ -5,6 +5,7 @@ interface ProfileInput {
     description: string,
     rate: number,
     address: string,
+    lawyerFirm: string,
     categories: [],
     regions: [],
     schedule: CreateScheduleInput[],
