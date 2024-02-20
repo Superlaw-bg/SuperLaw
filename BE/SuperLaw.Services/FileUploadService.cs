@@ -39,6 +39,15 @@ namespace SuperLaw.Services
                     File = new FileDescription(fileName, ms)
                 };
 
+                var imgSize = ms.Length;
+
+                //Compress the quality if the image is more than 100kb
+                if (imgSize >= 100000)
+                {
+                    uploadParams.Transformation = new Transformation().Quality("80");
+                }
+               
+
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
 
@@ -47,7 +56,14 @@ namespace SuperLaw.Services
                 throw new BusinessException("Снимката не успя да се качи, моля опитайте отново по-късно");
             }
 
-            return uploadResult?.SecureUri.AbsoluteUri;
+            var imgUrl = uploadResult?.SecureUri.AbsoluteUri;
+
+            var firstPart = imgUrl.Split("upload/")[0];
+            var secondPart = imgUrl.Split("upload/")[1];
+
+            var getWithLowQuality = "q_40,f_auto/";
+
+            return $"{firstPart}upload/{getWithLowQuality}{secondPart}";
         }
 
         public async Task DeleteImageAsync(string imagePath)
