@@ -1,0 +1,15 @@
+@import '../../../style-constants.scss';
+
+.pagination {
+    --bs-pagination-padding-x: 1rem !important;
+}
+
+.page-item, .page-link {
+    color: $primary-color !important;
+    border-color: $primary-color !important;
+}
+
+.active>.page-link {
+    color: white !important;
+    background-color: $primary-color;
+}
