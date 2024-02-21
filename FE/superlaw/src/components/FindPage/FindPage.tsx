@@ -1,6 +1,6 @@
 import "./FindPage.scss";
 import Select, { ActionMeta } from "react-select";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import categoryApi from "../../api/categoryApi";
 import { Button } from "react-bootstrap";
 import noProfilePic from "../../assets/no-profile-picture-256.png";
@@ -13,6 +13,7 @@ import LoaderSpinner from "../LoaderSpinner";
 import { Helmet } from "react-helmet-async";
 import { useStoreActions, useStoreState } from "../../store/hooks";
 import SearchForm from "../../models/SearchForm";
+import Paginate from "./Paginate/Paginate";
 
 const FindPage = () => {
   const navigate = useNavigate();
@@ -26,6 +27,14 @@ const FindPage = () => {
   const [searchForm, setSearchForm] = useState<SearchForm>(searchFormState);
 
   const [profiles, setProfiles] = useState<LawyerProfile[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [profilesPerPage] = useState(9);
+
+  const indexOfLastProfile = currentPage * profilesPerPage;
+  const indexOfFirstProfile = indexOfLastProfile - profilesPerPage;
+  const currentProfiles = profiles.slice(indexOfFirstProfile, indexOfLastProfile);
+
+  const scrollRef = useRef<null | HTMLDivElement>(null); 
   
   const [loading, setLoading] = useState(false);
 
@@ -84,6 +93,12 @@ const FindPage = () => {
     fetchProfiles();
   }, []);
 
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+
   const onInput = (e: any) => {
     const inputName = e.target.name;
     const value = e.target.value;
@@ -104,6 +119,7 @@ const FindPage = () => {
     const res = await profileApi.getAll(searchForm.name, categories, searchForm.cityId);
 
     setProfiles(res.data);
+    setCurrentPage(1);
   }
 
   const orderByRatingAsc = () => {
@@ -114,6 +130,7 @@ const FindPage = () => {
             return 1;
         return 0;
     }));
+    setCurrentPage(1);
   };
 
   const orderByRatingDesc = () => {
@@ -124,6 +141,7 @@ const FindPage = () => {
             return -1;
         return 0;
     }));
+    setCurrentPage(1);
   };
 
   const orderByNameAsc = () => {
@@ -134,6 +152,7 @@ const FindPage = () => {
             return 1;
         return 0;
     }));
+    setCurrentPage(1);
   };
 
   const orderByNameDesc = () => {
@@ -144,6 +163,7 @@ const FindPage = () => {
             return -1;
         return 0;
     }));
+    setCurrentPage(1);
   };
 
   const orderByRateAsc = () => {
@@ -154,6 +174,7 @@ const FindPage = () => {
             return 1;
         return 0;
     }));
+    setCurrentPage(1);
   };
 
   const orderByRateDesc = () => {
@@ -164,6 +185,7 @@ const FindPage = () => {
             return -1;
         return 0;
     }));
+    setCurrentPage(1);
   };
 
   const redirectToProfile = (profileId: string) => {
@@ -226,7 +248,7 @@ const FindPage = () => {
           </a>
         </div>
       </form>
-      <div className="profiles-section">
+      <div className="profiles-section" ref={scrollRef}>
         <h2>Профили</h2>
         <div className="sort">
           <span>Подреди по: </span>
@@ -245,7 +267,7 @@ const FindPage = () => {
           :
           <div className="profiles">
           {profiles.length === 0 && <p className="no-profiles-msg">Съжаляваме, но не намираме адвокати</p>}
-          {profiles.map((profile: any) => (
+          {currentProfiles.map((profile: any) => (
             <div key={profile.id} className="profile">
               <div className="profile-image">
                 <img
@@ -285,6 +307,11 @@ const FindPage = () => {
           ))}
         </div>
         }
+        <Paginate
+          profilesPerPage={profilesPerPage}
+          totalProfiles={profiles.length}
+          paginate={paginate}
+          currentPage={currentPage} />
       </div>
     </div>
     </> 
