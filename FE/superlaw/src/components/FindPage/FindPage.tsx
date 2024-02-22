@@ -95,7 +95,7 @@ const FindPage = () => {
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollRef.current?.scrollIntoView();
   };
 
 
